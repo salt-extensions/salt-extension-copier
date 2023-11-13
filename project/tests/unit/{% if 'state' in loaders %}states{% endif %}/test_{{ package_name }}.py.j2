@@ -1,0 +1,31 @@
+import pytest
+import salt.modules.test as testmod
+import {{ package_namespace_pkg }}{{ package_name }}.modules.{{ package_name }}_mod as {{ package_name }}_module
+import {{ package_namespace_pkg }}{{ package_name }}.states.{{ package_name }}_mod as {{ package_name }}_state
+
+
+@pytest.fixture
+def configure_loader_modules():
+    return {
+        {{ package_name }}_module: {
+            "__salt__": {
+                "test.echo": testmod.echo,
+            },
+        },
+        {{ package_name }}_state: {
+            "__salt__": {
+                "{{ package_name }}.example_function": {{ package_name }}_module.example_function,
+            },
+        },
+    }
+
+
+def test_replace_this_this_with_something_meaningful():
+    echo_str = "Echoed!"
+    expected = {
+        "name": echo_str,
+        "changes": {},
+        "result": True,
+        "comment": "The '{{package_name}}.example_function' returned: '{}'".format(echo_str),
+    }
+    assert {{ package_name }}_state.exampled(echo_str) == expected

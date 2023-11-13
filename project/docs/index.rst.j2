@@ -1,0 +1,17 @@
+{%- set welcome = "Welcome to {} Documentation!".format(project_name) %}
+{%- set welcome_ruler = "=" * welcome|length %}
+{{- welcome }}
+{{ welcome_ruler }}
+
+.. toctree::
+  :maxdepth: 2
+  :caption: Contents:
+
+  all.rst
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

@@ -1,0 +1,159 @@
+---
+project_name:
+  type: str
+  help: >
+    Name of the project and generated extensions
+    (don't include `saltext-` prefix)
+  placeholder: vault
+  validator: >-
+      {% if not (project_name | regex_search("^[a-z][a-z0-9\-]+$")) %}
+      project_name must start with a letter, followed one or more letters,
+      digits or dashes, all lowercase.
+      {% endif %}
+
+author:
+  type: str
+  help: Author for project metadata
+  placeholder: Elliot Alderson
+
+author_email:
+  type: str
+  help: The author's contact email address
+  placeholder: elliotalderson@protonmail.ch
+
+summary:
+  type: str
+  help: A summary for project metadata and the readme
+  default: >-
+    Salt Extension for interacting with
+    {{ project_name.replace("-", " ").title() }}
+
+url:
+  type: str
+  help: The project's homepage (usually the URL of the hosted repo)
+  default: https://github.com/salt-extensions/saltext-{{ project_name }}
+
+source_url:
+  type: str
+  help: The project's repo URL
+  default: >-
+    {%- if "github.com" in url -%}
+      {{ url }}
+    {%- else -%}
+      https://github.com/salt-extensions/saltext-{{ project_name }}
+    {%- endif %}
+
+tracker_url:
+  type: str
+  help: The project's issue tracker URL
+  default: >-
+    {%- if "github.com" in source_url -%}
+      {{ source_url }}/issues
+    {%- endif -%}
+
+docs_url:
+  type: str
+  help: The project's documentation URL (optional)
+  default: ""
+
+package_name:
+  type: str
+  help: The name of the Python package (without `saltext.` prefix)
+  default: '{{ project_name.replace("-", "_") }}'
+
+license:
+  type: str
+  help: Choose a license for the project
+  default: apache
+  choices:
+    - apache
+    - other
+
+license_classifier:
+  type: str
+  help: The classifier for {{ license }}. See https://pypi.org/classifiers.
+  when: '{{ license != "apache" }}'
+  default: '{%- if license == "apache" %}License :: OSI Approved :: Apache Software License{%- endif %}'
+  placeholder: '{%- if license != "apache" %}License :: OSI Approved :: Apache Software License{%- endif %}'
+
+license_name:
+  type: str
+  when: false
+  default: '{{ license_classifier.split(" :: ") | last }}'
+
+loaders:
+  type: str
+  help: Which module types should be implemented
+  default:
+    - module
+    - state
+  choices:
+    - auth
+    - beacon
+    - cache
+    - cloud
+    - engine
+    - executor
+    - fileserver
+    - grain
+    - log_handler
+    - matcher
+    - metaproxy
+    - module
+    - netapi
+    - output
+    - pillar
+    - pkgdb
+    - pkgfile
+    - proxy
+    - queue
+    - renderer
+    - returner
+    - roster
+    - runner
+    - sdb
+    - serializer
+    - state
+    - thorium
+    - token
+    - top
+    - wheel
+    - wrapper
+  multiselect: true
+
+salt_version:
+  type: str  # ??
+  help: Minimum Salt version to support
+  default: '3003'
+
+no_saltext_namespace:
+  type: bool
+  help: Omit the `saltext` namespace
+  default: false
+
+package_namespace:
+  type: str
+  when: false
+  default: '{%- if not no_saltext_namespace %}saltext{%- endif %}'
+
+package_namespace_pkg:
+  type: str
+  when: false
+  default: '{%- if package_namespace %}{{ package_namespace }}.{%- endif %}'
+
+package_namespace_path:
+  type: str
+  when: false
+  default: '{%- if package_namespace %}{{ package_namespace }}/{%- endif %}'
+
+namespaced_package_path:
+  type: str
+  when: false
+  default: '{{ package_namespace_path + package_name }}'
+
+_subdirectory: project
+_templates_suffix: j2
+_jinja_extensions:
+  - copier_templates_extensions.TemplateExtensionLoader
+  - jinja_extensions/saltext.py:Year
+  - jinja_extensions/saltext.py:YamlDumper
