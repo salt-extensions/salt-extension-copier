@@ -98,14 +98,14 @@ copier update --trust --vcs-ref=$ref
 Note that manually changing the inputs in the file is [strongly discouraged](https://copier.readthedocs.io/en/latest/updating/#never-change-the-answers-file-manually) by Copier.
 
 ### Migration from official tool
-Existing projects can be migrated to this template by simply running the creation command over a clone of the existing repository. You should currently specify the `0.0.1` tag as a reference since this template diverges from the currently released official one after that.
+Existing projects can be migrated to this template by simply running the creation command over a clone of the existing repository. You should currently specify the `0.0.2` tag as a reference since this template diverges from the currently released official one after that.
 
 ```bash
 git clone https://github.com/salt-extensions/saltext-example
-copier copy --trust --vcs-ref=0.0.1 https://github.com/lkubb/salt-extension-copier saltext-example
+copier copy --trust --vcs-ref=0.0.2 https://github.com/lkubb/salt-extension-copier saltext-example
 ```
 
-You will be presented with the same questions as during initialization. `copier` will ask about conflict resolutions and afterwards create `.copier-answers.yml`.
+You will be presented with the same questions as during initialization. `copier` will ask about conflict resolutions and afterwards create `.copier-answers.yml`. There will likely have been several modifications to the boilerplate since the extension was generated, so this can require some attention and could even reintroduce older dependencies. In the next step, you should thus update the project to a more recent version.
 
 ## References
 * The official tool is found here: https://github.com/saltstack/salt-extension
