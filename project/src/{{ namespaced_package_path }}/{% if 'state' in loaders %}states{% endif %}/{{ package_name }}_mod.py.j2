@@ -26,5 +26,5 @@ def exampled(name):
     value = __salt__["{{package_name}}.example_function"](name)
     if value == name:
         ret["result"] = True
-        ret["comment"] = "The '{{package_name}}.example_function' returned: '{}'".format(value)
+        ret["comment"] = f"The '{{package_name}}.example_function' returned: '{value}'"
     return ret
