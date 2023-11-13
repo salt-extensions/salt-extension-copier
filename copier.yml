@@ -124,7 +124,7 @@ loaders:
 salt_version:
   type: str
   help: Minimum Salt version to support
-  default: '3003'
+  default: '3005'
   validator: >-
     {%- import "data/salt_python_support.yaml" as sps -%}
     {%- set sup = sps | string | from_yaml -%}
