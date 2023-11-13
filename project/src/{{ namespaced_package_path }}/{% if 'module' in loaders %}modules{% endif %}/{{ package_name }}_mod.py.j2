@@ -22,6 +22,6 @@ def example_function(text):
 
     .. code-block:: bash
 
-        salt '*' {{ package_name}}.example_function text="foo bar"
+        salt '*' {{ package_name }}.example_function text="foo bar"
     """
     return __salt__["test.echo"](text)

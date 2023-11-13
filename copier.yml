@@ -152,6 +152,9 @@ namespaced_package_path:
   default: '{{ package_namespace_path + package_name }}'
 
 _subdirectory: project
+_skip_if_exists:
+  - tests/**/test_*.py
+  - src/
 _templates_suffix: j2
 _jinja_extensions:
   - copier_templates_extensions.TemplateExtensionLoader

@@ -13,8 +13,8 @@ def __virtual__():
     #   return (False, "The {{ project_name }} sdb module is not implemented yet")
 
     # Replace this with your own logic
-    if "{{package_name}}.example_function" not in __salt__:
-        return False, "The '{{package_name}}' execution module is not available"
+    if "{{ package_name }}.example_function" not in __salt__:
+        return False, "The '{{ package_name }}' execution module is not available"
     return __virtualname__
 
 
@@ -26,6 +26,6 @@ def get(key, profile=None):
 
     .. code-block:: bash
 
-        salt '*' sdb.get "sdb://{{ package_name}}/foo"
+        salt '*' sdb.get "sdb://{{ package_name }}/foo"
     """
     return key
