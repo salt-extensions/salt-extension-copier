@@ -122,9 +122,42 @@ loaders:
   multiselect: true
 
 salt_version:
-  type: str  # ??
+  type: str
   help: Minimum Salt version to support
   default: '3003'
+  validator: >-
+    {%- import "data/salt_python_support.yaml" as sps -%}
+    {%- set sup = sps | string | from_yaml -%}
+    {%- if salt_version | float | int not in sup -%}
+    Unknown Salt version. Known major: {{ sup | join(", ") }}
+    {%- endif -%}
+
+python_requires:
+  type: str
+  help: Minimum Python version to support
+  default: >-
+    {%- import "data/salt_python_support.yaml" as sps -%}
+    {%- set sup = sps | string | from_yaml -%}
+    {{- sup[salt_version | float | int]["min"] | join(".") -}}
+  validator: >-
+    {%- import "data/salt_python_support.yaml" as sps -%}
+    {%- set sup = sps | string | from_yaml -%}
+    {%- set minsup = sup[salt_version | float | int]["min"] -%}
+    {%- set selected = python_requires.split(".") | map("int") | list -%}
+    {%- if selected < minsup -%}
+    Minimum supported Python version of Salt {{ salt_version }} is {{ minsup | join(".") }}
+    {%- endif -%}
+
+max_salt_version:
+  type: int
+  help: The maximum Salt major version to support
+  default: 3006
+  validator: >-
+    {%- import "data/salt_python_support.yaml" as sps -%}
+    {%- set sup = sps | string | from_yaml -%}
+    {%- if max_salt_version | float | int not in sup -%}
+    Unknown Salt version. Known major: {{ sup | join(", ") }}
+    {%- endif -%}
 
 no_saltext_namespace:
   type: bool
@@ -160,3 +193,4 @@ _jinja_extensions:
   - copier_templates_extensions.TemplateExtensionLoader
   - jinja_extensions/saltext.py:Year
   - jinja_extensions/saltext.py:YamlDumper
+  - jinja_extensions/saltext.py:SaltExt
