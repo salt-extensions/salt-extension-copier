@@ -34,7 +34,7 @@ copier copy --trust https://github.com/lkubb/salt-extension-copier saltext-examp
 
 You will be presented with several questions, after which the project skeleton should be available. It will additionally contain a `.copier-answers.yml` file with the inputs you gave and the commit ref of the template repository that was used when creating it. You should commit it together with the project.
 
-### First Commit
+### First commit
 For specifics, please follow the rendered `README.md` instructions. The following describes the general workflow with notes:
 
 Inside your project directory, initialize a git repository:
@@ -96,6 +96,16 @@ copier update --trust --vcs-ref=$ref
 ```
 
 Note that manually changing the inputs in the file is [strongly discouraged](https://copier.readthedocs.io/en/latest/updating/#never-change-the-answers-file-manually) by Copier.
+
+### Migration from official tool
+Existing projects can be migrated to this template by simply running the creation command over a clone of the existing repository. You should currently specify the `0.0.1` tag as a reference since this template diverges from the currently released official one after that.
+
+```bash
+git clone https://github.com/salt-extensions/saltext-example
+copier copy --trust --vcs-ref=0.0.1 https://github.com/lkubb/salt-extension-copier saltext-example
+```
+
+You will be presented with the same questions as during initialization. `copier` will ask about conflict resolutions and afterwards create `.copier-answers.yml`.
 
 ## References
 * The official tool is found here: https://github.com/saltstack/salt-extension
