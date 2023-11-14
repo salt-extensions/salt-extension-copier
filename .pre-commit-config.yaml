@@ -24,17 +24,17 @@ repos:
     rev: v3.15.0
     hooks:
       - id: pyupgrade
-        name: Rewrite code for Py3.8+
+        name: Rewrite code for Py3.7+
         args:
-          - --py38-plus
+          - --py37-plus
 
   - repo: https://github.com/asottile/reorder_python_imports
     rev: v3.12.0
     hooks:
       - id: reorder-python-imports
-        name: Reorder imports for Py3.8+
+        name: Reorder imports for Py3.7+
         args:
-          - --py38-plus
+          - --py37-plus
 
   - repo: https://github.com/psf/black-pre-commit-mirror
     rev: 23.11.0
