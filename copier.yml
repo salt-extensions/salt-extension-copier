@@ -164,6 +164,11 @@ no_saltext_namespace:
   help: Omit the `saltext` namespace
   default: false
 
+
+# ===========================================
+# | Computed values for less ugly templates |
+# ===========================================
+
 package_namespace:
   type: str
   when: false
@@ -184,11 +189,23 @@ namespaced_package_path:
   when: false
   default: '{{ package_namespace_path + package_name }}'
 
+
+# =====================================
+# | Copier settings for this template |
+# =====================================
+
+# The template root is found here
 _subdirectory: project
+
+# Don't offer updates to implementation-specific files
 _skip_if_exists:
   - tests/**/test_*.py
   - src/
+
+# Ensure we're compatible with the official tool
 _templates_suffix: j2
+
+# We need those extensions as helpers
 _jinja_extensions:
   - copier_templates_extensions.TemplateExtensionLoader
   - jinja_extensions/saltext.py:Year
