@@ -10,6 +10,9 @@ I would like to keep this mostly in sync/slightly ahead of upstream.
 With the amount of extensions that could be created in the future, I think it is relevant to ensure they have a frictionless way of keeping the necessary boilerplate up to date. I have used this method before for my numerous formulae via `cruft` and have been quite happy.
 
 ## How
+
+![Preview](./docs/rec.svg)
+
 ### Prerequisites
 You will currently need the latest code of [Copier](https://copier.readthedocs.io/en/latest/), which is still unreleased (for [multiselect functionality](https://github.com/copier-org/copier/pull/1386)). It is generally recommended to install it via `pipx`:
 
