@@ -38,7 +38,7 @@ url:
   type: str
   help: The project's homepage (usually the URL of the hosted repo)
   default: https://github.com/salt-extensions/saltext-{{ project_name }}
-  validator: '{%- if not author_email %}URL cannot be empty{%- endif %}'
+  validator: '{%- if not url %}URL cannot be empty{%- endif %}'
 
 source_url:
   type: str
