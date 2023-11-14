@@ -92,7 +92,7 @@ In case you want to update your answers to the questions as well as update:
 copier update --trust
 ```
 
-To just change your answers without updating, you will need to specify the commit hash found in your `.copier_answers.yml`:
+To just change your answers without updating, you will need to specify the git ref found in your `.copier_answers.yml`:
 
 ```bash
 copier update --trust --vcs-ref=$ref
