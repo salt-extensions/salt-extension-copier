@@ -25,6 +25,9 @@ class SaltExt(ContextHook):
         }
 
     def hook(self, context):
+        if "python_requires" not in context:
+            # This happens during pre-copy message rendering
+            return {}
         return {
             "python_requires": tuple(
                 int(x) for x in context["python_requires"].split(".")

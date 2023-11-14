@@ -211,3 +211,65 @@ _jinja_extensions:
   - jinja_extensions/saltext.py:Year
   - jinja_extensions/saltext.py:YamlDumper
   - jinja_extensions/saltext.py:SaltExt
+
+# Before initialization, describe briefly what this is about
+_message_before_copy: |
+  Welcome to salt-extension-copier!
+
+  Note that this is an unofficial variant of the official tool
+  found at: https://github.com/saltstack/salt-extension
+
+  Even after generation, this template can be used to perform
+  updates to your project's boilerplate.
+
+  Feel free to submit a PR if you think something should be improved. :)
+
+# Describe next steps and rough usage after project initialization
+_message_after_copy: |
+  Your Salt extension project "{{ project_name }}" has been created successfully!
+
+  Next steps:
+
+  1. Change directory to the project root:
+
+     $ cd {{ _copier_conf.dst_path }}
+
+  2. Initialize a Git repository:
+
+     $ git init
+
+  3. Create a Python virtual environment:
+
+     $ python -m venv venv --prompt='saltext-{{ project_name }}'
+
+  4. Source it:
+
+     $ source venv/bin/activate
+
+  5. Install your project and dependencies in editable mode:
+
+     $ python -m pip install -e '.[dev,tests,docs]'
+
+  6. Install pre-commit hooks:
+
+     $ pre-commit install
+
+  7. Skip installing the requirements (during pre-commit):
+
+     $ export SKIP_REQUIREMENTS_INSTALL=1
+
+  8. Run the pre-commit hooks (the commit will fail the first time):
+
+     $ git add . && git commit
+
+  9. Perform the initial commit:
+
+     $ git add . && git commit -m "Initial extension layout"
+
+
+  To run the test suite:
+
+     $ nox -e tests-3
+
+
+  Please update the tests :) Happy hacking!
