@@ -182,6 +182,11 @@ no_saltext_namespace:
   help: Omit the `saltext` namespace
   default: false
 
+ssh_fixtures:
+  type: bool
+  help: Generate pytest fixtures for salt-ssh
+  default: '{{ "wrapper" in loaders }}'
+  when: '{{ "wrapper" not in loaders }}'
 
 # ===========================================
 # | Computed values for less ugly templates |
