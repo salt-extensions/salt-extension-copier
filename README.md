@@ -2,7 +2,7 @@
 
 A [Copier](https://github.com/copier-org/copier) template that initializes a project structure for developing [Salt](https://github.com/saltstack/salt) extension modules.
 
-The template files themselves are currently sourced almost verbatim from the official [create-salt-extension](https://github.com/saltstack/salt-extension) tool. This template provides the necessary scaffolding to render them via Copier ([which does not require ugly hacks for this like Cookiecutter+Cruft](https://github.com/lkubb/salt-extension-cookiecutter/)).
+The template files themselves are based on the official [create-salt-extension](https://github.com/saltstack/salt-extension) tool, with several updates [submitted as a PR](https://github.com/saltstack/salt-extension/pull/42). This template provides the necessary scaffolding to render them via Copier ([which does not require ugly hacks for this like Cookiecutter+Cruft](https://github.com/lkubb/salt-extension-cookiecutter/)).
 
 I would like to keep this mostly in sync/slightly ahead of upstream.
 
