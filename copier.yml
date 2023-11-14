@@ -15,11 +15,17 @@ author:
   type: str
   help: Author for project metadata
   placeholder: Elliot Alderson
+  validator: '{%- if not author %}Author cannot be empty{%- endif %}'
 
 author_email:
   type: str
   help: The author's contact email address
   placeholder: elliotalderson@protonmail.ch
+  validator: >-
+    {%- if not author_email -%}Email cannot be empty
+    {%- elif not author_email | regex_search("[\S]+@[^\.\s]+") -%}
+    Does not look like a valid email address
+    {%- endif -%}
 
 summary:
   type: str
@@ -32,6 +38,7 @@ url:
   type: str
   help: The project's homepage (usually the URL of the hosted repo)
   default: https://github.com/salt-extensions/saltext-{{ project_name }}
+  validator: '{%- if not author_email %}URL cannot be empty{%- endif %}'
 
 source_url:
   type: str
@@ -42,6 +49,9 @@ source_url:
     {%- else -%}
       https://github.com/salt-extensions/saltext-{{ project_name }}
     {%- endif %}
+  validator: >-
+    {%- if "://" not in source_url -%}Does not look like a valid URL
+    {%- endif %}
 
 tracker_url:
   type: str
@@ -50,16 +60,23 @@ tracker_url:
     {%- if "github.com" in source_url -%}
       {{ source_url }}/issues
     {%- endif -%}
+  validator: >-
+    {%- if tracker_url and "://" not in tracker_url -%}Does not look like a valid URL
+    {%- endif %}
 
 docs_url:
   type: str
   help: The project's documentation URL (optional)
   default: ""
+  validator: >-
+    {%- if docs_url and "://" not in docs_url -%}Does not look like a valid URL
+    {%- endif %}
 
 package_name:
   type: str
   help: The name of the Python package (without `saltext.` prefix)
   default: '{{ project_name.replace("-", "_") }}'
+  validator: '{%- if not package_name %}Package name cannot be empty{%- endif %}'
 
 license:
   type: str
@@ -75,6 +92,7 @@ license_classifier:
   when: '{{ license != "apache" }}'
   default: '{%- if license == "apache" %}License :: OSI Approved :: Apache Software License{%- endif %}'
   placeholder: '{%- if license != "apache" %}License :: OSI Approved :: Apache Software License{%- endif %}'
+  validator: '{%- if " :: " not in license_classifier %}Invalid license classifier{%- endif %}'
 
 license_name:
   type: str
