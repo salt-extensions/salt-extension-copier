@@ -110,6 +110,16 @@ copier copy --trust --vcs-ref=0.0.2 https://github.com/lkubb/salt-extension-copi
 
 You will be presented with the same questions as during initialization. `copier` will ask about conflict resolutions and afterwards create `.copier-answers.yml`. There will likely have been several modifications to the boilerplate since the extension was generated, so this can require some attention and could even reintroduce older dependencies. In the next step, you should thus update the project to a more recent version.
 
+## Differences vs the official tool
+The latest version of this template differs from the latest `salt-extension 0.24.0` in the following ways:
+* Updated dependencies, pre-commit hooks and workflow actions
+* Salt and Python versions are parametrized all over the template
+* Dropped support for Python 3.5/3.6 completely
+* Contains functional tests skeleton, `(master|minion)_opts` fixtures for unit tests and optionally fixtures for `salt-ssh` tests
+
+## Known issues
+* Currently, CI dependencies are [pinned, but never used](https://github.com/saltstack/salt-extension/issues/41)
+
 ## References
 * The official tool is found here: https://github.com/saltstack/salt-extension
 * The `salt-extensions` organization: https://github.com/salt-extensions
