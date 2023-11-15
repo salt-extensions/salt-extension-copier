@@ -7,6 +7,24 @@ from copier_templates_extensions import ContextHook
 from jinja2.ext import Extension
 
 
+SINGULAR_LOADER_DIRS = (
+    "auth",
+    "cache",
+    "fileserver",
+    "metaproxy",
+    "netapi",
+    "output",
+    "pillar",
+    "pkgdb",
+    "proxy",
+    "roster",
+    "sdb",
+    "thorium",
+    "wheel",
+    "wrapper",
+)
+
+
 class SaltExt(ContextHook):
     """
     Renders some variables for easier templating
@@ -34,6 +52,7 @@ class SaltExt(ContextHook):
             ),
             "max_python_minor": self.sps[context["max_salt_version"]]["max"][1],
             "salt_python_support": copy.deepcopy(self.sps),
+            "singular_loader_dirs": SINGULAR_LOADER_DIRS,
         }
 
 
