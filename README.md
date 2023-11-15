@@ -65,12 +65,6 @@ Ensure the pre-commit hook is installed:
 pre-commit install
 ```
 
-At least on some macOS systems, you will need to ensure the pre-commit lint hooks do not attempt to install requirements, otherwise you will receive errors like `error: could not create 'build/bdist.macosx-13.6-arm64/wheel/saltext': Permission denied` and similar ones:
-
-```bash
-export SKIP_REQUIREMENTS_INSTALL=1
-```
-
 Then, you are ready to commit:
 
 ```bash

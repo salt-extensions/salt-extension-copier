@@ -277,15 +277,11 @@ _message_after_copy: |
 
      $ pre-commit install
 
-  7. Skip installing the requirements (during pre-commit):
-
-     $ export SKIP_REQUIREMENTS_INSTALL=1
-
-  8. Run the pre-commit hooks (the commit will fail the first time):
+  7. Run the pre-commit hooks (the commit will fail the first time):
 
      $ git add . && git commit
 
-  9. Perform the initial commit:
+  8. Perform the initial commit:
 
      $ git add . && git commit -m "Initial extension layout"
 
