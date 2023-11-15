@@ -50,7 +50,7 @@ def write_index(index_rst, import_paths, kind):
 
 
 def make_import_path(path):
-    return ".".join(path.with_suffix("").parts[-4:])
+    return ".".join(path.relative_to(repo_path / "src").with_suffix("").parts)
 
 
 for path in Path(__file__).parent.parent.joinpath("src/{{ package_namespace_path }}{{ project_name }}/").glob("*/*.py"):
