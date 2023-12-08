@@ -111,6 +111,7 @@ The latest version of this template differs from the latest `salt-extension 0.24
 * Dropped support for Python 3.5/3.6 completely
 * Contains functional tests skeleton, `(master|minion)_opts` fixtures for unit tests and optionally fixtures for `salt-ssh` tests
 * Removes pinning of test/docs/lint requirements ([related issue](https://github.com/saltstack/salt-extension/issues/41)) and the corresponding files
+* Transitions to using `pyproject.toml` instead of `setup.cfg`
 
 ## References
 * The official tool is found here: https://github.com/saltstack/salt-extension
