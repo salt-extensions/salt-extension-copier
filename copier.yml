@@ -217,6 +217,9 @@ namespaced_package_path:
 # | Copier settings for this template |
 # =====================================
 
+# We need multiselect functionality
+_min_copier_version: "9.1.0"
+
 # The template root is found here
 _subdirectory: project
 
