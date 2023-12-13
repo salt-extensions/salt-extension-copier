@@ -7,12 +7,19 @@
 
 .. toctree::
   :maxdepth: 2
-  :caption: Provided Modules:
+  :caption: Provided Modules
   :hidden:
-
   {% for loader in loaders %}
   ref/{{ loader.rstrip("s") + ("" if loader in singular_loader_dirs else "s") }}/index
   {%- endfor %}
+
+.. toctree::
+  :maxdepth: 2
+  :caption: News
+  :hidden:
+
+  changelog
+
 
 Indices and tables
 ==================
