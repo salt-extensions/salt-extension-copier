@@ -7,9 +7,12 @@
 
 .. toctree::
   :maxdepth: 2
-  :caption: Contents:
+  :caption: Provided Modules:
+  :hidden:
 
-  all.rst
+  {% for loader in loaders %}
+  ref/{{ loader.rstrip("s") + ("" if loader in singular_loader_dirs else "s") }}/index
+  {%- endfor %}
 
 Indices and tables
 ==================
