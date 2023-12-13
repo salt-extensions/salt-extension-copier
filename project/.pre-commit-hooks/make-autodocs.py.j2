@@ -17,7 +17,7 @@ def _find_virtualname(path):
         if isinstance(node, ast.Assign):
             for target in node.targets:
                 if isinstance(target, ast.Name) and target.id == "__virtualname__":
-                    if isinstance(node.value, ast.Constant):
+                    if isinstance(node.value, ast.Str):
                         virtualname = node.value.s
                         break
             else:
