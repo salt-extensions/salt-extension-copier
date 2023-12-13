@@ -212,6 +212,15 @@ namespaced_package_path:
   when: false
   default: '{{ package_namespace_path + package_name }}'
 
+project_name_full:
+  type: str
+  when: false
+  default: >-
+    {%- if package_namespace %}
+    {{- package_namespace }}-{{ project_name }}
+    {%- else %}
+    {{ project_name }}
+    {%- endif %}
 
 # =====================================
 # | Copier settings for this template |

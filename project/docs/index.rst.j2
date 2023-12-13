@@ -1,7 +1,9 @@
-{%- set welcome = "Welcome to {} Documentation!".format(project_name) %}
+{%- set welcome = "``{}``: Integrate Salt with {}".format(project_name_full, project_name | capitalize) %}
 {%- set welcome_ruler = "=" * welcome|length %}
 {{- welcome }}
 {{ welcome_ruler }}
+
+{{ summary }}
 
 .. toctree::
   :maxdepth: 2
