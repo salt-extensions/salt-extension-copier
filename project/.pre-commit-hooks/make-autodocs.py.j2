@@ -1,6 +1,6 @@
 import ast
-import subprocess
 import os.path
+import subprocess
 from pathlib import Path
 
 
@@ -51,32 +51,29 @@ def write_module(rst_path, path, use_virtualname=True):
 def write_index(index_rst, import_paths, kind):
     if kind == "utils":
         header_text = "Utilities"
+        common_path = os.path.commonpath(tuple(x.replace(".", "/") for x in import_paths)).replace(
+            "/", "."
+        )
+        if any(x == common_path for x in import_paths):
+            common_path = common_path[: common_path.rfind(".")]
     else:
         header_text = (
             "execution modules" if kind.lower() == "modules" else kind.rstrip("s") + " modules"
         )
+        common_path = import_paths[0][: import_paths[0].rfind(".")]
     header = f"{'_'*len(header_text)}\n{header_text.title()}\n{'_'*len(header_text)}"
     index_contents = f"""\
 .. all-{%- if package_namespace %}{{ package_namespace }}.{%- endif %}{{ project_name }}.{kind}:
 
 {header}
 
-.. currentmodule:: {import_paths[0][:import_paths[0].rfind(".")]}
+.. currentmodule:: {common_path}
 
 .. autosummary::
     :toctree:
 
+{chr(10).join(sorted('    '+p[len(common_path)+1:] for p in import_paths))}
 """
-    if kind != "utils":
-        index_contents += (
-            "\n".join(sorted("    " + p[p.rfind(".") + 1 :] for p in import_paths)) + "\n"
-        )
-    else:
-        common_path = os.path.commonpath(tuple(x.replace(".", "/") for x in import_paths))
-        index_contents += (
-            "\n".join(sorted("    " + p[len(common_path) + 1 :] for p in import_paths)) + "\n"
-        )
-
     if not index_rst.exists() or index_rst.read_text() != index_contents:
         print(index_rst)
         index_rst.write_text(index_contents)
@@ -98,6 +95,8 @@ for path in src_dir.glob("*/*.py"):
 
 # Utils can have subdirectories, treat them separately
 for path in (src_dir / "utils").rglob("*.py"):
+    if path.name == "__init__.py" and not path.read_text():
+        continue
     docs_by_kind.setdefault("utils", set()).add(path)
 
 for kind in docs_by_kind:
