@@ -1,0 +1,54 @@
+{%- set pyver = salt_python_support[salt_version | int]["max"][1] -%}
+
+name: Salt Extension Python Package
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Build Python Packages (wheel and sdist)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.{{ pyver }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.{{ pyver }}"
+
+      - name: Install build tools
+        run: >-
+          python -m
+          pip install
+          build
+          setuptools_scm
+          --user
+{%- raw %}
+
+      - name: Echo Version
+        run: echo "${{ inputs.version }}"
+
+      - name: Build Wheel
+        run: python -m build --outdir dist/
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: salt-extension-${{ inputs.version }}-packages
+          path: dist/*
+          retention-days: 5
+
+      - name: Set Exit Status
+        if: always()
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > exitstatus/${{ github.job }}
+{%- endraw %}
