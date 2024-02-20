@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 repo_path = Path(subprocess.check_output(["git", "rev-parse", "--show-toplevel"]).decode().strip())
-src_dir = repo_path / "src" / {% if package_namespace -%} "{{ package_namespace }}" / {% endif -%} "{{ project_name }}"
+src_dir = repo_path / "src" / {% if package_namespace -%} "{{ package_namespace }}" / {% endif -%} "{{ package_name }}"
 doc_dir = repo_path / "docs"
 
 docs_by_kind = {}
