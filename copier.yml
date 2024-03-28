@@ -228,7 +228,7 @@ project_name_full:
     {%- if package_namespace %}
     {{- package_namespace }}-{{ project_name }}
     {%- else %}
-    {{ project_name }}
+    {{- project_name }}
     {%- endif %}
 
 # =====================================
@@ -269,7 +269,7 @@ _message_before_copy: |
 
 # Describe next steps and rough usage after project initialization
 _message_after_copy: |
-  Your Salt extension project "{{ project_name }}" has been created successfully!
+  Your Salt extension project "{{ project_name_full }}" has been created successfully!
 
   Next steps:
 
@@ -283,7 +283,7 @@ _message_after_copy: |
 
   3. Create a Python virtual environment:
 
-     $ python -m venv venv --prompt='saltext-{{ project_name }}'
+     $ python -m venv venv --prompt='{{ project_name_full }}'
 
   4. Source it:
 
