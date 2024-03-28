@@ -142,7 +142,7 @@ loaders:
 salt_version:
   type: str
   help: Minimum Salt version to support
-  default: '3005'
+  default: '3006'
   validator: >-
     {%- import "data/salt_python_support.yaml" as sps -%}
     {%- set sup = sps | string | from_yaml -%}
@@ -169,7 +169,7 @@ python_requires:
 max_salt_version:
   type: int
   help: The maximum Salt major version to support
-  default: 3006
+  default: 3007
   validator: >-
     {%- import "data/salt_python_support.yaml" as sps -%}
     {%- set sup = sps | string | from_yaml -%}
@@ -228,7 +228,7 @@ project_name_full:
     {%- if package_namespace %}
     {{- package_namespace }}-{{ project_name }}
     {%- else %}
-    {{ project_name }}
+    {{- project_name }}
     {%- endif %}
 
 # =====================================
@@ -262,9 +262,6 @@ _jinja_extensions:
 _message_before_copy: |
   Welcome to salt-extension-copier!
 
-  Note that this is an unofficial variant of the official tool
-  found at: https://github.com/saltstack/salt-extension
-
   Even after generation, this template can be used to perform
   updates to your project's boilerplate.
 
@@ -272,7 +269,7 @@ _message_before_copy: |
 
 # Describe next steps and rough usage after project initialization
 _message_after_copy: |
-  Your Salt extension project "{{ project_name }}" has been created successfully!
+  Your Salt extension project "{{ project_name_full }}" has been created successfully!
 
   Next steps:
 
@@ -286,7 +283,7 @@ _message_after_copy: |
 
   3. Create a Python virtual environment:
 
-     $ python -m venv venv --prompt='saltext-{{ project_name }}'
+     $ python -m venv venv --prompt='{{ project_name_full }}'
 
   4. Source it:
 

@@ -1,13 +1,11 @@
-# Create Salt Extensions
+# Create & Maintain Salt Extensions
 
 A [Copier](https://github.com/copier-org/copier) template that initializes a project structure for developing [Salt](https://github.com/saltstack/salt) extension modules.
 
-The template files themselves are based on the official [create-salt-extension](https://github.com/saltstack/salt-extension) tool, with several updates [submitted as a PR](https://github.com/saltstack/salt-extension/pull/42). This template provides the necessary scaffolding to render them via Copier ([which does not require ugly hacks for this like Cookiecutter+Cruft](https://github.com/lkubb/salt-extension-cookiecutter/)).
-
-I would like to keep this mostly in sync/slightly ahead of upstream.
-
 ## Why
-With the amount of extensions that could be created in the future, I think it is relevant to ensure they have a frictionless way of keeping the necessary boilerplate up to date. I have used this method before for my numerous formulae via `cruft` and am quite happy.
+For individual extension creators, this template allows to quickly get started with developing, testing and releasing new Salt functionality.
+
+For extension maintainers and the `salt-extensions` organization, it ensures that there is a frictionless way of keeping the necessary boilerplate up to date.
 
 ## How
 
@@ -32,10 +30,10 @@ Note that `copier` has to be invoked with the `--trust` flag because of the incl
 Now, creating an extension project is as simple as running:
 
 ```bash
-copier copy --trust https://github.com/lkubb/salt-extension-copier saltext-example
+copier copy --trust https://github.com/salt-extensions/salt-extension-copier saltext-example
 ```
 
-You are then presented with several questions, after which the project skeleton should be available. It additionally contains a `.copier-answers.yml` file with the inputs you gave and the commit ref of the template repository that was used when creating it. You should commit it together with the project.
+You are then presented with several questions, after which the project skeleton should be available. It additionally contains a `.copier-answers.yml` file with the inputs you gave, the URL of this repository plus the tag/commit ref that served as the base for the generated files. You should commit it together with the project.
 
 ### First commit
 For specifics, please see the rendered `README.md` instructions. The following describes the general workflow with notes:
@@ -99,23 +97,13 @@ Existing projects can be migrated to this template by simply running the creatio
 
 ```bash
 git clone https://github.com/salt-extensions/saltext-example
-copier copy --trust --vcs-ref=0.0.2 https://github.com/lkubb/salt-extension-copier saltext-example
+copier copy --trust --vcs-ref=0.0.2 https://github.com/salt-extensions/salt-extension-copier saltext-example
 ```
 
-You are then presented with the same questions as during initialization. `copier` asks about conflict resolutions and afterwards creates `.copier-answers.yml`. There have likely been several modifications to the boilerplate since the extension was generated, so this can require some attention and could even reintroduce older dependencies. In the next step, you should thus update the project to a more recent version.
-
-## Differences vs the official tool
-The latest version of this template differs from the latest `salt-extension 0.24.0` in the following ways:
-* Updated dependencies, pre-commit hooks and workflow actions
-* Salt and Python versions are parametrized all over the template
-* Dropped support for Python 3.5/3.6 completely
-* Contains functional tests skeleton, `(master|minion)_opts` fixtures for unit tests and optionally fixtures for `salt-ssh` tests
-* Removes pinning of test/docs/lint requirements ([related issue](https://github.com/saltstack/salt-extension/issues/41)) and the corresponding files
-* Transitions to using `pyproject.toml` instead of `setup.cfg`
+You are then presented with the same questions as during initialization. `copier` asks about conflict resolutions and afterwards creates `.copier-answers.yml`. There have likely been several modifications to the boilerplate since the extension was generated, so this can require some attention and could even reintroduce older dependencies. In the next step, you should thus update the project to the latest version.
 
 ## References
-* The official tool is found here: https://github.com/saltstack/salt-extension
-* The `salt-extensions` organization: https://github.com/salt-extensions
 * `copier` docs: https://copier.readthedocs.io/en/latest/
 * An overview of modular systems in Salt: https://docs.saltproject.io/en/latest/topics/development/modules/index.html
 * The Salt-specific `pytest` docs: https://pytest-salt-factories.readthedocs.io/en/latest/
+* The `salt-extensions` organization: https://github.com/salt-extensions
