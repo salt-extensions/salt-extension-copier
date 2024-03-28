@@ -262,9 +262,6 @@ _jinja_extensions:
 _message_before_copy: |
   Welcome to salt-extension-copier!
 
-  Note that this is an unofficial variant of the official tool
-  found at: https://github.com/saltstack/salt-extension
-
   Even after generation, this template can be used to perform
   updates to your project's boilerplate.
 
