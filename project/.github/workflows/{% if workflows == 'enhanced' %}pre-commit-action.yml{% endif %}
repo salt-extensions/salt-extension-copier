@@ -13,23 +13,20 @@ jobs:
     name: Pre-Commit
     runs-on: ubuntu-latest
     container:
-      image: python:3.10.9-slim-buster
+      image: python:3.10.14-slim-bookworm
 
     steps:
       - name: Install System Deps
         run: |
-          echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
           apt-get update
-          apt-get install -y enchant git gcc make zlib1g-dev libc-dev libffi-dev g++ libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev libssl-dev libgnutls28-dev
-          apt-get install -y git/buster-backports
+          apt-get install -y enchant-2 git gcc make zlib1g-dev libc-dev libffi-dev g++ libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev libssl-dev libgnutls28-dev
+          git config --global --add safe.directory "$(pwd)"
 
       - uses: actions/checkout@v4
 
       - name: Install Pre-Commit
         run: |
-          # TODO: Update pip version without error
-          #          python -m pip install --upgrade pip
-          python -m pip install pip==19.3.1
+          python -m pip install --upgrade pip
           pip install pre-commit
           pre-commit install --install-hooks
 
