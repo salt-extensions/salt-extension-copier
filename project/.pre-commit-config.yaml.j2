@@ -2,7 +2,7 @@
 minimum_pre_commit_version: 2.4.0
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: {{ "v4.4.0" if python_requires < (3, 8) else "v4.6.0" }}
     hooks:
       - id: check-merge-conflict  # Check for files that contain merge conflict strings.
       - id: trailing-whitespace   # Trims trailing whitespace.
@@ -56,7 +56,7 @@ repos:
         args: [--silent, -E, fix_docstrings]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.37.2
+    rev: {{ "v2.37.2" if python_requires < (3, 8) else "v3.15.2" }}
     hooks:
       - id: pyupgrade
         name: Rewrite Code to be Py{{ python_requires[:2] | join(".") }}+
@@ -66,7 +66,7 @@ repos:
         exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
 
   - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.10.0
+    rev: {{ "v3.10.0" if python_requires < (3, 8) else "v3.12.2" }}
     hooks:
       - id: reorder-python-imports
         args: [
@@ -75,25 +75,25 @@ repos:
         exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
 
   - repo: https://github.com/psf/black
-    rev: 22.6.0
+    rev: {{ "22.6.0" if python_requires < (3, 8) else "24.2.0" }}
     hooks:
       - id: black
         args: [-l 100]
         exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
 
   - repo: https://github.com/adamchainz/blacken-docs
-    rev: v1.12.1
+    rev: {{ "v1.12.1" if python_requires < (3, 8) else "1.16.0" }}
     hooks:
       - id: blacken-docs
         args: [--skip-errors]
         files: ^(docs/.*\.rst|src/{{ package_namespace_path }}{{ package_name }}/.*\.py)$
         additional_dependencies:
-          - black==22.6.0
+          - black=={{ "22.6.0" if python_requires < (3, 8) else "24.2.0" }}
   # <---- Formatting -----------------------------------------------------------------------------
 
   # ----- Security ------------------------------------------------------------------------------>
   - repo: https://github.com/PyCQA/bandit
-    rev: "1.7.4"
+    rev: "{{ "1.7.4" if python_requires < (3, 8) else "1.7.8" }}"
     hooks:
       - id: bandit
         alias: bandit-salt
@@ -101,7 +101,7 @@ repos:
         args: [--silent, -lll, --skip, B701]
         exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
   - repo: https://github.com/PyCQA/bandit
-    rev: "1.7.4"
+    rev: "{{ "1.7.4" if python_requires < (3, 8) else "1.7.8" }}"
     hooks:
       - id: bandit
         alias: bandit-tests
@@ -112,7 +112,7 @@ repos:
 
   # ----- Code Analysis ------------------------------------------------------------------------->
   - repo: https://github.com/saltstack/mirrors-nox
-    rev: v2021.6.12
+    rev: {{ "v2021.6.12" if python_requires < (3, 8) else "v2022.11.21" }}
     hooks:
       - id: nox
         alias: lint-src
@@ -125,7 +125,7 @@ repos:
           - --
 
   - repo: https://github.com/saltstack/mirrors-nox
-    rev: v2021.6.12
+    rev: {{ "v2021.6.12" if python_requires < (3, 8) else "v2022.11.21" }}
     hooks:
       - id: nox
         alias: lint-tests
