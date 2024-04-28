@@ -65,14 +65,14 @@ repos:
         ]
         exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
 
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.12.2
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
     hooks:
-      - id: reorder-python-imports
+      - id: isort
         args: [
-          --py{{ python_requires[:2] | join("") }}-plus,
+          --py {{ python_requires[:2] | join("") }},
         ]
-        exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
+        exclude: src/{{ package_namespace_path }}{{ package_name }}/(__init__|version).py
 
   - repo: https://github.com/psf/black
     rev: 24.2.0
