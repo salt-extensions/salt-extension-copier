@@ -25,7 +25,7 @@ repos:
         name: Check CLI examples on execution modules
         entry: python .pre-commit-hooks/check-cli-examples.py
         language: system
-        files: ^src/{{ package_namespace_path }}{{ package_name }}/modules/.*\.py$
+        files: ^src/{{ namespaced_package_path }}/modules/.*\.py$
 
   - repo: local
     hooks:
@@ -42,7 +42,7 @@ repos:
       - id: salt-rewrite
         alias: rewrite-docstrings
         name: Salt extensions docstrings auto-fixes
-        files: ^src/{{ package_namespace_path }}{{ package_name }}/.*\.py$
+        files: ^src/{{ namespaced_package_path }}/.*\.py$
         args: [--silent]
 
   - repo: https://github.com/s0undt3ch/salt-rewrite
@@ -63,7 +63,7 @@ repos:
         args: [
           --py{{ python_requires[:2] | join("") }}-plus
         ]
-        exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
+        exclude: src/{{ namespaced_package_path }}/version.py
 
   - repo: https://github.com/PyCQA/isort
     rev: 5.13.2
@@ -72,21 +72,21 @@ repos:
         args: [
           --py {{ python_requires[:2] | join("") }},
         ]
-        exclude: src/{{ package_namespace_path }}{{ package_name }}/(__init__|version).py
+        exclude: src/{{ namespaced_package_path }}/(__init__|version).py
 
   - repo: https://github.com/psf/black
     rev: 24.2.0
     hooks:
       - id: black
         args: [-l 100]
-        exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
+        exclude: src/{{ namespaced_package_path }}/version.py
 
   - repo: https://github.com/adamchainz/blacken-docs
     rev: 1.16.0
     hooks:
       - id: blacken-docs
         args: [--skip-errors]
-        files: ^(docs/.*\.rst|src/{{ package_namespace_path }}{{ package_name }}/.*\.py)$
+        files: ^(docs/.*\.rst|src/{{ namespaced_package_path }}/.*\.py)$
         additional_dependencies:
           - black==24.2.0
   # <---- Formatting -----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ repos:
         alias: bandit-salt
         name: Run bandit against the code base
         args: [--silent, -lll, --skip, B701]
-        exclude: src/{{ package_namespace_path }}{{ package_name }}/version.py
+        exclude: src/{{ namespaced_package_path }}/version.py
   - repo: https://github.com/PyCQA/bandit
     rev: 1.7.8
     hooks:

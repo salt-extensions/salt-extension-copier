@@ -7,7 +7,7 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
-write_to = "src/{{ package_namespace_path }}{{ package_name }}/version.py"
+write_to = "src/{{ namespaced_package_path }}/version.py"
 write_to_template = "__version__ = \"{version}\""
 
 [project]
@@ -84,7 +84,7 @@ tests = [
 ]
 
 [project.entry-points."salt.loader"]
-"{{ package_namespace_pkg }}{{ project_name }}" = "{{ package_namespace_pkg }}{{ package_name }}"
+"{{ package_namespace_pkg }}{{ project_name }}" = "{{ namespaced_package_pkg }}"
 
 [tool.setuptools]
 zip-safe = false
@@ -112,12 +112,12 @@ line-length = 100
 
 [tool.isort]
 force_single_line = true
-skip = ["src/{{ package_namespace_path }}{{ package_name }}/__init__.py"]
+skip = ["src/{{ namespaced_package_path }}/__init__.py"]
 profile = "black"
 line_length = 100
 
 [tool.towncrier]
-package = "{{ package_namespace_pkg }}{{ package_name }}"
+package = "{{ namespaced_package_pkg }}"
 filename = "CHANGELOG.md"
 template = "changelog/.template.jinja"
 directory = "changelog/"

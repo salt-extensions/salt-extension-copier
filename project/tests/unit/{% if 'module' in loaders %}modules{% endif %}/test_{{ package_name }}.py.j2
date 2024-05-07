@@ -1,7 +1,7 @@
 import pytest
 import salt.modules.test as testmod
 
-import {{ package_namespace_pkg }}{{ package_name }}.modules.{{ package_name }}_mod as {{ package_name }}_module
+import {{ namespaced_package_pkg }}.modules.{{ package_name }}_mod as {{ package_name }}_module
 
 
 @pytest.fixture

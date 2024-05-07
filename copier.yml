@@ -6,10 +6,12 @@ project_name:
     (don't include `saltext-` prefix)
   placeholder: vault
   validator: >-
-      {% if not (project_name | regex_search("^[a-z][a-z0-9\-]+$")) %}
-      project_name must start with a letter, followed one or more letters,
-      digits or dashes, all lowercase.
-      {% endif %}
+    {%- if not project_name %}
+    Project name cannot be empty.
+    {%- endif %}
+    {%- if not (project_name | regex_search("^[a-z][a-z0-9\-]+$")) %}
+    Must start with [a-z], followed by at least one of [a-z0-9\-] (lowercase!)
+    {%- endif %}
 
 author:
   type: str
@@ -75,8 +77,14 @@ docs_url:
 package_name:
   type: str
   help: The name of the Python package (without `saltext.` prefix)
-  default: '{{ project_name.replace("-", "_") }}'
-  validator: '{%- if not package_name %}Package name cannot be empty{%- endif %}'
+  default: '{{ project_name | regex_replace("[-_.]+", "_") }}'
+  validator: >-
+    {%- if not package_name %}
+    Package name cannot be empty.
+    {%- endif %}
+    {%- if not (package_name | regex_search("^[a-z][a-z0-9_]+$")) %}
+    Must start with [a-z], followed by at least one of [a-z0-9_] (lowercase!)
+    {%- endif %}
 
 license:
   type: str
@@ -219,7 +227,12 @@ package_namespace_path:
 namespaced_package_path:
   type: str
   when: false
-  default: '{{ package_namespace_path + package_name }}'
+  default: '{{ package_namespace_path ~ package_name }}'
+
+namespaced_package_pkg:
+  type: str
+  when: false
+  default: '{{ package_namespace_pkg ~ package_name }}'
 
 project_name_full:
   type: str
