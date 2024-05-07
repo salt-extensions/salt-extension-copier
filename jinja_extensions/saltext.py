@@ -6,7 +6,6 @@ import yaml
 from copier_templates_extensions import ContextHook
 from jinja2.ext import Extension
 
-
 SINGULAR_LOADER_DIRS = (
     "auth",
     "cache",
@@ -33,18 +32,14 @@ class SaltExt(ContextHook):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         sps = yaml.safe_load(
-            (
-                Path(__file__).parent.parent / "data" / "salt_python_support.yaml"
-            ).read_text()
+            (Path(__file__).parent.parent / "data" / "salt_python_support.yaml").read_text()
         )
         self.sps = {
             version: {"min": tuple(defs["min"]), "max": tuple(defs["max"])}
             for version, defs in sps.items()
         }
         self.slp = yaml.safe_load(
-            (
-                Path(__file__).parent.parent / "data" / "salt_latest_point.yaml"
-            ).read_text()
+            (Path(__file__).parent.parent / "data" / "salt_latest_point.yaml").read_text()
         )
 
     def hook(self, context):
@@ -52,9 +47,7 @@ class SaltExt(ContextHook):
             # This happens during pre-copy message rendering
             return {}
         return {
-            "python_requires": tuple(
-                int(x) for x in context["python_requires"].split(".")
-            ),
+            "python_requires": tuple(int(x) for x in context["python_requires"].split(".")),
             "max_python_minor": self.sps[context["max_salt_version"]]["max"][1],
             "salt_python_support": copy.deepcopy(self.sps),
             "singular_loader_dirs": SINGULAR_LOADER_DIRS,

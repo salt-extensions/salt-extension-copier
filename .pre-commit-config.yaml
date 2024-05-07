@@ -2,7 +2,7 @@
 minimum_pre_commit_version: 3.2.0
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: trailing-whitespace
         args:
@@ -21,26 +21,31 @@ repos:
         language_version: python3
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.0
+    rev: v3.15.2
     hooks:
       - id: pyupgrade
-        name: Rewrite code for Py3.7+
+        name: Rewrite code for Py3.8+
         args:
-          - --py37-plus
+          - --py38-plus
 
-  - repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.12.0
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
     hooks:
-      - id: reorder-python-imports
-        name: Reorder imports for Py3.7+
+      - id: isort
         args:
-          - --py37-plus
+          - --py=38
+          - --profile=black
+          - --force-single-line
+        exclude: project/src/\{\{ namespaced_package_path \}\}/__init__.py
 
   - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 23.11.0
+    rev: 24.2.0
     hooks:
       - id: black
         name: Autoformat Python code
+        args:
+          - --line-length=100
+          - --target-version=py38
 
   - repo: https://github.com/PyCQA/flake8
     rev: 6.1.0
@@ -48,5 +53,4 @@ repos:
       - id: flake8
         name: Lint Python code with flake8
         args:
-          - --max-line-length=88
-          - --ignore=E203
+          - --max-line-length=100
