@@ -29,10 +29,16 @@ jobs:
 
     - name: Build Docs
       env:
-        SKIP_REQUIREMENTS_INSTALL: YES
+        SKIP_REQUIREMENTS_INSTALL: true
       run: |
         nox --force-color -e docs
 {%- raw %}
+
+    - name: Upload built docs as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-docs
+        path: docs/_build/html
 
     - name: Set Exit Status
       if: always()
@@ -42,9 +48,9 @@ jobs:
 
     - name: Upload Exit Status
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: exitstatus
+        name: exitstatus-${{ github.job }}
         path: exitstatus
         if-no-files-found: error
 {%- endraw %}
