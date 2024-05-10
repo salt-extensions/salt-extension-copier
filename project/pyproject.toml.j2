@@ -80,7 +80,12 @@ lint = [
 ]
 tests = [
     "pytest>=7.2.0",
+{%- if test_containers %}
+    "pytest-salt-factories>=1.0.0; sys_platform == 'win32'",
+    "pytest-salt-factories[docker]>=1.0.0; sys_platform != 'win32'",
+{%- else %}
     "pytest-salt-factories>=1.0.0",
+{%- endif %}
 ]
 
 [project.entry-points."salt.loader"]

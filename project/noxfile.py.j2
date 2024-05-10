@@ -145,6 +145,19 @@ def tests(session):
         "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
     }
 
+{%- if container_tests %}
+
+    # Support running functional/integration tests under Podman rootless.
+    # The user must have enabled the listening socket via systemctl --user start podman.socket
+    if not CI_RUN and sys.platform.startswith("linux"):
+        uid = os.getuid()
+        if uid != 0:
+            runtime_dir = Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{uid}"))
+            podman_sock = runtime_dir / "podman" / "podman.sock"
+            if podman_sock.exists():
+                env["DOCKER_HOST"] = f"unix:{podman_sock}"
+{%- endif %}
+
     session.run("coverage", "erase")
     args = [
         "--rootdir",
