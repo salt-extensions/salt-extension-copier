@@ -25,10 +25,10 @@ CI_RUN = (
     os.environ.get("JENKINS_URL") or os.environ.get("CI") or os.environ.get("DRONE") is not None
 )
 PIP_INSTALL_SILENT = CI_RUN is False
-SKIP_REQUIREMENTS_INSTALL = "SKIP_REQUIREMENTS_INSTALL" in os.environ
+SKIP_REQUIREMENTS_INSTALL = os.environ.get("SKIP_REQUIREMENTS_INSTALL", "0") == "1"
 EXTRA_REQUIREMENTS_INSTALL = os.environ.get("EXTRA_REQUIREMENTS_INSTALL")
 
-COVERAGE_VERSION_REQUIREMENT = "coverage==5.2"
+COVERAGE_REQUIREMENT = os.environ.get("COVERAGE_REQUIREMENT") or "coverage==7.5.1"
 SALT_REQUIREMENT = os.environ.get("SALT_REQUIREMENT") or "salt>={{ salt_version }}"
 if SALT_REQUIREMENT == "salt==master":
     SALT_REQUIREMENT = "git+https://github.com/saltstack/salt.git@master"
@@ -90,7 +90,7 @@ def _install_requirements(
         session.install("--progress-bar=off", "wheel", silent=PIP_INSTALL_SILENT)
         if install_coverage_requirements:
             session.install(
-                "--progress-bar=off", COVERAGE_VERSION_REQUIREMENT, silent=PIP_INSTALL_SILENT
+                "--progress-bar=off", COVERAGE_REQUIREMENT, silent=PIP_INSTALL_SILENT
             )
 
         if install_salt:
@@ -144,6 +144,19 @@ def tests(session):
         # Instruct sub processes to also run under coverage
         "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
     }
+
+{%- if container_tests %}
+
+    # Support running functional/integration tests under Podman rootless.
+    # The user must have enabled the listening socket via systemctl --user start podman.socket
+    if not CI_RUN and sys.platform.startswith("linux"):
+        uid = os.getuid()
+        if uid != 0:
+            runtime_dir = Path(os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{uid}"))
+            podman_sock = runtime_dir / "podman" / "podman.sock"
+            if podman_sock.exists():
+                env["DOCKER_HOST"] = f"unix:{podman_sock}"
+{%- endif %}
 
     session.run("coverage", "erase")
     args = [

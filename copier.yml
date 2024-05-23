@@ -196,6 +196,11 @@ ssh_fixtures:
   default: '{{ "wrapper" in loaders }}'
   when: '{{ "wrapper" not in loaders }}'
 
+test_containers:
+  type: bool
+  help: Add support for test containers in functional/integration tests
+  default: false
+
 workflows:
   type: str
   help: Choose which workflow style to create
