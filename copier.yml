@@ -244,6 +244,20 @@ project_name_full:
     {{- project_name }}
     {%- endif %}
 
+# ========================================
+# | Migrations between template versions |
+# ========================================
+
+_migrations:
+  - version: 0.3.0
+    before:
+      # The minimum Python version was raised from 3.7 to 3.8. If the default answer
+      # is not changed before rendering the template, it fails.
+      - >
+          awk '/^python_requires:/ {sub("3.7", "3.8")}1' {{ _copier_conf.answers_file }} >
+          {{ _copier_conf.answers_file }}.tmp &&
+          mv {{ _copier_conf.answers_file }}.tmp {{ _copier_conf.answers_file }}
+
 # =====================================
 # | Copier settings for this template |
 # =====================================
