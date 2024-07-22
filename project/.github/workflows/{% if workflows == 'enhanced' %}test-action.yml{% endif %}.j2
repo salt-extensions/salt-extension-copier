@@ -136,13 +136,13 @@ jobs:
       if: always()
       run: |
         mkdir exitstatus
-        echo "${{ job.status }}" > exitstatus/${{ github.job }}-Py{{ matrix.python-version }}-Salt{{ matrix.salt-version }}
+        echo "${{ job.status }}" > exitstatus/${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
 
     - name: Upload Exit Status
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: exitstatus-${{ github.job }}-Py{{ matrix.python-version }}-Salt{{ matrix.salt-version }}
+        name: exitstatus-${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
         path: exitstatus
         if-no-files-found: error
 
@@ -289,13 +289,13 @@ jobs:
       if: always()
       run: |
         mkdir exitstatus
-        echo "${{ job.status }}" > exitstatus/${{ github.job }}-Py{{ matrix.python-version }}-Salt{{ matrix.salt-version }}
+        echo "${{ job.status }}" > exitstatus/${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
 
     - name: Upload Exit Status
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: exitstatus-${{ github.job }}-Py{{ matrix.python-version }}-Salt{{ matrix.salt-version }}
+        name: exitstatus-${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
         path: exitstatus
         if-no-files-found: error
 
@@ -435,13 +435,13 @@ jobs:
       if: always()
       run: |
         mkdir exitstatus
-        echo "${{ job.status }}" > exitstatus/${{ github.job }}-Py{{ matrix.python-version }}-Salt{{ matrix.salt-version }}
+        echo "${{ job.status }}" > exitstatus/${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
 
     - name: Upload Exit Status
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: exitstatus-${{ github.job }}-Py{{ matrix.python-version }}-Salt{{ matrix.salt-version }}
+        name: exitstatus-${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
         path: exitstatus
         if-no-files-found: error
 {%- endraw %}
