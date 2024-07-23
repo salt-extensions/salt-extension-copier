@@ -1,7 +1,6 @@
 import logging
 import os
 {%- if ssh_fixtures %}
-import pwd
 import shutil
 from pathlib import Path
 {%- endif %}
@@ -9,11 +8,18 @@ from pathlib import Path
 import pytest
 {%- if ssh_fixtures %}
 import salt.utils.platform
-import salt.utils.win_functions
 {%- endif %}
 from saltfactories.utils import random_string
 
 from {{ namespaced_package_pkg }} import PACKAGE_ROOT
+
+{%- if ssh_fixtures %}
+
+try:
+    import pwd
+except ImportError:
+    import salt.utils.win_functions
+{%- endif %}
 
 # Reset the root logger to its default level(because salt changed it)
 logging.root.setLevel(logging.WARNING)
