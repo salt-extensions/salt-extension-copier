@@ -125,7 +125,21 @@ def sshd_server(salt_factories, sshd_config_dir):
 
 
 @pytest.fixture(scope="module")
-def salt_ssh_roster_file(sshd_server, master, current_user):
+def known_hosts_file(sshd_server, master, salt_factories):
+    with pytest.helpers.temp_file(
+        "ssh-known-hosts",
+        "\n".join(sshd_server.get_host_keys()),
+        salt_factories.tmp_root_dir,
+    ) as known_hosts_file, pytest.helpers.temp_file(
+        "master.d/ssh-known-hosts.conf",
+        f"known_hosts_file: {known_hosts_file}",
+        master.config_dir,
+    ):
+        yield known_hosts_file
+
+
+@pytest.fixture(scope="module")
+def salt_ssh_roster_file(sshd_server, master, known_hosts_file):  # pylint: disable=unused-argument
     roster_contents = f"""
     localhost:
       host: 127.0.0.1
@@ -134,6 +148,7 @@ def salt_ssh_roster_file(sshd_server, master, current_user):
     """
     if salt.utils.platform.is_darwin():
         roster_contents += "  set_path: $PATH:/usr/local/bin/\n"
+
     with pytest.helpers.temp_file("roster", roster_contents, master.config_dir) as roster_file:
         yield roster_file
 
