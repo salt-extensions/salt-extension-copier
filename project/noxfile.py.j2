@@ -89,9 +89,7 @@ def _install_requirements(
         # Always have the wheel package installed
         session.install("--progress-bar=off", "wheel", silent=PIP_INSTALL_SILENT)
         if install_coverage_requirements:
-            session.install(
-                "--progress-bar=off", COVERAGE_REQUIREMENT, silent=PIP_INSTALL_SILENT
-            )
+            session.install("--progress-bar=off", COVERAGE_REQUIREMENT, silent=PIP_INSTALL_SILENT)
 
         if install_salt:
             session.install("--progress-bar=off", SALT_REQUIREMENT, silent=PIP_INSTALL_SILENT)
