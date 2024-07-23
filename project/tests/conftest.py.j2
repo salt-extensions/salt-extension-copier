@@ -139,7 +139,9 @@ def known_hosts_file(sshd_server, master, salt_factories):
 
 
 @pytest.fixture(scope="module")
-def salt_ssh_roster_file(sshd_server, master, known_hosts_file):  # pylint: disable=unused-argument
+def salt_ssh_roster_file(
+    sshd_server, master, known_hosts_file, current_user
+):  # pylint: disable=unused-argument
     roster_contents = f"""
     localhost:
       host: 127.0.0.1
