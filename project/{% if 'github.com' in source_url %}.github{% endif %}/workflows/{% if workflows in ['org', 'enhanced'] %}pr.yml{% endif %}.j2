@@ -26,4 +26,4 @@ jobs:
       pull-requests: read
     with:
 {%- endraw %}
-      deploy-docs: {{ deploy_docs == "rolling" | string | lower }}
+      deploy-docs: {{ (deploy_docs == "rolling") | lower }}

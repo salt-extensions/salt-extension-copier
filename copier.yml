@@ -212,7 +212,7 @@ test_containers:
 workflows:
   type: str
   help: Choose which workflow style to create
-  default: basic
+  default: '{{ "org" if "github.com/salt-extensions/" in source_url else "enhanced" }}'
   choices:
     basic (== official creation tool): basic
     enhanced (~ organization, but local): enhanced

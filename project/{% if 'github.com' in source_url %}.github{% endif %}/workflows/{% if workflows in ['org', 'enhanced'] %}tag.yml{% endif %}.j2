@@ -30,7 +30,7 @@ jobs:
     uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
     with:
 {%- endraw %}
-      deploy-docs: {{ deploy_docs in ["rolling", "release"] | string | lower }}
+      deploy-docs: {{ (deploy_docs in ["rolling", "release"]) | lower }}
 {%- raw %}
       release: true
       version: ${{ needs.get_tag_version.outputs.version }}
