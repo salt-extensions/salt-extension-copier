@@ -1,10 +1,10 @@
-# Salt Extension for {{ project_name | capitalize }}
+# Salt Extension for {{ integration_name or project_name.replace("-", " ").title() }}
 
 {{ summary }}
 
 ## Security
 
-If you think you've found a security vulnerability, see
+If you think you have found a security vulnerability, see
 [Salt's security guide][security].
 
 ## User Documentation
@@ -61,18 +61,20 @@ these areas:
 
 * Documentation - especially examples of how to use this module to solve
   specific problems.
-* Triaging [issues][issues] and participating in [discussions][discussions]
+* Triaging [issues][issues]{%- if "github.com" in source_url %} and participating in [discussions][discussions]{%- endif %}
+{%- if "github.com" in source_url %}
 * Reviewing [Pull Requests][PRs] (we really like
   [Conventional Comments][comments]!)
+{%- endif %}
 
 You could also contribute in other ways:
 
 * Writing blog posts
-* Posting on social media about how you used Salt+{{ project_name | capitalize }} to solve your
+* Posting on social media about how you used Salt + {{ integration_name or project_name.replace("-", " ").title() }} to solve your
   problems, including videos
 * Giving talks at conferences
 * Publishing videos
-* Asking/answering questions in IRC, Slack, or email groups
+* Asking/answering questions in IRC, Discord or email groups
 
 Any of these things are super valuable to our community, and we sincerely
 appreciate every contribution!
@@ -87,7 +89,7 @@ that's where you'll find the rest of the documentation.
 {%- if tracker_url %}
 [issues]: {{ tracker_url }}
 {%- endif %}
-{%- if "github.com" in source_url.rstrip("/") %}
+{%- if "github.com" in source_url %}
 [PRs]: {{ source_url }}/pulls
 [discussions]: {{ source_url.rstrip("/") }}/discussions
 {%- endif %}
