@@ -218,6 +218,19 @@ workflows:
     enhanced (~ organization, but local): enhanced
     organization (rely on centralized artifacts from salt-extensions org): org
 
+deploy_docs:
+  type: str
+  help: >-
+    When to automatically deploy CI built docs to GitHub Pages.
+    Does not support versioned docs currently.
+    Requires Settings > Pages > Build and deployment source to be `GitHub Actions`.
+  default: never
+  choices:
+    never: never
+    when tagging a release: release
+    all events on `main` (rolling): rolling
+  when: '{{ "github.com" in source_url and workflows != "basic" }}'
+
 coc_contact:
   type: str
   help: Optionally provide a contact for Code of Conduct violation reports.

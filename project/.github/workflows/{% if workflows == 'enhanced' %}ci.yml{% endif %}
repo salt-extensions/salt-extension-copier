@@ -3,6 +3,10 @@ name: CI
 on:
   workflow_call:
     inputs:
+      deploy-docs:
+        required: false
+        type: boolean
+        default: false
       release:
         required: false
         type: boolean
@@ -51,6 +55,18 @@ jobs:
     needs:
       - pre-commit
     uses: ./.github/workflows/docs-action.yml
+
+  deploy-docs:
+    name: Deploy Docs
+    uses: ./.github/workflows/deploy-docs-action.yml
+    # Only build doc deployments from the main branch of the org repo and never for PRs.
+    if: >
+      ${{ inputs.deploy-docs &&
+          github.ref == 'refs/heads/main' &&
+          github.event_name != 'pull_request'
+      }}
+    needs:
+      - docs
 
   build-python-package:
     name: Python Package

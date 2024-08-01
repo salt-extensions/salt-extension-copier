@@ -1,0 +1,29 @@
+name: Pull Request or Push
+{%- set base = "." %}
+{%- set suffix = "" %}
+{%- if workflows == "org" %}
+{%-   set base = "salt-extensions/central-artifacts" %}
+{%-   set suffix = "@main" %}
+{%- endif %}
+{%- raw %}
+
+on:
+  push:
+    branches:
+      - 'main'  # Run on pushes to main
+    tags-ignore:
+      - '*'   # Ignore pushes to tags
+  pull_request:
+
+jobs:
+  call_central_workflow:
+    name: CI
+{%- endraw %}
+    uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
+{%- raw %}
+    permissions:
+      contents: write
+      pull-requests: read
+    with:
+{%- endraw %}
+      deploy-docs: {{ deploy_docs == "rolling" | string | lower }}
