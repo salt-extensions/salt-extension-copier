@@ -313,7 +313,7 @@ _subdirectory: project
 # Don't offer updates to implementation-specific files
 _skip_if_exists:
   - tests/**/test_*.py
-  - src/
+  - src/**/*_mod.py
 
 # Ensure we're compatible with the official tool
 _templates_suffix: j2
