@@ -29,12 +29,20 @@ author_email:
     Does not look like a valid email address
     {%- endif -%}
 
+integration_name:
+  type: str
+  help: >
+    The full name of the integrated service. If this extension does not
+    integrate one, just leave this empty.
+  placeholder: HashiCorp Vault
+  default: '{{ project_name.replace("-", " ").title() }}'
+
 summary:
   type: str
   help: A summary for project metadata and the readme
   default: >-
     Salt Extension for interacting with
-    {{ project_name.replace("-", " ").title() }}
+    {{ integration_name or project_name.replace("-", " ").title() }}
 
 url:
   type: str
@@ -209,6 +217,11 @@ workflows:
     basic (== official creation tool): basic
     enhanced (~ organization, but local): enhanced
     organization (rely on centralized artifacts from salt-extensions org): org
+
+coc_contact:
+  type: str
+  help: Optionally provide a contact for Code of Conduct violation reports.
+  default: ''
 
 # ===========================================
 # | Computed values for less ugly templates |
