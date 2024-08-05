@@ -1,4 +1,11 @@
 name: Tagged Releases
+{%- set base = "." %}
+{%- set suffix = "" %}
+{%- if workflows == "org" %}
+{%-   set base = "salt-extensions/central-artifacts" %}
+{%-   set suffix = "@main" %}
+{%- endif %}
+{%- raw %}
 
 on:
   push:
@@ -20,8 +27,11 @@ jobs:
 
   call_central_workflow:
     needs: get_tag_version
-    uses: salt-extensions/central-artifacts/.github/workflows/ci.yml@main
+    uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
     with:
+{%- endraw %}
+      deploy-docs: {{ (deploy_docs in ["rolling", "release"]) | lower }}
+{%- raw %}
       release: true
       version: ${{ needs.get_tag_version.outputs.version }}
     permissions:
@@ -29,3 +39,4 @@ jobs:
       id-token: write
       pull-requests: read
     secrets: inherit
+{%- endraw %}
