@@ -42,10 +42,10 @@ dist = distribution("{{ package_namespace_pkg }}{{ project_name }}")
 
 # -- Project information -----------------------------------------------------
 this_year = datetime.datetime.today().year
-if this_year == 2021:
-    copyright_year = 2021
+if this_year == {{ copyright_begin }}:
+    copyright_year = "{{ copyright_begin }}"
 else:
-    copyright_year = f"2021 - {this_year}"
+    copyright_year = f"{{ copyright_begin }} - {this_year}"
 project = dist.metadata["Summary"]
 author = dist.metadata.get("Author")
 

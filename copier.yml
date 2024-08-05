@@ -240,6 +240,13 @@ coc_contact:
   help: Optionally provide a contact for Code of Conduct violation reports.
   default: ''
 
+copyright_begin:
+  help: Copyright range beginning year
+  type: int
+  default: '{{ "%Y" | strftime }}'
+  # Cannot use when: false to set this once automatically during
+  # creation since the value is not recorded then.
+
 # ===========================================
 # | Computed values for less ugly templates |
 # ===========================================
@@ -314,7 +321,6 @@ _templates_suffix: j2
 # We need those extensions as helpers
 _jinja_extensions:
   - copier_templates_extensions.TemplateExtensionLoader
-  - jinja_extensions/saltext.py:Year
   - jinja_extensions/saltext.py:YamlDumper
   - jinja_extensions/saltext.py:SaltExt
   - jinja2.ext.do
