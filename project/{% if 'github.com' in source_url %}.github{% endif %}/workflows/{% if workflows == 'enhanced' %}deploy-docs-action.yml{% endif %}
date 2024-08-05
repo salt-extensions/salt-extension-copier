@@ -60,3 +60,17 @@ jobs:
         with:
           name: html-docs-pages
           failOnError: false
+
+      - name: Set Exit Status
+        if: always()
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > exitstatus/${{ github.job }}
+
+      - name: Upload Exit Status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exitstatus-${{ github.job }}
+          path: exitstatus
+          if-no-files-found: error
