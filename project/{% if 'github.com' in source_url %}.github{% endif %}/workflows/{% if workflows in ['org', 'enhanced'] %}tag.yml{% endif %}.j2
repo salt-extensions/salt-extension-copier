@@ -27,9 +27,9 @@ jobs:
 
   call_central_workflow:
     needs: get_tag_version
+{%- endraw %}
     uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
     with:
-{%- endraw %}
       deploy-docs: {{ (deploy_docs in ["rolling", "release"]) | lower }}
 {%- raw %}
       release: true
