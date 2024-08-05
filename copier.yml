@@ -74,14 +74,6 @@ tracker_url:
     {%- if tracker_url and "://" not in tracker_url -%}Does not look like a valid URL
     {%- endif %}
 
-docs_url:
-  type: str
-  help: The project's documentation URL (optional)
-  default: ""
-  validator: >-
-    {%- if docs_url and "://" not in docs_url -%}Does not look like a valid URL
-    {%- endif %}
-
 package_name:
   type: str
   help: The name of the Python package (without `saltext.` prefix)
@@ -230,6 +222,18 @@ deploy_docs:
     when tagging a release: release
     all events on `main` (rolling): rolling
   when: '{{ "github.com" in source_url and workflows != "basic" }}'
+
+docs_url:
+  type: str
+  help: The project's documentation URL (optional)
+  default: >-
+    {%- if deploy_docs != "never" -%}
+      {%- set repo_parts = source_url.split("github.com/")[1].split("/") -%}
+      {{- "https://{}.github.io/{}/".format(repo_parts[0], repo_parts[1]) -}}
+    {%- endif -%}
+  validator: >-
+    {%- if docs_url and "://" not in docs_url -%}Does not look like a valid URL
+    {%- endif %}
 
 coc_contact:
   type: str
