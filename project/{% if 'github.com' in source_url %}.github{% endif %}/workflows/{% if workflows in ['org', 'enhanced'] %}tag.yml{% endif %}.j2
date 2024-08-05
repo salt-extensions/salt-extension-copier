@@ -5,7 +5,6 @@ name: Tagged Releases
 {%-   set base = "salt-extensions/central-artifacts" %}
 {%-   set suffix = "@main" %}
 {%- endif %}
-{%- set deploy_docs_bool = deploy_docs in ["rolling", "release"] %}
 {%- raw %}
 
 on:
@@ -31,18 +30,14 @@ jobs:
 {%- endraw %}
     uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
     with:
-      deploy-docs: {{ deploy_docs_bool | lower }}
+      deploy-docs: {{ (deploy_docs in ["rolling", "release"]) | lower }}
 {%- raw %}
       release: true
       version: ${{ needs.get_tag_version.outputs.version }}
     permissions:
       contents: write
       id-token: write
-{%- endraw %}
-{%- if deploy_docs_bool %}
       pages: write
-{%- endif %}
-{%- raw %}
       pull-requests: read
     secrets: inherit
 {%- endraw %}
