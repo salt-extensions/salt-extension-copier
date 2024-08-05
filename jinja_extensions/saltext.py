@@ -1,5 +1,4 @@
 import copy
-from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -53,15 +52,6 @@ class SaltExt(ContextHook):
             "singular_loader_dirs": SINGULAR_LOADER_DIRS,
             "salt_latest_point": copy.deepcopy(self.slp),
         }
-
-
-class Year(ContextHook):
-    """
-    Provide the current year
-    """
-
-    def hook(self, context):
-        return {"copyright_year": datetime.now().year}
 
 
 def represent_str(dumper, data):
