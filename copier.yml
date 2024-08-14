@@ -216,7 +216,7 @@ deploy_docs:
     When to automatically deploy CI built docs to GitHub Pages.
     Does not support versioned docs currently.
     Requires Settings > Pages > Build and deployment source to be `GitHub Actions`.
-  default: never
+  default: '{{ "rolling" if "github.com/salt-extensions/" in source_url else "never" }}'
   choices:
     never: never
     when tagging a release: release
