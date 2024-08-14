@@ -209,6 +209,7 @@ workflows:
     basic (== official creation tool): basic
     enhanced (~ organization, but local): enhanced
     organization (rely on centralized artifacts from salt-extensions org): org
+  when: '{{ "github.com" in source_url }}'
 
 deploy_docs:
   type: str
