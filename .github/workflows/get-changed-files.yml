@@ -1,0 +1,35 @@
+on:
+  workflow_call:
+    outputs:
+      changed-files:
+        description: "Changed file JSON output from dorny/paths-filter"
+        value: ${{ jobs.get-changed-files.outputs.changed-files }}
+
+jobs:
+  get-changed-files:
+    name: Get Changed Files
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read  # for dorny/paths-filter to fetch a list of changed files
+      pull-requests: read  # for dorny/paths-filter to read pull requests
+    outputs:
+      changed-files: ${{ toJSON(steps.changed-files.outputs) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: dorny/paths-filter@v3
+        with:
+          token: ${{ github.token }}
+          list-files: escape
+          filters: |
+            repo:
+              - added|modified:
+                - '**'
+            deleted:
+              - deleted:
+                - '**'
+
+      - name: Echo Changed Files Output
+        run: echo "${{ toJSON(steps.changed-files.outputs) }}"

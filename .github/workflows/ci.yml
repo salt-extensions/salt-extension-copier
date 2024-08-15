@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  workflow_call
+
+
+jobs:
+  get-changed-files:
+    name: Get Changed Files
+    uses: ./.github/workflows/get-changed-files.yml
+
+  changed-files-debug:
+    name: Changed Files Debug Output
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - get-changed-files
+    steps:
+      - name: Echo Changed Files Output
+        run: echo "${{ toJSON(needs.get-changed-files.outputs.changed-files) }}"
+
+  pre-commit:
+    name: Pre-Commit
+    uses: ./.github/workflows/pre-commit-action.yml
+    needs:
+      - get-changed-files
+    with:
+      changed-files: ${{ needs.get-changed-files.outputs.changed-files }}
+
+  test:
+    name: Test
+    needs:
+      - pre-commit
+    uses: ./.github/workflows/test-action.yml
+
+  set-pipeline-exit-status:
+    # This step is just so we can make github require this step, to pass checks
+    # on a pull request instead of requiring all
+    name: Set the CI Pipeline Exit Status
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - test
+    steps:
+    - name: Download Exit Status Files
+      if: always()
+      uses: actions/download-artifact@v4
+      with:
+        path: exitstatus
+        pattern: exitstatus-*
+        merge-multiple: true
+
+    - name: Delete Exit Status Artifacts
+      if: always()
+      uses: geekyeggo/delete-artifact@v5
+      with:
+        name: exitstatus-*
+        useGlob: true
+        failOnError: false
+
+    - name: Set Pipeline Exit Status
+      run: |
+        tree exitstatus
+        grep -RE 'failure|cancelled' exitstatus/ && exit 1 || exit 0
+
+    - name: Done
+      if: always()
+      run:
+        echo "All workflows finished"

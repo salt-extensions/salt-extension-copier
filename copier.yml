@@ -9,7 +9,7 @@ project_name:
     {%- if not project_name %}
     Project name cannot be empty.
     {%- endif %}
-    {%- if not (project_name | regex_search("^[a-z][a-z0-9\-]+$")) %}
+    {%- if not (project_name | regex_search("^[a-z][a-z0-9\\-]+$")) %}
     Must start with [a-z], followed by at least one of [a-z0-9\-] (lowercase!)
     {%- endif %}
 
@@ -25,7 +25,7 @@ author_email:
   placeholder: elliotalderson@protonmail.ch
   validator: >-
     {%- if not author_email -%}Email cannot be empty
-    {%- elif not author_email | regex_search("[\S]+@[^\.\s]+") -%}
+    {%- elif not author_email | regex_search("[\\S]+@[^\\.\\s]+") -%}
     Does not look like a valid email address
     {%- endif -%}
 
@@ -300,6 +300,15 @@ _migrations:
           awk '/^python_requires:/ {sub("3.7", "3.8")}1' {{ _copier_conf.answers_file }} >
           {{ _copier_conf.answers_file }}.tmp &&
           mv {{ _copier_conf.answers_file }}.tmp {{ _copier_conf.answers_file }}
+
+# Once we require copier>=9.3.0, we can migrate to the new syntax:
+# _migrations:
+#   - version: 0.3.0
+#     when: '{{ _stage == "before" }}'
+#     command: >-
+#       awk '/^python_requires:/ {sub("3.7", "3.8")}1' {{ _copier_conf.answers_file }} >
+#       {{ _copier_conf.answers_file }}.tmp &&
+#       mv {{ _copier_conf.answers_file }}.tmp {{ _copier_conf.answers_file }}
 
 # =====================================
 # | Copier settings for this template |
