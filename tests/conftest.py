@@ -74,13 +74,16 @@ def project(answers, request, copie):
     assert res.exception is None
     assert res.project_dir.is_dir()
 
-    with local.cwd(res.project_dir):
+    yield res.project_dir
+
+
+def project_committed(project):
+    with local.cwd(project):
         git = local["git"]["-c", "commit.gpgsign=false"]
         git("init")
         git("add", ".")
         git("commit", "-m", "initial commit")
-
-    yield res.project_dir
+    return project
 
 
 @pytest.fixture

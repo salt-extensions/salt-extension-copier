@@ -31,6 +31,7 @@ def test_copy_works(copie, answers):
     _assert_worked(res)
 
 
+@pytest.mark.usefixtures("project_committed")
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 @pytest.mark.parametrize("project", ("0.0.2",), indirect=True)
 @pytest.mark.parametrize("source_url", ("org", "non_org", "non_github"), indirect=True)
@@ -41,34 +42,32 @@ def test_update_from_002_works(copie, project):
     assert new_file.exists()
 
 
-def test_first_commit_works(copie, answers):
+def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
+    git = local["git"]["-c", "commit.gpgsign=false"]
+    venv.run("pre-commit", "install")
+    retry_count = 1
+    saved_err = None
+
+    while retry_count <= max_retry:
+        try:
+            git("add", ".")
+            git("commit", "-m", message)
+            break
+        except ProcessExecutionError as err:
+            retry_count += 1
+            saved_err = err
+    else:
+        raise saved_err
+
+
+def test_first_commit_works(project):
     """
     Ensure the generated project can be committed after generation
     with pre-commit hooks active.
     It should take at most three tries.
     """
-    res = copie.copy(extra_answers=answers)
-
-    assert res.exit_code == 0
-    assert res.exception is None
-    assert res.project_dir.is_dir()
-
-    with ProjectVenv(res.project_dir) as venv, local.cwd(res.project_dir):
-        git = local["git"]["-c", "commit.gpgsign=false"]
-        venv.run("pre-commit", "install")
-        retry_count = 1
-        saved_err = None
-
-        while retry_count <= 3:
-            try:
-                git("add", ".")
-                git("commit", "-m", "initial commit")
-                break
-            except ProcessExecutionError as err:
-                retry_count += 1
-                saved_err = err
-        else:
-            raise saved_err
+    with ProjectVenv(project) as venv, local.cwd(project):
+        _commit_with_pre_commit(venv, max_retry=3)
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
@@ -86,5 +85,24 @@ def test_testsuite_works(project, project_venv):
     with local.cwd(project):
         res = project_venv.run(
             str(project_venv.venv_python), "-m", "nox", "-e", "tests-3", check=False
+        )
+    assert res.returncode == 0
+
+
+@pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
+@pytest.mark.parametrize(
+    "answers",
+    (
+        {
+            "loaders": COPIER_CONF["loaders"]["choices"],
+        },
+    ),
+    indirect=True,
+)
+def test_docs_build_works(project, project_venv):
+    with ProjectVenv(project) as venv, local.cwd(project):
+        _commit_with_pre_commit(venv, max_retry=3)
+        res = project_venv.run(
+            str(project_venv.venv_python), "-m", "nox", "-e", "docs", check=False
         )
     assert res.returncode == 0
