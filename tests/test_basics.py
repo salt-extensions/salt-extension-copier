@@ -43,8 +43,10 @@ def test_update_from_002_works(copie, project):
 
 
 def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
-    git = local["git"]["-c", "commit.gpgsign=false"]
-    venv.run("pre-commit", "install")
+    git = local["git"][
+        "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
+    ]
+    venv.run(venv.venv_python, "-m", "pre_commit", "install")
     retry_count = 1
     saved_err = None
 

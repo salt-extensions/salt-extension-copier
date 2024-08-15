@@ -77,9 +77,12 @@ def project(answers, request, copie):
     yield res.project_dir
 
 
+@pytest.fixture
 def project_committed(project):
     with local.cwd(project):
-        git = local["git"]["-c", "commit.gpgsign=false"]
+        git = local["git"][
+            "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
+        ]
         git("init")
         git("add", ".")
         git("commit", "-m", "initial commit")
