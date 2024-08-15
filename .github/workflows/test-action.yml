@@ -15,7 +15,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 2  # coverage: Issue detecting commit SHA
+        # We need the full history for update tests
+        fetch-depth: 0
+        fetch-tags: true
 
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
@@ -29,13 +31,13 @@ jobs:
 
     - name: Install Test Requirements
       run: |
-        nox --force-color -e tests-3 --install-only
+        nox --force-color -e tests --install-only
 
     - name: Test
       env:
         SKIP_REQUIREMENTS_INSTALL: true
       run: |
-        nox --force-color -e tests-3 -- -vv tests/
+        nox --force-color -e tests -- -vv tests/
 
     # - name: Create CodeCov Flags
     #   if: always()
