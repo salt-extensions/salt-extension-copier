@@ -47,10 +47,15 @@ repos:
           - --line-length=100
           - --target-version=py38
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 6.1.0
+  - repo: https://github.com/saltstack/mirrors-nox
+    rev: v2022.11.21
     hooks:
-      - id: flake8
-        name: Lint Python code with flake8
+      - id: nox
+        alias: lint-tests
+        name: Lint Tests
+        files: ^tests/.*\.py$
+        require_serial: true
         args:
-          - --max-line-length=100
+          - -e
+          - lint-tests-pre-commit
+          - --
