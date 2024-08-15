@@ -1,0 +1,17 @@
+name: Pull Request or Push
+
+on:
+  push:
+    branches:
+      - 'main'  # Run on pushes to main
+    tags-ignore:
+      - '*'   # Ignore pushes to tags
+  pull_request:
+
+jobs:
+  call_central_workflow:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+    permissions:
+      contents: write
+      pull-requests: read
