@@ -1,0 +1,52 @@
+name: Build Documentation
+
+on:
+  workflow_call:
+
+jobs:
+  Docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12 For Nox
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install nox
+
+      - name: Install Doc Requirements
+        run: |
+          nox --force-color -e docs --install-only
+
+      - name: Build Docs
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e docs
+
+      - name: Upload built docs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-docs
+          path: docs/_build/html
+
+      - name: Set Exit Status
+        if: always()
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > exitstatus/${{ github.job }}
+
+      - name: Upload Exit Status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exitstatus-${{ github.job }}
+          path: exitstatus
+          if-no-files-found: error

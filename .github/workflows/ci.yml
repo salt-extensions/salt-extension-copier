@@ -33,6 +33,23 @@ jobs:
       - pre-commit
     uses: ./.github/workflows/test-action.yml
 
+  docs:
+    name: Docs
+    needs:
+      - pre-commit
+    uses: ./.github/workflows/docs-action.yml
+
+  deploy-docs:
+    name: Deploy Docs
+    uses: ./.github/workflows/deploy-docs-action.yml
+    # Only build doc deployments from the main branch of the org repo and never for PRs.
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main'
+    needs:
+      - docs
+      - test
+
   set-pipeline-exit-status:
     # This step is just so we can make github require this step, to pass checks
     # on a pull request instead of requiring all
@@ -41,29 +58,30 @@ jobs:
     if: always()
     needs:
       - test
+      - docs
     steps:
-    - name: Download Exit Status Files
-      if: always()
-      uses: actions/download-artifact@v4
-      with:
-        path: exitstatus
-        pattern: exitstatus-*
-        merge-multiple: true
+      - name: Download Exit Status Files
+        if: always()
+        uses: actions/download-artifact@v4
+        with:
+          path: exitstatus
+          pattern: exitstatus-*
+          merge-multiple: true
 
-    - name: Delete Exit Status Artifacts
-      if: always()
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: exitstatus-*
-        useGlob: true
-        failOnError: false
+      - name: Delete Exit Status Artifacts
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: exitstatus-*
+          useGlob: true
+          failOnError: false
 
-    - name: Set Pipeline Exit Status
-      run: |
-        tree exitstatus
-        grep -RE 'failure|cancelled' exitstatus/ && exit 1 || exit 0
+      - name: Set Pipeline Exit Status
+        run: |
+          tree exitstatus
+          grep -RE 'failure|cancelled' exitstatus/ && exit 1 || exit 0
 
-    - name: Done
-      if: always()
-      run:
-        echo "All workflows finished"
+      - name: Done
+        if: always()
+        run:
+          echo "All workflows finished"

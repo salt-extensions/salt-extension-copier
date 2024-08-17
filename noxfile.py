@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,import-error,protected-access,missing-function-docstring
 import datetime
+import json
 import os
 import pathlib
 import shutil
@@ -43,6 +44,19 @@ COVERAGE_REPORT_TESTS = ARTIFACTS_DIR.relative_to(REPO_ROOT) / "coverage-tests"
 
 
 DEV_REQUIREMENTS = ("pylint",)
+
+DOCS_REQUIREMENTS = (
+    "sphinx",
+    "sphinxcontrib-spelling",
+    "sphinx-copybutton",
+    "myst_parser",
+    "furo",
+    "sphinx-inline-tabs",
+    "towncrier==22.12.0",
+    "sphinxcontrib-towncrier",
+)
+
+DOCSAUTO_REQUIREMENTS = ("sphinx-autobuild",)
 
 TESTS_REQUIREMENTS = (
     "copier>=9.1",
@@ -258,3 +272,100 @@ def lint_tests_pre_commit(session):
     else:
         paths = ["tests/"]
     _lint_pre_commit(session, ".pylintrc", flags, paths)
+
+
+@nox.session
+def docs(session):
+    """
+    Build Docs
+    """
+    _install_requirements(
+        session,
+        *DOCS_REQUIREMENTS,
+    )
+    os.chdir("docs/")
+    session.run("make", "clean", external=True)
+    session.run("make", "linkcheck", "SPHINXOPTS=-W", external=True)
+    session.run("make", "html", "SPHINXOPTS=-W", external=True)
+    os.chdir(str(REPO_ROOT))
+
+
+@nox.session(name="docs-html")
+@nox.parametrize("clean", [False, True])
+@nox.parametrize("include_api_docs", [False, True])
+def docs_html(session, clean, include_api_docs):
+    """
+    Build Sphinx HTML Documentation
+
+    TODO: Add option for `make linkcheck` and `make coverage`
+          calls via Sphinx. Ran into problems with two when
+          using Furo theme and latest Sphinx.
+    """
+    _install_requirements(
+        session,
+        *DOCS_REQUIREMENTS,
+    )
+    build_dir = pathlib.Path("docs", "_build", "html")
+    sphinxopts = "-Wn"
+    if clean:
+        sphinxopts += "E"
+    args = [sphinxopts, "--keep-going", "docs", str(build_dir)]
+    session.run("sphinx-build", *args, external=True)
+
+
+@nox.session(name="docs-dev")
+@nox.parametrize("clean", [False, True])
+def docs_dev(session, clean) -> None:
+    """
+    Build and serve the Sphinx HTML documentation, with live reloading on file changes, via sphinx-autobuild.
+
+    Note: Only use this in INTERACTIVE DEVELOPMENT MODE. This SHOULD NOT be called
+        in CI/CD pipelines, as it will hang.
+    """
+    _install_requirements(
+        session,
+        *DOCS_REQUIREMENTS,
+        *DOCSAUTO_REQUIREMENTS,
+    )
+
+    # Launching LIVE reloading Sphinx session
+    build_dir = pathlib.Path("docs", "_build", "html")
+    args = ["--watch", ".", "--open-browser", "docs", str(build_dir)]
+    if clean and build_dir.exists():
+        shutil.rmtree(build_dir)
+
+    session.run("sphinx-autobuild", *args)
+
+
+@nox.session(name="docs-crosslink-info")
+def docs_crosslink_info(session):
+    """
+    Report intersphinx cross links information
+    """
+    _install_requirements(
+        session,
+        install_extras=["docs"],
+    )
+    os.chdir("docs/")
+    intersphinx_mapping = json.loads(
+        session.run(
+            "python",
+            "-c",
+            "import json; import conf; print(json.dumps(conf.intersphinx_mapping))",
+            silent=True,
+            log=False,
+        )
+    )
+    intersphinx_mapping_list = ", ".join(list(intersphinx_mapping))
+    try:
+        mapping_entry = intersphinx_mapping[session.posargs[0]]
+    except IndexError:
+        session.error(
+            f"You need to pass at least one argument whose value must be one of: {intersphinx_mapping_list}"
+        )
+    except KeyError:
+        session.error(f"Only acceptable values for first argument are: {intersphinx_mapping_list}")
+    session.run(
+        "python", "-m", "sphinx.ext.intersphinx", mapping_entry[0].rstrip("/") + "/objects.inv"
+    )
+    os.chdir(str(REPO_ROOT))
