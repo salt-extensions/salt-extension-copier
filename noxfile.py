@@ -328,9 +328,20 @@ def docs_dev(session, clean) -> None:
         *DOCSAUTO_REQUIREMENTS,
     )
 
-    # Launching LIVE reloading Sphinx session
     build_dir = pathlib.Path("docs", "_build", "html")
-    args = ["--watch", ".", "--open-browser", "docs", str(build_dir)]
+    # Allow specifying sphinx-autobuild options, like --host.
+    args = ["--watch", "."] + session.posargs
+    for arg in args:
+        if arg.startswith("--host"):
+            break
+    else:
+        # If the user is overriding the host to something other than localhost,
+        # it's likely they are rendering on a remote/headless system and don't
+        # want the browser to open.
+        args.append("--open-browser")
+
+    args += ["docs", str(build_dir)]
+
     if clean and build_dir.exists():
         shutil.rmtree(build_dir)
 
