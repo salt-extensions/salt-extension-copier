@@ -1,3 +1,4 @@
+---
 name: Testing
 
 on:
@@ -13,121 +14,121 @@ jobs:
       max-parallel: 5
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        # We need the full history for update tests
-        fetch-depth: 0
-        fetch-tags: true
+      - uses: actions/checkout@v4
+        with:
+          # We need the full history for update tests
+          fetch-depth: 0
+          fetch-tags: true
 
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
 
-    - name: Install Nox
-      run: |
-        python -m pip install --upgrade pip
-        pip install nox
+      - name: Install Nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install nox
 
-    - name: Install Test Requirements
-      run: |
-        nox --force-color -e tests --install-only
+      - name: Install Test Requirements
+        run: |
+          nox --force-color -e tests --install-only
 
-    - name: Test
-      env:
-        SKIP_REQUIREMENTS_INSTALL: true
-      run: |
-        nox --force-color -e tests -- -vv tests/
+      - name: Test
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e tests -- -vv tests/
 
-    # - name: Create CodeCov Flags
-    #   if: always()
-    #   id: codecov-flags
-    #   run: |
-    #     echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
+      # - name: Create CodeCov Flags
+      #   if: always()
+      #   id: codecov-flags
+      #   run: |
+      #     echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
-    # - name: Upload Project Code Coverage
-    #   if: always()
-    #   continue-on-error: true
-    #   shell: bash
-    #   env:
-    #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    #     REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},project
-    #     REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-    #     REPORT_PATH: artifacts/coverage-project.xml
-    #   run: |
-    #     if [ ! -f codecov.sh ]; then
-    #       n=0
-    #       until [ "$n" -ge 5 ]
-    #       do
-    #       if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-    #           break
-    #       fi
-    #         n=$((n+1))
-    #         sleep 15
-    #       done
-    #     fi
-    #     if [ -f codecov.sh ]; then
-    #       n=0
-    #       until [ "$n" -ge 5 ]
-    #       do
-    #         if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-    #             break
-    #         fi
-    #         n=$((n+1))
-    #         sleep 15
-    #       done
-    #     fi
+      # - name: Upload Project Code Coverage
+      #   if: always()
+      #   continue-on-error: true
+      #   shell: bash
+      #   env:
+      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      #     REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},project
+      #     REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
+      #     REPORT_PATH: artifacts/coverage-project.xml
+      #   run: |
+      #     if [ ! -f codecov.sh ]; then
+      #       n=0
+      #       until [ "$n" -ge 5 ]
+      #       do
+      #       if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+      #           break
+      #       fi
+      #         n=$((n+1))
+      #         sleep 15
+      #       done
+      #     fi
+      #     if [ -f codecov.sh ]; then
+      #       n=0
+      #       until [ "$n" -ge 5 ]
+      #       do
+      #         if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+      #             break
+      #         fi
+      #         n=$((n+1))
+      #         sleep 15
+      #       done
+      #     fi
 
-    # - name: Upload Tests Code Coverage
-    #   if: always()
-    #   continue-on-error: true
-    #   shell: bash
-    #   env:
-    #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-    #     REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},tests
-    #     REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-    #     REPORT_PATH: artifacts/coverage-tests.xml
-    #   run: |
-    #     if [ ! -f codecov.sh ]; then
-    #       n=0
-    #       until [ "$n" -ge 5 ]
-    #       do
-    #       if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-    #           break
-    #       fi
-    #         n=$((n+1))
-    #         sleep 15
-    #       done
-    #     fi
-    #     if [ -f codecov.sh ]; then
-    #       n=0
-    #       until [ "$n" -ge 5 ]
-    #       do
-    #         if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-    #             break
-    #         fi
-    #         n=$((n+1))
-    #         sleep 15
-    #       done
-    #     fi
+      # - name: Upload Tests Code Coverage
+      #   if: always()
+      #   continue-on-error: true
+      #   shell: bash
+      #   env:
+      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      #     REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},tests
+      #     REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
+      #     REPORT_PATH: artifacts/coverage-tests.xml
+      #   run: |
+      #     if [ ! -f codecov.sh ]; then
+      #       n=0
+      #       until [ "$n" -ge 5 ]
+      #       do
+      #       if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
+      #           break
+      #       fi
+      #         n=$((n+1))
+      #         sleep 15
+      #       done
+      #     fi
+      #     if [ -f codecov.sh ]; then
+      #       n=0
+      #       until [ "$n" -ge 5 ]
+      #       do
+      #         if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+      #             break
+      #         fi
+      #         n=$((n+1))
+      #         sleep 15
+      #       done
+      #     fi
 
-    - name: Upload Logs
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: runtests-${{ runner.os }}.log
-        path: artifacts/runtests-*.log
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtests-${{ runner.os }}.log
+          path: artifacts/runtests-*.log
 
-    - name: Set Exit Status
-      if: always()
-      run: |
-        mkdir exitstatus
-        echo "${{ job.status }}" > exitstatus/${{ github.job }}
+      - name: Set Exit Status
+        if: always()
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
-    - name: Upload Exit Status
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: exitstatus-${{ github.job }}
-        path: exitstatus
-        if-no-files-found: error
+      - name: Upload Exit Status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exitstatus-${{ github.job }}
+          path: exitstatus
+          if-no-files-found: error
