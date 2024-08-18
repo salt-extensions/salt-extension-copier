@@ -1,3 +1,4 @@
+---
 name: Tagged Releases
 {%- set base = "." %}
 {%- set suffix = "" %}
@@ -23,7 +24,7 @@ jobs:
 
       - name: Extract tag name
         id: get_version
-        run: echo "version=$(echo ${GITHUB_REF#refs/tags/v})" >> $GITHUB_OUTPUT
+        run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
   call_central_workflow:
     needs: get_tag_version
