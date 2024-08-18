@@ -111,6 +111,7 @@ jobs:
     needs:
       - test
       - docs
+      - deploy-docs
       - build-python-package
       - deploy-python-package-test-pypi
       - deploy-python-package
