@@ -328,17 +328,14 @@ def docs_dev(session) -> None:
     )
 
     build_dir = pathlib.Path("docs", "_build", "html")
+
     # Allow specifying sphinx-autobuild options, like --host.
     args = ["--watch", "."] + session.posargs
-    for arg in args:
-        if arg.startswith("--host"):
-            break
-    else:
+    if not any(arg.startswith("--host") for arg in args):
         # If the user is overriding the host to something other than localhost,
         # it's likely they are rendering on a remote/headless system and don't
         # want the browser to open.
         args.append("--open-browser")
-
     args += ["docs", str(build_dir)]
 
     if build_dir.exists():
