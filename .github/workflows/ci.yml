@@ -1,3 +1,4 @@
+---
 name: CI
 
 on:
@@ -42,28 +43,28 @@ jobs:
     needs:
       - test
     steps:
-    - name: Download Exit Status Files
-      if: always()
-      uses: actions/download-artifact@v4
-      with:
-        path: exitstatus
-        pattern: exitstatus-*
-        merge-multiple: true
+      - name: Download Exit Status Files
+        if: always()
+        uses: actions/download-artifact@v4
+        with:
+          path: exitstatus
+          pattern: exitstatus-*
+          merge-multiple: true
 
-    - name: Delete Exit Status Artifacts
-      if: always()
-      uses: geekyeggo/delete-artifact@v5
-      with:
-        name: exitstatus-*
-        useGlob: true
-        failOnError: false
+      - name: Delete Exit Status Artifacts
+        if: always()
+        uses: geekyeggo/delete-artifact@v5
+        with:
+          name: exitstatus-*
+          useGlob: true
+          failOnError: false
 
-    - name: Set Pipeline Exit Status
-      run: |
-        tree exitstatus
-        grep -RE 'failure|cancelled' exitstatus/ && exit 1 || exit 0
+      - name: Set Pipeline Exit Status
+        run: |
+          tree exitstatus
+          grep -RE 'failure|cancelled' exitstatus/ && exit 1 || exit 0
 
-    - name: Done
-      if: always()
-      run:
-        echo "All workflows finished"
+      - name: Done
+        if: always()
+        run:
+          echo "All workflows finished"
