@@ -314,8 +314,7 @@ def docs_html(session, clean, include_api_docs):
 
 
 @nox.session(name="docs-dev")
-@nox.parametrize("clean", [False, True])
-def docs_dev(session, clean) -> None:
+def docs_dev(session) -> None:
     """
     Build and serve the Sphinx HTML documentation, with live reloading on file changes, via sphinx-autobuild.
 
@@ -342,7 +341,7 @@ def docs_dev(session, clean) -> None:
 
     args += ["docs", str(build_dir)]
 
-    if clean and build_dir.exists():
+    if build_dir.exists():
         shutil.rmtree(build_dir)
 
     session.run("sphinx-autobuild", *args)
