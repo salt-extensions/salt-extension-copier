@@ -2,10 +2,7 @@ import pytest
 from plumbum import ProcessExecutionError
 from plumbum import local
 
-from tests.helpers.copier_hlp import load_copier_yaml
 from tests.helpers.venv import ProjectVenv
-
-COPIER_CONF = load_copier_yaml()
 
 pytestmark = [
     pytest.mark.usefixtures(
@@ -13,7 +10,9 @@ pytestmark = [
         "author_email",
         "project_name",
         "no_saltext_namespace",
+        "loaders",
         "source_url",
+        "workflows",
     ),
 ]
 
@@ -62,6 +61,8 @@ def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
         raise saved_err
 
 
+# We need to test both org and enhanced workflows (with actionlint/shellcheck)
+@pytest.mark.parametrize("source_url", ("org", "non_org"), indirect=True)
 def test_first_commit_works(project):
     """
     Ensure the generated project can be committed after generation
@@ -77,7 +78,6 @@ def test_first_commit_works(project):
     "answers",
     (
         {
-            "loaders": COPIER_CONF["loaders"]["choices"],
             "test_containers": True,
         },
     ),
@@ -92,15 +92,6 @@ def test_testsuite_works(project, project_venv):
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
-@pytest.mark.parametrize(
-    "answers",
-    (
-        {
-            "loaders": COPIER_CONF["loaders"]["choices"],
-        },
-    ),
-    indirect=True,
-)
 def test_docs_build_works(project, project_venv):
     with ProjectVenv(project) as venv, local.cwd(project):
         _commit_with_pre_commit(venv, max_retry=3)

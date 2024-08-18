@@ -85,7 +85,7 @@ jobs:
             n=0
             until [ "$n" -ge 5 ]
             do
-              if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
                   break
               fi
               n=$((n+1))
@@ -118,7 +118,7 @@ jobs:
             n=0
             until [ "$n" -ge 5 ]
             do
-              if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
                   break
               fi
               n=$((n+1))
@@ -176,12 +176,14 @@ jobs:
 
       - name: Download libeay32.dll
         run: |
-          export PY_LOC=$(which python.exe)
-          echo ${PY_LOC}
-          export PY_DIR=$(dirname ${PY_LOC})
-          echo ${PY_DIR}
-          curl https://repo.saltproject.io/windows/dependencies/64/libeay32.dll --output ${PY_DIR}/libeay32.dll
-          ls -l ${PY_DIR}
+          PY_LOC="$(which python.exe)"
+          export PY_LOC
+          echo "${PY_LOC}"
+          PY_DIR="$(dirname "${PY_LOC}")"
+          export PY_DIR
+          echo "${PY_DIR}"
+          curl https://repo.saltproject.io/windows/dependencies/64/libeay32.dll --output "${PY_DIR}/libeay32.dll"
+          ls -l "${PY_DIR}"
         shell: bash
 
       - name: Install Nox
@@ -238,7 +240,7 @@ jobs:
             n=0
             until [ "$n" -ge 5 ]
             do
-              if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
                   break
               fi
               n=$((n+1))
@@ -271,7 +273,7 @@ jobs:
             n=0
             until [ "$n" -ge 5 ]
             do
-              if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
                   break
               fi
               n=$((n+1))
@@ -384,7 +386,7 @@ jobs:
             n=0
             until [ "$n" -ge 5 ]
             do
-              if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
                   break
               fi
               n=$((n+1))
@@ -417,7 +419,7 @@ jobs:
             n=0
             until [ "$n" -ge 5 ]
             do
-              if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
+              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
                   break
               fi
               n=$((n+1))

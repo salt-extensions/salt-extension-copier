@@ -35,6 +35,11 @@ def author_email(request):
     return getattr(request, "param", "foo@b.ar")
 
 
+@pytest.fixture
+def loaders(copier_yaml, request):
+    return getattr(request, "param", copier_yaml["loaders"]["choices"])
+
+
 @pytest.fixture(params=(False,))
 def no_saltext_namespace(request):
     return request.param
@@ -53,13 +58,21 @@ def source_url(project_name, request):
     raise ValueError(f"Invalid parameter for source_url: '{request.param}'")
 
 
+@pytest.fixture
+def workflows(source_url, request):
+    default = "org" if "github.com/salt-extensions/" in source_url else "enhanced"
+    return getattr(request, "param", default)
+
+
 @pytest.fixture(params=((),))
-def answers(author, author_email, no_saltext_namespace, project_name, request):
+def answers(author, author_email, loaders, no_saltext_namespace, project_name, workflows, request):
     defaults = {
         "project_name": project_name,
         "author": author,
         "author_email": author_email,
+        "loaders": loaders,
         "no_saltext_namespace": no_saltext_namespace,
+        "workflows": workflows,
     }
     defaults.update(request.param)
     return {k: v for k, v in defaults.items() if v is not None}
