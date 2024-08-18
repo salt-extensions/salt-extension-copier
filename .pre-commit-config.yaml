@@ -59,3 +59,10 @@ repos:
           - -e
           - lint-tests-pre-commit
           - --
+
+  - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
+    rev: 1ca29a1b5d949b3586800190ad6cc98317cb43b8  # v1.7.1.15
+    hooks:
+      - id: actionlint
+        additional_dependencies:
+          - shellcheck-py>=0.9.0.5
