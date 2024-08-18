@@ -128,10 +128,8 @@ def setup(app):
     app.add_crossref_type(
         directivename="question",
         rolename="question",
-        indextemplate="single: %s; ref/questions",
+        indextemplate="pair: %s; question",
     )
-    return {"parallel_read_safe": True, "parallel_write_safe": True}
-
     # Allow linking to pytest's confvals.
     app.add_object_type(
         "confval",
