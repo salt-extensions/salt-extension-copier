@@ -19,6 +19,23 @@ so ensure you trust it!
 * [tasks and migrations][tasks-migrations]
 :::
 
+## First steps
+
+Many operations in your Salt extension project require to be run inside an initialized Git repository
+and a Python virtual environment with your project installed. Some `pre-commit` hooks might also create important files.
+
+The following steps are therefore necessary to finish your project generation:
+
+```bash
+git init
+python -m venv venv
+source venv/bin/activate
+python -m pip install -e '.[tests,dev,docs]'
+python -m pre_commit install
+git add .
+git commit -m "Initial extension layout"  # Can fail, just add the changes and repeat
+```
+
 ## Important considerations
 TODO
 ### Organization or individual
