@@ -36,7 +36,7 @@ Integration
 ### Unit tests
 
 #### Setup and basics
-In your test files, you usually import the modules to to test directly.
+In your test files, you usually import the modules to test directly.
 
 In the simplest case, if your module does not reference any Salt-specific global dunders,
 you can just call the function you want to test:
@@ -80,22 +80,26 @@ from saltext.foo.modules import bar
 
 
 @pytest.fixture
-def configure_loader_modules(minion_opts):
+def configure_loader_modules():
+    opts = {
+        "value.for.test": True,
+    }
+
     return {
         bar: {
             "__salt__": {
                 "defaults.merge": defaults.merge,
             },
-            "__opts__": minion_opts,
+            "__opts__": opts,
         },
         defaults: {
-            "__opts__": minion_opts,
+            "__opts__": opts,
         },
     }
 ```
 
 #### Common patterns
-Unit tests usually rely a subset of the following classes/functions:
+Unit tests usually rely on a subset of the following classes/functions:
 
 * `unittest.mock.Mock`
 * `unittest.mock.MagicMock`
@@ -125,7 +129,7 @@ Description
 
 Functional tests run in a familiar Salt environment, hence you do not need to import the modules to test.
 The `loaders` fixture provides access to most Salt module types.
-For example, if we're testing an execution module named `foobar`, we can receive the initialized module like this:
+For example, if we're testing an execution module named `foobar`, we can access the initialized module like this:
 
 ```python
 import pytest
@@ -247,7 +251,7 @@ def test_stuff(salt_call_cli):
 ```
 
 If your modules need specific Salt configuration, you can override Salt master/minion configuration
-in your project's `tests/conftest.py`, in a fixture named `master_config`/`minion_config`:
+in your project's `tests/conftest.py`, in a fixture named `(master|minion)_config`:
 
 ```python
 import pytest
@@ -266,7 +270,7 @@ def master_config():
 
 ##### Creating temporary state files
 
-Sometimes, you might need to test specific modules inside the state compiler.
+Sometimes, you might need to test specific modules via the state compiler.
 For this purpose, you can create a temporary state file in your Salt master's file_roots:
 
 ```python
@@ -309,15 +313,15 @@ Scope
 :   function
 
 Description
-:   Run `salt-run` commands. This is used runner integration tests or when
+:   Run `salt-run` commands. This is used in runner integration tests or when
     you need to set up fixtures on the master, e.g. syncing the fileserver.
 
     Example:
 
     ```python
-    res = salt_run_cli.run("saltutil.sync_all")
+    res = salt_run_cli.run("fileserver.update")
     assert res.returncode == 0
-    assert "my_custom_pillar" in res.data["pillars"]
+    assert res.data is True
     ```
 
 ##### `salt_ssh_cli`
