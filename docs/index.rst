@@ -22,8 +22,8 @@ building the docs and releases and publishing it on PyPI.
   :caption: Guides
   :hidden:
 
+  topics/testing/index
   topics/building
-  topics/testing
   topics/publishing
   topics/organization
   topics/extraction
