@@ -20,7 +20,8 @@ It's possible to cross-reference specific entities, which can improve the docume
 Link to a complete module.
 
 :::{hint}
-Works for all modules that are present in the virtual environment, which includes Salt core ones.
+Works for all packages whose docs are registered in the `docs/conf.py`
+`intersphinx_mapping`. This specifically includes Salt core by default.
 :::
 
 :::{tab} MyST
@@ -39,7 +40,8 @@ Works for all modules that are present in the virtual environment, which include
 Link to a specific function in a module.
 
 :::{hint}
-Works for all modules that are present in the virtual environment, which includes Salt core ones.
+Works for all packages whose docs are registered in the `docs/conf.py`
+`intersphinx_mapping`. This specifically includes Salt core by default.
 :::
 
 :::{tab} MyST
