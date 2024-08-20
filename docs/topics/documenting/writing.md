@@ -19,13 +19,16 @@ It's possible to cross-reference specific entities, which can improve the docume
 #### Modules
 Link to a complete module.
 
+:::{hint}
 Works for all modules that are present in the virtual environment, which includes Salt core ones.
+:::
 
 :::{tab} MyST
 ```md
 {py:mod}`foo <saltext.foo.modules.foo_mod>`
 ```
 :::
+
 :::{tab} RST
 ```rst
 :py:mod:`foo <saltext.foo.modules.foo_mod>`
@@ -35,13 +38,16 @@ Works for all modules that are present in the virtual environment, which include
 #### Functions
 Link to a specific function in a module.
 
+:::{hint}
 Works for all modules that are present in the virtual environment, which includes Salt core ones.
+:::
 
 :::{tab} MyST
 ```md
 {py:func}`foo.bar <saltext.foo.modules.foo_mod.bar>`
 ```
 :::
+
 :::{tab} RST
 ```rst
 :py:func:`foo.bar <saltext.foo.modules.foo_mod.bar>`
@@ -79,7 +85,7 @@ Link to the documentation of a Salt minion configuration value.
 :::
 
 ### Arbitrary anchors
-You can define arbitrary anchors and reference them later in the same document or from a different document.
+You can define arbitrary anchors and reference them later in the same document or from a different one.
 
 :::{tab} MyST
 ```md
@@ -93,6 +99,7 @@ Later in the file, or in another one:
 Please refer to [Something](my-custom-target)
 ```
 :::
+
 :::{tab} RST
 ```rst
 .. _my-custom-target:
@@ -104,5 +111,62 @@ Something
 Later in the file, or in another one:
 
 Please refer to :ref:`Something <my-custom-target>`
+```
+:::
+
+## Admonitions
+
+It's often helpful to add a related note to some topic using admonitions.
+
+:::{hint}
+They look like this.
+:::
+
+:::{tab} MyST
+
+    :::{important}
+    Ensure you understand the usage of admonitions.
+    :::
+:::
+
+:::{tab} RST
+```rst
+.. important::
+    Ensure you understand the usage of admonitions.
+```
+:::
+
+Commonly used admonitions are:
+
+* `important`
+* `hint`
+* `note`
+* `warning`
+* `attention`
+* `tip`
+
+## Tabs
+
+It's also possible to use tabs like we have been doing here. As you can see, all tabs with the same titles are triggered in concert.
+
+The syntax is as follows:
+
+:::{tab} MyST
+
+    :::{tab} MyST
+    ... is a supserset of Markdown.
+    :::
+
+    :::{tab} RST
+    ... is not a supserset of Markdown.
+    :::
+:::
+:::{tab} RST
+```rst
+.. tab:: MyST
+    ... is a supserset of Markdown.
+
+.. tab:: RST
+    ... is not a supserset of Markdown.
 ```
 :::
