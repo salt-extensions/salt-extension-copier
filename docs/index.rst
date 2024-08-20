@@ -26,6 +26,7 @@ building the docs and releases and publishing it on PyPI.
   topics/documenting/index
   topics/building
   topics/publishing
+  topics/updating
   topics/organization
   topics/extraction
 
