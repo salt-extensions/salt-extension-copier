@@ -21,6 +21,7 @@ Building your Salt extension's wheel is easy:
 python -m build --outdir dist/
 ```
 
-Then you can find the installable wheel (`.whl` file extension) inside the `dist` directory. In theory, this file can be installed via `pip`, provided you don't rename it.
+Then you can find the installable wheel (`.whl` file extension) inside the `dist` directory.
+In theory, this file can be installed via `pip`, provided you don't rename it.
 
 You should consider [publishing](publishing) your extension to a package index like PyPI though.

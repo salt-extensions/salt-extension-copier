@@ -1,7 +1,7 @@
 # Running the test suite
 
 :::{important}
-Ensure you have already installed `nox`.
+Ensure you have already installed `nox`. If you followed the [first steps](first-steps-target), you should be fine.
 :::
 
 ## Basic

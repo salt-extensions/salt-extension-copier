@@ -23,6 +23,7 @@ building the docs and releases and publishing it on PyPI.
   :hidden:
 
   topics/testing/index
+  topics/documenting/index
   topics/building
   topics/publishing
   topics/organization

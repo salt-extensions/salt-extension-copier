@@ -6,7 +6,8 @@ With Copier, creating a Salt extension project structure is easy:
 copier copy --trust https://github.com/salt-extensions/salt-extension-copier my-awesome-new-saltext
 ```
 
-You are then asked a set of questions that will shape the final project structure. They will be remembered for future updates in `.copier-answers.yml`.
+You are then asked a set of questions that will shape the final project structure.
+They will be remembered for future updates in `.copier-answers.yml`.
 
 :::{important}
 
@@ -19,10 +20,12 @@ so ensure you trust it!
 * [tasks and migrations][tasks-migrations]
 :::
 
+(first-steps-target)=
 ## First steps
 
 Many operations in your Salt extension project require to be run inside an initialized Git repository
-and a Python virtual environment with your project installed. Some `pre-commit` hooks might also create important files.
+and a Python virtual environment with your project installed. Some `pre-commit` hooks might also
+create important files.
 
 The following steps are therefore necessary to finish your project generation:
 
@@ -31,13 +34,14 @@ git init
 python -m venv venv
 source venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
-python -m pre_commit install
+pre-commit install
 git add .
 git commit -m "Initial extension layout"  # Can fail, just add the changes and repeat
 ```
 
 ## Important considerations
 TODO
+
 ### Organization or individual
 
 [jinja-exts]: https://github.com/salt-extensions/salt-extension-copier/blob/main/jinja_extensions/saltext.py
