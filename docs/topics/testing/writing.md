@@ -101,11 +101,11 @@ def configure_loader_modules():
 #### Common patterns
 Unit tests usually rely on a subset of the following classes/functions:
 
-* `unittest.mock.Mock`
-* `unittest.mock.MagicMock`
-* `unittest.mock.patch`
+* {py:class}`unittest.mock.Mock`
+* {py:class}`unittest.mock.MagicMock`
+* {py:func}`unittest.mock.patch`
 
-Please see the [unittest.mock docs](https://docs.python.org/3/library/unittest.mock.html) for details.
+Please see the {py:mod}`unittest.mock docs <unittest.mock>` for details.
 
 #### Important fixtures
 
@@ -164,7 +164,7 @@ def minion_config_overrides():
 
 ##### Creating temporary files
 
-You can create temporary files using `pytest.helpers.temp_file`:
+You can create temporary files using {py:func}`pytest.helpers.temp_file <saltfactories.utils.tempfiles.temp_file>`:
 
 ```python
 import pytest
@@ -340,3 +340,33 @@ Description
     assert res.returncode == 0
     assert res.data == {"worked": True}
     ```
+
+##### `master`
+Scope
+:   package
+
+Description
+:   An instance of {py:class}`saltfactories.daemons.master.SaltMaster`. Can be used to
+    inspect the current configuration or create temporary files in the state/pillar tree.
+
+    For the latter purpose, you can access an instance of {py:class}`saltfactories.utils.tempfiles.SaltStateTree`
+    via `master.state_tree`/`master.pillar_tree`, which in turn provides access to an instance
+    of {py:class}`saltfactories.utils.tempfiles.SaltEnv` via its `base` or `prod` attributes.
+
+    Full example: `master.state_tree.prod.temp_file("file_name", "contents", tmp_path)`
+
+
+##### `minion`
+Scope
+:   package
+
+Description
+:   An instance of {py:class}`saltfactories.daemons.minion.SaltMinion`. Can be used to
+    inspect the current configuration or create temporary files in the state/pillar tree
+    when `file_client` is set to `local`.
+
+    For the latter purpose, you can access an instance of {py:class}`saltfactories.utils.tempfiles.SaltStateTree`
+    via `minion.state_tree`/`minion.pillar_tree`, which in turn provides access to an instance
+    of {py:class}`saltfactories.utils.tempfiles.SaltEnv` via its `base` or `prod` attributes.
+
+    Full example: `minion.state_tree.base.temp_file("file_name", "contents", tmp_path)`

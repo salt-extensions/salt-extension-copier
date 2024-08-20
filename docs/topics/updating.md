@@ -22,7 +22,7 @@ Manual updates allow you to
     ```bash
     git status
     ```
-4. Currently, there is an issue where default boilerplate files are regenerated if they were deleted (a subset of `ls src/**/_mod.py tests/**/test_*.py`). Remove the unwanted files again. This will be fixed soon, but depends on a new Copier release.
+4. Currently, there is an issue where default boilerplate files are regenerated if they were deleted (a subset of `ls src/**/*_mod.py tests/**/test_*.py`). Remove the unwanted files again. This will be fixed soon, but depends on a new Copier release.
 5. Once you have reviewed the proposed changes, stage them:
     ```bash
     git add .

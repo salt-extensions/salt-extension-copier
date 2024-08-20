@@ -12,17 +12,60 @@ Yes, even in a mix.
 ### Docstrings
 Docstrings in modules on the other hand must be written in RST.
 
+## Tagging changes between versions
+Every time a user-facing change takes place between releases, you should document
+it using the `versionadded`/`versionchanged`/`deprecated`/`versionremoved` directives.
+
+:::{tab} MyST
+    changed_arg
+    :   Has been doing something for a long time.
+
+        :::{versionchanged} 1.1.0
+        Does it a little differently now.
+        :::
+
+    new_arg
+    :   Does something new.
+
+        :::{versionadded} 1.1.0
+        :::
+:::
+
+:::{tab} RST
+```rst
+changed_arg
+    Has been doing something for a long time.
+
+    ..versionchanged:: 1.1.0
+        Does it a little differently now.
+
+new_arg
+    Does something new.
+
+    .. versionadded:: 1.1.0
+```
+:::
+
+:::{tab} Preview
+changed_arg
+:   Has been doing something for a long time.
+
+    :::{versionchanged} 1.1.0
+    Does it a little differently now.
+    :::
+
+new_arg
+:   Does something new.
+
+    :::{versionadded} 1.1.0
+    :::
+:::
 ## Cross-references
 ### Entities
 It's possible to cross-reference specific entities, which can improve the documentation's usability a lot.
 
 #### Modules
 Link to a complete module.
-
-:::{hint}
-Works for all packages whose docs are registered in the `docs/conf.py`
-`intersphinx_mapping`. This specifically includes Salt core by default.
-:::
 
 :::{tab} MyST
 ```md
@@ -36,13 +79,13 @@ Works for all packages whose docs are registered in the `docs/conf.py`
 ```
 :::
 
-#### Functions
-Link to a specific function in a module.
-
 :::{hint}
 Works for all packages whose docs are registered in the `docs/conf.py`
 `intersphinx_mapping`. This specifically includes Salt core by default.
 :::
+
+#### Functions
+Link to a specific function in a module.
 
 :::{tab} MyST
 ```md
@@ -54,6 +97,11 @@ Works for all packages whose docs are registered in the `docs/conf.py`
 ```rst
 :py:func:`foo.bar <saltext.foo.modules.foo_mod.bar>`
 ```
+:::
+
+:::{hint}
+Works for all packages whose docs are registered in the `docs/conf.py`
+`intersphinx_mapping`. This specifically includes Salt core by default.
 :::
 
 #### Salt master configuration value
@@ -138,6 +186,11 @@ They look like this.
 ```
 :::
 
+:::{tab} Preview
+:::{important}
+Ensure you understand the usage of admonitions.
+:::
+
 Commonly used admonitions are:
 
 * `important`
@@ -163,6 +216,7 @@ The syntax is as follows:
     ... is not a supserset of Markdown.
     :::
 :::
+
 :::{tab} RST
 ```rst
 .. tab:: MyST

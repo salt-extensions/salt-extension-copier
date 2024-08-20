@@ -42,6 +42,10 @@ This command combines all news fragments into a new entry in your `CHANGELOG.md`
 
 This commit should be submitted as a PR and be merged into the default branch on `upstream`.
 
+:::{tip}
+Squash-merging this PR makes the tag target a bit nicer.
+:::
+
 ## 3: Tagging a release
 
 Ensure your `main` branch is up to date again...
