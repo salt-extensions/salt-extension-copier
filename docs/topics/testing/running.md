@@ -26,3 +26,17 @@ nox -e tests-3 -- tests/unit
 ```bash
 nox -e tests-3 -- --lf
 ```
+
+### Speed up subsequent test runs
+
+```bash
+SKIP_REQUIREMENTS_INSTALL=1 nox -e tests-3
+```
+
+### Install extra dependencies
+
+Useful if you want to invoke a fancier debugger from the tests:
+
+```bash
+EXTRA_REQUIREMENTS_INSTALL="ipdb" PYTHONBREAKPOINT="ipdb.set_trace" nox -e tests-3
+```
