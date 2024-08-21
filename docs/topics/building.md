@@ -1,3 +1,4 @@
+(building-target)=
 # Building your Saltext
 
 ## Prerequisites

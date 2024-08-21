@@ -4,6 +4,11 @@ Your Saltext project includes scaffolding for keeping a changelog via [towncrier
 
 This changelog is rendered as part of the documentation.
 
+If you selected {question}`deploy_docs` == `rolling`, this changelog contains
+upcoming changes from the `main` branch on top of the crystallized changes
+from previous releases.
+
+(news-fragment-target)=
 ## Procedure
 Each time there is a user-facing change to your project, the patch should contain a corresponding news fragment.
 

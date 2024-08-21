@@ -1,3 +1,4 @@
+(build-docs-target)=
 # Building documentation
 
 :::{important}

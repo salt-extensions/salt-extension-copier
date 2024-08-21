@@ -1,3 +1,4 @@
+(update-target)=
 # Updating your Saltext
 
 Using Copier, you have the means to ensure your Salt extension's repository always follows the latest best practices. Updating fetches the latest template release, renders it using the saved answers as defaults and applies your customizations on top of it.
@@ -52,6 +53,7 @@ If you don't want to answer new questions, you can request to always use the def
 copier update --trust --skip-answered --defaults
 ```
 
+(vcs-ref-target)=
 #### Update to a specific version
 
 You can request Copier to update to a specific template version by passing it as `vcs-ref`:
@@ -62,7 +64,7 @@ copier update --trust --skip-answered --vcs-ref=0.3.7
 
 ## Automatic update
 
-[Renovate](https://docs.renovatebot.com/) supports updating Copier templates. If your repository is hosted inside the `salt-extensions` GitHub organization, you will receive automated pull requests with template updates in the future. Ensure you review them carefully before merging.
+[RenovateBot](https://docs.renovatebot.com/) supports updating Copier templates. If your repository is hosted inside the `salt-extensions` GitHub organization, you will receive automated pull requests with template updates in the future. Ensure you review them carefully before merging.
 
 :::{important}
 This is not yet implemented since there is an issue in Copier that needs to be addressed.

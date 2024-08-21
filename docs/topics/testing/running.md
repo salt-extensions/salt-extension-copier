@@ -1,3 +1,4 @@
+(run-tests-target)=
 # Running the test suite
 
 :::{important}

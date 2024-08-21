@@ -32,6 +32,7 @@ Do you want to publish some awesome new Salt functionality?
 Getting involved is easy! Just head over to the `salt-extensions` channel
 on the [community Discord][discord-invite] and introduce yourself.
 
+(copier-template-ref)=
 ## Copier template
 
 The `salt-extension-copier` template reduces overhead in creating and maintaining

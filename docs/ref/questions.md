@@ -1,3 +1,4 @@
+(questions-target)=
 # Template questions
 
 During project creation or when an update introduces a new variable, you will be asked some questions.
@@ -182,7 +183,7 @@ Not asked when {question}`source_url` is not on GitHub.
 :::
 ## `deploy_docs`
 
-Choose whether and when the rendered documentation is published to GitHub pages.
+Choose whether and when the rendered documentation is [published to GitHub pages](docs-publish-target).
 
 never
 :  Don't publish documentation to GitHub pages at all.

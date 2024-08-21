@@ -10,5 +10,6 @@ Your Salt extension's documentation is rendered via [sphinx](https://www.sphinx-
 
 building
 writing
+publishing
 changelog
 ```

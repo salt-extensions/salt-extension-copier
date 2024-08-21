@@ -1,3 +1,4 @@
+(write-tests-target)=
 # Writing tests
 
 You should have basic familiarity with [pytest](https://docs.pytest.org/en/stable/contents.html).

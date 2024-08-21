@@ -1,3 +1,4 @@
+(publishing-target)=
 # Publishing your Saltext
 
 :::{important}
@@ -11,8 +12,8 @@ Having done all this work, now it's time to submit your Salt extension to PyPI.
 ## 0: Prerequisites
 
 * Your project repository is hosted on GitHub.
-* Either it is inside the `salt-extensions` organization or you have set up all required secrets for the workflows. (TODO document those)
-* You own commit rights for the hosted project repository.
+* Either it is hosted in the `salt-extensions` organization or you have set up all [required secrets](required-secrets-target) for the workflows.
+* You have commit rights for the hosted project repository.
 * You have added a git remote `upstream` to your local repository, pointing to the official repository of the Saltext via **SSH**.
 
 Ensure your `main` branch is up to date:
@@ -21,6 +22,7 @@ Ensure your `main` branch is up to date:
 git switch main && git fetch upstream && git rebase upstream/main
 ```
 
+(changelog-build-target)=
 ## 1: Building the changelog
 First, create and switch to a new branch:
 
@@ -59,6 +61,10 @@ and create a new tag named after the version:
 ```bash
 git tag v1.0.0
 ```
+
+:::{important}
+Note that the tag begins with a `v`. This is required for the default publishing workflows to work as expected.
+:::
 
 ## 4: Pushing the tag
 

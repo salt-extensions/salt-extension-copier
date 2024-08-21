@@ -130,6 +130,11 @@ def setup(app):
         rolename="question",
         indextemplate="pair: %s; question",
     )
+    app.add_crossref_type(
+        directivename="path",
+        rolename="path",
+        indextemplate="pair: %s; path",
+    )
     # Allow linking to pytest's confvals.
     app.add_object_type(
         "confval",

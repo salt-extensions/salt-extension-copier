@@ -1,3 +1,4 @@
+(writing-docs-target)=
 # Writing documentation
 Your project's documentation sources are found in `docs`.
 
