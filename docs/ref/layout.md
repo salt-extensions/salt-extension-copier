@@ -1,7 +1,7 @@
 # Project layout
 The following provides an overview of important paths in your Salt extension project.
 
-:::{path} `.copier-answers.yml`
+:::{path} .copier-answers.yml
 :::
 ## `.copier-answers.yml`
 Copier-specific data. Saves the answers to the [template questions](questions-target) as well as the template's source URI and the last version the Salt extension project was updated to.

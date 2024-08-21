@@ -8,7 +8,7 @@ copier copy --trust https://github.com/salt-extensions/salt-extension-copier my-
 ```
 
 You are then asked a set of questions that will shape the final project structure.
-They will be remembered for future updates in `.copier-answers.yml`.
+They will be remembered for future [updates](update-target) in {path}`.copier-answers.yml`.
 
 :::{important}
 
@@ -20,6 +20,16 @@ so ensure you trust it!
 * [Jinja extensions][jinja-exts]
 * [tasks and migrations][tasks-migrations]
 :::
+
+## Important considerations
+### Organization vs single
+You need to decide early whether you want to [submit your project](submitting-target) to the
+[`salt-extensions` GitHub organization](gh-org-ref) or host it in your [own repository](required-secrets-target).
+This is decided by the {question}`source_url` you provide.
+
+### GitHub vs other Git host (non-org)
+When you opt for hosting the repository yourself, you also have the option of choosing
+your Git hosting provider. Mind that the [default workflows](workflows-target) only work on GitHub.
 
 (first-steps-target)=
 ## First steps

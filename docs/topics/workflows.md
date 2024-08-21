@@ -1,3 +1,4 @@
+(workflows-target)=
 # Workflows
 
 Your Salt extension repository comes with several workflows out of the box
@@ -7,6 +8,15 @@ Your Salt extension repository comes with several workflows out of the box
 The workflows used inside the `salt-extensions` organization (`org`) are equivalent
 to the `enhanced` ones.
 :::
+
+## Provided functions
+The workflows currently
+
+* ensure `pre-commit` passes
+* ensure the test suite passes
+* ensure the docs can be built
+* can optionally deploy built documentation to GitHub Pages
+* can optionally build and release your project to PyPI
 
 ## Repository setup
 ### Required settings (all)
