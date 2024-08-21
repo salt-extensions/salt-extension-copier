@@ -28,7 +28,7 @@ releases. On a downside, they need to be installed on each node separately.
 
 The main reasons for such a drastic change are:
 
-1. Reduce the amount of efforts required to maintain Salt.
+1. Reduce the amount of effort required to maintain Salt.
 2. Bulk deprecate modules that are no longer used, maintained, or relevant.
 3. Release modules independent of Salt versions – decoupling the extension module release cycle from Salt allows for more up-to-date plugins and better backporting. For extensions that are pure Python, only a single artifact will need to be released, rather than dozens per release.
 4. Release platform specific versions of Salt that are smaller and more efficient.
@@ -40,7 +40,7 @@ The modules are split into three categories:
 2. Supported modules (extended core) - will be moved to their own repositories within the SaltStack Github organization where they can be maintained separately from the Salt codebase.
 3. Community modules - will be deprecated from the Salt Core codebase and community members will be able to continue independent maintainership if they are interested. The community modules can be hosted either in the community run Salt Extensions Github organization, or in individual or corporate source control systems.
 
-So, if you use any of the removed modules, consider becoming a maintainer or a contributor.
+In conclusion, this migration represents a shift in how Salt is maintained and developed. It opens the door for users and organizations to have a direct impact on the tools they rely on. If you use any of the modules categorized as community modules, their future depends on people like you. By becoming a maintainer or contributor, you can ensure that the modules you depend on continue to thrive and evolve.
 
 (gh-org-ref)=
 ## GitHub organization
