@@ -4,42 +4,32 @@ Below are some rough steps that extract an existing set of modules into an exten
 
 ## A module extraction example
 
-### 1. Create a virtualenv and activate it
-
-To create the virtualenv it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml).
-
-```shell
-mkdir workdir && cd workdir
-python3.10 -m venv venv --prompt saltext-stalekey
-source venv/bin/activate
-```
-
-Please ensure you're inside your virtual environment from here on.
-
-### 2. Install the Git history filtering tool
+### 1. Install the Git history filtering tool
 
 ```shell
 pip install git-filter-repo
 ```
 
-### 3. Clone the Salt repo and analyze its history
+### 2. Clone the Salt repo and analyze its history
 
 ```shell
+mkdir workdir && cd workdir
 git clone https://github.com/saltstack/salt --single-branch
 cd salt
 git filter-repo --analyze
 tree .git/filter-repo/analysis/
-grep stalekey .git/filter-repo/analysis/path-all-sizes.txt
-grep stalekey .git/filter-repo/analysis/path-deleted-sizes.txt
+grep stalekey .git/filter-repo/analysis/path-{all,deleted}-sizes.txt | \
+    awk '{print $5}' | sort | uniq | \
+    grep -vE '^(.github|doc/ref|debian/|doc/locale|salt/([^/]+/)?__init__.py|tests/(pytests/)?(unit|functional|integration)/conftest.py)'
 ```
 
 The main goal here is to find all relevant files (modules, utils, automated tests, fixtures, documentation). For the `stalekey` engine that would be:
 
 * `salt/engines/stalekey.py` - the engine itself
-* `tests/unit/engines/test_stalekey.py` - old style unit tests
+* `tests/unit/engines/test_stalekey.py` - old style unit tests (historic path, does not exist in HEAD anymore)
 * `tests/pytests/unit/engines/test_stalekey.py` - new style unit-tests that use pytest
 
-### 4. Filter the history into a separate branch
+### 3. Filter the history into a separate branch
 
 ```shell
 git checkout -b filter-source
@@ -54,25 +44,25 @@ git filter-repo \
 
 The `--path-rename` option is needed to move the files into a different directory structure used by Salt extensions.
 
-### 5. Clean up the history
+### 4. Clean up the history
 
 ```shell
 git log --name-only
-git rebase -i --root
+git rebase -i --empty=drop --root --committer-date-is-author-date
 ```
 
 The main goal here is to delete the commits that do not touch any of the extracted files, and also delete the last commit that removes them. The merge commits seem to be deleted automatically during the rebase.
 
 While looking at the Git log, please note the major contributors (to add them as code authors later).
 
-### 6. Populate the extension repo
+### 5. Populate the extension repo
 
 When answering the Copier questions, choose the `engine` module type only, specify yourself as an author:
 
 ```shell
 cd ..
 mkdir saltext-stalekey && cd saltext-stalekey
-git init
+git init --initial-branch=main
 copier copy --trust https://github.com/salt-extensions/salt-extension-copier ./
 ```
 
@@ -92,6 +82,18 @@ git remote rm repo-source
 git tag | xargs git tag -d
 ```
 
+### 6. Create a virtualenv and activate it
+
+To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml).
+
+```shell
+mkdir workdir && cd workdir
+python3.10 -m venv venv --prompt saltext-stalekey
+source venv/bin/activate
+```
+
+Please ensure you're inside your virtual environment from here on.
+
 ### 7. Clean up and test
 
 Run the automatic fixups:
@@ -100,6 +102,11 @@ Run the automatic fixups:
 pip install git+https://github.com/saltstack/salt-rewrite
 SALTEXT_NAME=stalekey salt-rewrite -F fix_saltext .
 ```
+
+:::{important}
+You might need to rewrite some imports again, the `salt-rewrite` tool currently
+assumes that your project is named `saltext.saltext_stalekey`, not `saltext.stalekey`.
+:::
 
 ```shell
 pip install -e ".[dev,tests,docs]"
