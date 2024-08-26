@@ -4,9 +4,11 @@ Your Saltext project includes scaffolding for keeping a changelog via [towncrier
 
 This changelog is rendered as part of the documentation.
 
+:::{hint}
 If you selected {question}`deploy_docs` == `rolling`, this changelog contains
-upcoming changes from the `main` branch on top of the crystallized changes
-from previous releases.
+upcoming changes from the `main` branch on top of the [crystallized changes
+from previous releases](changelog-build-target).
+:::
 
 (news-fragment-target)=
 ## Procedure
@@ -35,3 +37,6 @@ echo "Fixed a crash when 'foo.bar' is missing from the configuration" > changelo
 ```
 
 This file should be submitted as part of the PR.
+
+## Building the changelog
+Before tagging a release, the individual `changelog/*.md` pieces need to be turned into the actual changelog. Please see [Building the changelog](changelog-build-target) for how to do this.
