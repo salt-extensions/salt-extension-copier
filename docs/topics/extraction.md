@@ -1,8 +1,52 @@
 # Extraction of Salt core modules
 
-Below are some rough steps that extract an existing set of modules into an extension while preserving the Git history. Let's use the `stalekey` engine as an example.
+## Scripted example
+Based on the [manual example below](manual-extraction-example), a new tool named [saltext-migrate](https://github.com/salt-extensions/salt-extension-migrate) was created.
 
-## A module extraction example
+Let's use the same example module (`stalekey`).
+
+### 1. Install `saltext-migrate` and `git-filter-repo`
+
+:::{tab} pipx
+```bash
+pip install git-filter-repo
+pipx install git+https://github.com/salt-extensions/salt-extension-migrate
+```
+:::
+:::{tab} pip
+```bash
+pip install git-filter-repo git+https://github.com/salt-extensions/salt-extension-migrate
+```
+:::
+
+### 2. Run the tool
+
+:::{important}
+Ensure you're running the tool inside a dedicated directory that will serve as the working directory for all your Salt extension migrations.
+
+This will avoid accidental data loss and speed up repeated migrations.
+:::
+
+```bash
+mkdir migrated-saltexts && cd migrated-saltexts
+saltext-migrate stalekey
+```
+
+It will
+
+1. [ensure Salt is cloned and the history analysis available](clone-the-salt-repo-and-analyze-its-history)
+2. filter for paths containing `stalekey`, asking for approval, then
+3. [filter the history into a separate branch](filter-the-history-into-a-separate-branch), renaming paths as needed
+4. auto-[cleanup the history](clean-up-the-history), as far as possible non-interactively
+5. [run copier](populate-the-extension-repo) (some questions like {question}`loaders` are populated automatically) and remove the project starter boilerplate
+6. [create a virtualenv](create-a-virtualenv-and-activate-it) for your project
+7. [apply rewrites](clean-up-and-test)
+8. install & run pre-commit
+9. provide an overview of issues to fix and next steps
+
+(manual-extraction-example)=
+## A manual module extraction example
+Below are some rough steps that extract an existing set of modules into an extension while preserving the Git history. Let's use the `stalekey` engine as an example.
 
 ### 1. Install the Git history filtering tool
 
@@ -127,7 +171,7 @@ git commit -m 'Add authors'
 
 Try [running the test suite](run-tests-target) and [building the docs](build-docs-target) locally until both pass, then commit and push it to run the full test suite on GitHub.
 
-## Gotchas and considerations
+## Basic fixes (automated)
 ### Unit test module imports
 
 Unit tests import the modules directly. After migration, these imports
@@ -163,6 +207,101 @@ from unittest.mock import MagicMock, Mock, patch
 ```
 :::
 
+### Migrated tests in `tests/pytest`
+
+All tests in Salt core that were migrated to Pytest are found in `tests/pytests`.
+After a migration, this directory is replicated to the Saltext project, but
+Salt extension projects assume that all tests are Pytest-based and found in `tests` directly.
+To ensure everything works as expected, you should remove the `pytest` part
+of the path by moving the tests one level up.
+
+## Issues needing manual fixing
+(utils-dunder-into-saltext-utils)=
+### `__utils__` into Salt extension utils
+
+Some Salt core modules access their utilities via the `__utils__` dunder instead of direct imports,
+which ensures that the called utility function has access to Salt's global dunders.
+
+Accessing a Salt extension's `utils` this way does not work. If this is the case for your extracted set of modules,
+you need to adjust the `utils` to not rely on the dunders, e.g. by passing in the required
+references:
+
+:::{tab} old
+
+```python
+# ------- salt.modules.foo ---------------
+def get(entity):
+    return __utils__["foo.query"](entity)
+```
+
+```python
+# ------- salt.utils.foo -----------------
+def query(entity):
+    base_url = __opts__.get("foo_base_url", "https://foo.bar")
+    profile = __salt__["config.option"]("foo_profile")
+    return __utils__["http.query"](base_url, data=profile)
+```
+:::
+
+:::{tab} correct
+```python
+# ------- saltext.foo.modules.foo -------
+from saltext.foo.utils import foo
+
+
+def get(entity):
+    base_url = __opts__.get("foo_base_url", "https://foo.bar")
+    return foo.query(base_url, entity, __salt__["config.option"])
+```
+```python
+# ------- saltext.foo.utils.foo -------
+import salt.utils.http
+
+
+def query(base_url, entity, config_option):
+    profile = config_option("foo_profile")
+    return salt.utils.http.query(base_url, data=profile)
+```
+:::
+
+(utils-dunder-from-saltext-utils)=
+### `__utils__` from Salt extension utils
+Some modules in `salt.utils` currently still expect to be called via `__utils__`.
+
+This is not a problem when you're calling them from modules that are loaded via the Salt loader (all {question}`loaders`).
+
+On the other hand, if your Saltext utils currently call them, this cannot work.
+
+Some potential starting points:
+
+* Remove the dependency on the core module or call them from the modules calling the utils module directly
+* Migrate the dependency into the Salt extension repository and modify it locally as described [here](utils-dunder-into-saltext-utils)
+* Submit a PR with the above changes to Salt core to be able to get rid of this code duplication at some point
+
+(utils-dunder-into-salt-utils)=
+### `__utils__` from other Salt extension modules
+If any other Saltext module depends on a Salt core utility module that requires being called via `__utils__`,
+this is not a problem. You should still consider creating a PR that removes this requirement since
+[`__utils__` is scheduled for deprecation](https://github.com/saltstack/salt/issues/62191) at some point.
+
+(pre-pytest-tests)=
+### Pre-pytest tests
+
+Not all Salt core tests have been converted to Pytest. You might need to convert them
+in order to keep them running. If you want to skip this task for now, you need to
+
+* exclude the corresponding files from `pylint`
+* skip the corresponding tests completely
+
+```python
+# pylint: disable-all
+import pytest
+
+pytest.skip(reason="Old non-pytest tests", allow_module_level=True)
+```
+
+## Considerations
+(library-dependencies)=
 ### Library dependencies
 
 Some modules have library dependencies. Since they were included in Salt core,
@@ -205,67 +344,8 @@ Other modules can work with several, interchangeable libraries. For this case, y
 declare a dependency on one of the choices in your `optional-dependencies` for `tests`
 in order to make the tests run.
 
-### `__utils__`
-
-Some Salt core modules access their utilities via the `__utils__` dunder instead of direct imports,
-which ensures that the called utility function has access to Salt's global dunders.
-
-This does not work in Salt extensions. If this is the case for your extracted set of modules,
-you need to adjust the `utils` to not rely on the dunders, e.g. by passing in the required
-references:
-
-:::{tab} old
-
-```python
-# ------- salt.modules.foo ---------------
-def get(entity):
-    return __utils__["foo.query"](entity)
-```
-
-```python
-# ------- salt.utils.foo -----------------
-def query(entity):
-    base_url = __opts__.get("foo_base_url", "https://foo.bar")
-    profile = __salt__["config.option"]("foo_profile")
-    return __utils__["http.query"](base_url, data=profile)
-```
-:::
-
-:::{tab} correct
-```python
-# ------- saltext.foo.modules.foo -------
-from saltext.foo.utils import foo
-
-
-def get(entity):
-    base_url = __opts__.get("foo_base_url", "https://foo.bar")
-    return foo.query(base_url, entity, __salt__["config.option"])
-```
-```python
-# ------- saltext.foo.utils.foo -------
-import salt.utils.http
-
-
-def query(base_url, entity, config_option):
-    profile = config_option("foo_profile")
-    return salt.utils.http.query(base_url, data=profile)
-```
-:::
-
-### Pre-pytest tests
-
-Not all Salt core tests have been converted to Pytest. You might need to convert them
-in order to keep them running.
-
-### Migrated tests in `tests/pytest`
-
-All tests in Salt core that were migrated to Pytest are found in `tests/pytests`.
-After a migration, this directory is replicated to the Saltext project, but
-Salt extension projects assume that all tests are Pytest-based and found in `tests` directly.
-To ensure everything works as expected, you should remove the `pytest` part
-of the path by moving the tests one level up.
-
-### Docs
+(dedicated-docs)=
+### Dedicated docs
 
 Salt core modules are documented inline. You should consider extracting general parts of the
 inline documentation into a separate topic inside the `docs/topics` directory.
