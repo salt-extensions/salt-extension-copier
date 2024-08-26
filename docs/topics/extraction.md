@@ -9,7 +9,7 @@ Let's use the same example module (`stalekey`).
 
 :::{tab} pipx
 ```bash
-pip install git-filter-repo
+pipx install git-filter-repo
 pipx install git+https://github.com/salt-extensions/salt-extension-migrate
 ```
 :::
@@ -50,9 +50,16 @@ Below are some rough steps that extract an existing set of modules into an exten
 
 ### 1. Install the Git history filtering tool
 
+:::{tab} pipx
+```shell
+pipx install git-filter-repo
+```
+:::
+:::{tab} pip
 ```shell
 pip install git-filter-repo
 ```
+:::
 
 ### 2. Clone the Salt repo and analyze its history
 
@@ -131,7 +138,6 @@ git tag | xargs git tag -d
 To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml).
 
 ```shell
-mkdir workdir && cd workdir
 python3.10 -m venv venv --prompt saltext-stalekey
 source venv/bin/activate
 ```
