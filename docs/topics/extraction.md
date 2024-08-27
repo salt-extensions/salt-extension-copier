@@ -17,6 +17,8 @@ pipx install git+https://github.com/salt-extensions/salt-extension-migrate
 ```bash
 pip install git-filter-repo git+https://github.com/salt-extensions/salt-extension-migrate
 ```
+
+If you want to install using `pip`, consider creating a virtual environment beforehand.
 :::
 
 ### 2. Run the tool
@@ -59,6 +61,8 @@ pipx install git-filter-repo
 ```shell
 pip install git-filter-repo
 ```
+
+If you want to install using `pip`, consider creating a virtual environment beforehand.
 :::
 
 ### 2. Clone the Salt repo and analyze its history
