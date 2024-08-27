@@ -1,74 +1,67 @@
 # Concepts
 
-The following describes important concepts around Salt extensions on a high level.
+This section outlines key concepts related to Salt extensions.
 
 (saltext-ref)=
 ## Salt extension
 
 Salt extensions are `pip`-installable Python packages that hook into Salt's module
-loading system and can thus provide all kinds of modules, much like custom
-extension modules in `salt://_modules`, `salt://_states` etc.
-
-In contrast to custom modules, they can be developed inside a dedicated
-testing framework similar to the one found in Salt core and have versioned
-releases. On a downside, they need to be installed on each node separately.
+loading system. They function similarly to custom modules found in `salt://_modules`, `salt://_states` etc., but with additional benefits like a dedicated testing framework and versioned releases. However, they must be installed on each node individually.
 
 (great-migration-ref)=
 ## Great module migration
 
-* Salt extensions were introduced in [February 2016](https://github.com/saltstack/salt/pull/31218) and released in Salt 2016.9.
-* A major improvement was added in November 2020 and released in [Salt 3003](https://github.com/saltstack/salt/pull/58943). You can watch the [Salt Extension Overview](https://www.youtube.com/watch?v=hhomJkwxK3Q) video for more details.
-* In July 2022, Tom Hatch submitted a [SEP](https://github.com/saltstack/salt-enhancement-proposals/blob/24660626d9fe26953cd4581be0804ddfd0ceeb90/extention-migration.md) to migrate lots of built-in modules to extensions.
-* In October 2023, a [project board](https://github.com/orgs/salt-extensions/projects/5/views/1) was created to track the migration process
-* After the Broadcom event, the push really came to shove, and it was said that there [won't be any deprecation period](https://www.youtube.com/watch?v=CubGR8rTy3Y&t=245s).
-* In January 2024, the [list of modules to be extracted](https://github.com/saltstack/great-module-migration) was opened for comments. Take your time to read it.
-* The modules are being migrated into the [salt-extensions](https://github.com/salt-extensions) community org.
-* In February 2024, the [great module purge PR](https://github.com/saltstack/salt/pull/65971) was created.
-* In April 2024, the great module purge PR was merged, making 3008 the target release.
+The SaltStack team has embarked on a significant transformation known as the "Great Module Migration." This initiative involves moving many modules, which were previously part of the core Salt distribution, into separate extensions. While this shift promises to streamline Salt’s core, it also means that many modules will no longer be maintained directly by the Salt team. Instead, their future now depends on community contributors.
 
-The main reasons for such a drastic change are:
+### Timeline and Key Events
 
-1. Reduce the amount of effort required to maintain Salt.
-2. Bulk deprecate modules that are no longer used, maintained, or relevant.
-3. Release modules independent of Salt versions – decoupling the extension module release cycle from Salt allows for more up-to-date plugins and better backporting. For extensions that are pure Python, only a single artifact will need to be released, rather than dozens per release.
-4. Release platform specific versions of Salt that are smaller and more efficient.
-5. Speed up PR merges and reviews through faster tests and a smaller core code base.
+- **February 2016**: Salt extensions [were introduced](https://github.com/saltstack/salt/pull/31218) with the release of Salt 2016.9.
+- **November 2020**: A [major update](https://github.com/saltstack/salt/pull/58943) to Salt extensions was released in Salt 3003. [Watch the Salt Extension Overview](https://www.youtube.com/watch?v=hhomJkwxK3Q) video for more details.
+- **July 2022**: Tom Hatch submitted a [SEP](https://github.com/saltstack/salt-enhancement-proposals/blob/24660626d9fe26953cd4581be0804ddfd0ceeb90/extention-migration.md) to migrate numerous built-in modules to extensions.
+- **October 2023**: A [project board](https://github.com/orgs/salt-extensions/projects/5/views/1) was created to track the migration process.
+- **December 2023**: The Broadcom event forced an immediate shift in strategy, leading to the announcement that there [won't be any deprecation period](https://www.youtube.com/watch?v=CubGR8rTy3Y&t=245s) for [community-designated](community-modules-target) modules.
+- **January 2024**: A [list of modules to be extracted](https://github.com/saltstack/great-module-migration) was opened for public comment. Take your time to review it. The modules are being migrated into the [salt-extensions](https://github.com/salt-extensions) community org.
+- **February 2024**: The [Great Module Purge PR](https://github.com/saltstack/salt/pull/65971) was created.
+- **April 2024**: The Great Module Purge PR was merged, making 3008 the target release.
 
-The modules are split into three categories:
+### Why This Change?
 
-1. Core modules - will be kept inside the main Salt codebase, and development will be tied to the Salt release cycle.
-2. Supported modules (extended core) - will be moved to their own repositories within the SaltStack Github organization where they can be maintained separately from the Salt codebase.
-3. Community modules - will be deprecated from the Salt Core codebase and community members will be able to continue independent maintainership if they are interested. The community modules can be hosted either in the community run Salt Extensions Github organization, or in individual or corporate source control systems.
+This drastic change is driven by several key goals:
+
+1. **Streamline Maintenance**: Reducing the core Salt codebase makes it easier to maintain and improve.
+2. **Deprecate Obsolete Modules**: Modules that are no longer relevant or maintained are bulk-deprecated.
+3. **Decoupled Releases**: Separating modules from the core Salt release cycle allows for faster updates and better backporting. For extensions that are pure Python, only a single artifact will need to be released, rather than dozens per release.
+4. **Efficient Salt Distributions**: Release platform-specific versions of Salt that are smaller and more efficient.
+5. **Faster Development**: With fewer modules in the core, testing and review times will decrease, accelerating development.
+
+### Categories of Modules
+
+The migration splits modules into three categories:
+
+1. **Core modules**: These will remain within the Salt codebase and follow the Salt release cycle.
+2. **Supported modules (extended core)**: These modules will move to their own repositories within the SaltStack GitHub organization, where they can be maintained separately.
+(community-modules-target)=
+3. **Community Modules**: These will be removed from the Salt Core codebase. Community members can take over their maintenance, either in the community-run Salt Extensions GitHub organization or in their own repositories.
+
+### Why You Should Get Involved
 
 In conclusion, this migration represents a shift in how Salt is maintained and developed. It opens the door for users and organizations to have a direct impact on the tools they rely on. If you use any of the modules categorized as community modules, their future depends on people like you. By becoming a maintainer or contributor, you can ensure that the modules you depend on continue to thrive and evolve.
 
 (gh-org-ref)=
 ## GitHub organization
 
-While anyone can create and release a Salt extension, the [salt-extensions GitHub organization][saltext-org]
-was created as a community-run umbrella to provide a more centralized and
-frictionless experience for both developers and users.
-
-It is intended to both host existing sets of modules extracted from Salt core
-from the `3008` release onwards as well as completely new extensions.
+The [salt-extensions GitHub organization][saltext-org] was established to offer a community-driven, centralized hub for discovering, creating and maintaining Salt extensions. This organization aims to simplify the development and release process for both new extensions and modules extracted from Salt core starting with the `3008` release.
 
 Do you care about a set of modules that will be removed from Salt core?
-Do you want to publish some awesome new Salt functionality?
-Getting involved is easy! Just head over to the `salt-extensions` channel
-on the [community Discord][discord-invite] and introduce yourself.
+Do you want to publish awesome new Salt functionality?
+[Getting involved](org-involve-target) is easy!
 
 (copier-template-ref)=
 ## Copier template
 
-The `salt-extension-copier` template reduces overhead in creating and maintaining
-Salt extensions a lot. Based on a set of inputs, it creates an individualized
-boilerplate for anyone to develop shiny new Salt functionality.
-When new template versions are released, an existing project's boilerplate
-can be updated in an automated way.
+The `salt-extension-copier` template simplifies the creation and maintenance of Salt extensions. Based on user inputs, it generates a custom boilerplate for anyone to develop new Salt functionality and allows for automated updates when new template versions are released.
 
-Very important: You don't need to publish inside the organization to use it!
-It can be used for individual projects as well.
+Very important: You don't need to publish within the organization to use it – it works for individual projects too!
 
 
 [saltext-org]: https://github.com/salt-extensions
-[discord-invite]: https://discord.gg/bPah23K7mG

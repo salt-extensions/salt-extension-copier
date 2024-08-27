@@ -1,0 +1,18 @@
+.tippy-box {
+    background-color: var(--color-background-hover);
+    color: var(--color-foreground-primary);
+}
+
+body[data-theme="light"] .tippy-box, body[data-theme="auto"] {
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05), 0 0 0.0625rem rgba(0, 0, 0, 0.1);
+}
+
+body[data-theme="dark"] .tippy-box {
+    box-shadow: 0 0.2rem 0.5rem rgba(255,255,255, 0.05), 0 0 0.0625rem rgba(255,255,255, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+    body[data-theme="auto"] .tippy-box {
+        box-shadow: 0 0.2rem 0.5rem rgba(255,255,255, 0.05), 0 0 0.0625rem rgba(255,255,255, 0.1);
+    }
+}

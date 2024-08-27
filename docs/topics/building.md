@@ -3,15 +3,14 @@
 
 ## Prerequisites
 
-In order to build your Salt extension, ensure your current Python has the `build` package installed:
+Ensure your Python environment has the `build` package installed:
 
 ```bash
-python -m  pip install build
+python -m pip install build
 ```
 
 :::{important}
-Building requires your project to be tracked by Git. Ensure you have
-initialized your repository by now.
+Your project must be tracked by Git. Make sure you have initialized your repository.
 :::
 
 ## Building
@@ -22,7 +21,6 @@ Building your Salt extension's wheel is easy:
 python -m build --outdir dist/
 ```
 
-Then you can find the installable wheel (`.whl` file extension) inside the `dist` directory.
-In theory, this file can be installed via `pip`, provided you don't rename it.
+The installable wheel file (`.whl`) can be found in the `dist` directory. You can install it with `salt-pip`/`pip`, provided you don't rename the file.
 
-You should consider [publishing](publishing) your extension to a package index like PyPI though.
+For broader distribution, consider [publishing](publishing) your extension to a package index like PyPI.

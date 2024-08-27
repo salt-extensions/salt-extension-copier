@@ -1,12 +1,12 @@
 # Installation
 
-You only need a functional [Copier][copier-docs] installation to render the template.
+To render the template, you only need a functional [Copier][copier-docs] installation.
 
 ## Copier
 
 :::{tab} pipx
 
-It is generally recommended to install it globally via [pipx][pipx-docs]:
+It’s recommended to install Copier globally using [pipx][pipx-docs]:
 
 ```bash
 pipx install 'copier>=9.1' && \
@@ -16,7 +16,7 @@ pipx install 'copier>=9.1' && \
 
 :::{tab} pip
 
-If you want to use `pip` instead, run the following, preferably inside a virtual environment:
+Alternatively, you can install Copier with `pip`, preferably inside a virtual environment:
 
 ```bash
 python -m pip install copier copier-templates-extensions
@@ -24,7 +24,7 @@ python -m pip install copier copier-templates-extensions
 :::
 
 :::{important}
-Since this template provides some Jinja extensions, you need to ensure [copier-templates-extensions][copier-templates-extensions] is present in the `copier` virtual environment. The example installation commands above account for this.
+This template includes custom Jinja extensions, so ensure that [copier-templates-extensions][copier-templates-extensions] is installed in the same environment as `copier`. The example commands above handle this.
 :::
 
 [copier-docs]: https://copier.readthedocs.io/en/stable/

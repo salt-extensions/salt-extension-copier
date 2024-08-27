@@ -1,9 +1,8 @@
 # Extraction of Salt core modules
 
 ## Scripted example
-Based on the [manual example below](manual-extraction-example), a new tool named [saltext-migrate](https://github.com/salt-extensions/salt-extension-migrate) was created.
 
-Let's use the same example module (`stalekey`).
+A tool named [saltext-migrate](https://github.com/salt-extensions/salt-extension-migrate) was created based on the [manual example](manual-extraction-example) below. It removes many obstacles in the extraction process. Let’s use the same example module (`stalekey`).
 
 ### 1. Install `saltext-migrate` and `git-filter-repo`
 
@@ -24,9 +23,7 @@ If you want to install using `pip`, consider creating a virtual environment befo
 ### 2. Run the tool
 
 :::{important}
-Ensure you're running the tool inside a dedicated directory that will serve as the working directory for all your Salt extension migrations.
-
-This will avoid accidental data loss and speed up repeated migrations.
+Run the tool inside a dedicated directory serving as the working directory for all your Salt extension migrations. This avoids accidental data loss and speeds up repeated migrations.
 :::
 
 ```bash
@@ -34,21 +31,22 @@ mkdir migrated-saltexts && cd migrated-saltexts
 saltext-migrate stalekey
 ```
 
-It will
+The tool will:
 
-1. [ensure Salt is cloned and the history analysis available](clone-analyze-target)
-2. filter for paths containing `stalekey`, asking for approval, then
-3. [filter the history into a separate branch](filter-branch-target), renaming paths as needed
-4. auto-[cleanup the history](clean-history-target), as far as possible non-interactively
-5. [run copier](populate-repo-target) (some questions like {question}`loaders` are populated automatically) and remove the project starter boilerplate
-6. [create a virtualenv](migration-venv-target) for your project
-7. [apply rewrites](migration-clean-up-target)
-8. install & run pre-commit
-9. provide an overview of issues to fix and next steps
+1. [Ensure Salt is cloned and the history analysis is available](clone-analyze-target)
+2. Filter for paths containing `stalekey` and ask for approval
+3. [Filter the history into a separate branch](filter-branch-target), renaming paths as needed
+4. Auto-[cleanup the history](clean-history-target), as far as possible non-interactively
+5. [Run copier](populate-repo-target) with sane defaults and remove the project starter boilerplate
+6. [Create a virtual environment](migration-venv-target) for your project
+7. [Apply rewrites](migration-clean-up-target)
+8. Install and run pre-commit
+9. Provide an overview of issues to fix and next steps
 
 (manual-extraction-example)=
 ## A manual module extraction example
-Below are some rough steps that extract an existing set of modules into an extension while preserving the Git history. Let's use the `stalekey` engine as an example.
+
+Below are some rough steps to extract an existing set of modules into an extension while preserving the Git history. Let's use the `stalekey` engine as an example.
 
 ### 1. Install the Git history filtering tool
 
@@ -79,11 +77,11 @@ grep stalekey .git/filter-repo/analysis/path-{all,deleted}-sizes.txt | \
     grep -vE '^(.github|doc/ref|debian/|doc/locale|salt/([^/]+/)?__init__.py|tests/(pytests/)?(unit|functional|integration)/conftest.py)'
 ```
 
-The main goal here is to find all relevant files (modules, utils, automated tests, fixtures, documentation). For the `stalekey` engine that would be:
+The main objective of this step is to find all relevant files (modules, utils, automated tests, fixtures, documentation). For the `stalekey` engine, they are:
 
 * `salt/engines/stalekey.py` - the engine itself
-* `tests/unit/engines/test_stalekey.py` - old style unit tests (historic path, does not exist in HEAD anymore)
-* `tests/pytests/unit/engines/test_stalekey.py` - new style unit-tests that use pytest
+* `tests/unit/engines/test_stalekey.py` - old style unit tests (historic path, no longer exists in HEAD)
+* `tests/pytests/unit/engines/test_stalekey.py` - new-style unit tests using pytest
 
 (filter-branch-target)=
 ### 3. Filter the history into a separate branch
@@ -99,7 +97,7 @@ git filter-repo \
     --refs refs/heads/filter-source --force
 ```
 
-The `--path-rename` option is needed to move the files into a different directory structure used by Salt extensions.
+The `--path-rename` option moves the files into the directory structure used by Salt extensions.
 
 (clean-history-target)=
 ### 4. Clean up the history
@@ -109,14 +107,14 @@ git log --name-only
 git rebase -i --empty=drop --root --committer-date-is-author-date
 ```
 
-The main goal here is to delete the commits that do not touch any of the extracted files, and also delete the last commit that removes them. The merge commits seem to be deleted automatically during the rebase.
+The purpose of this step is to drop commits that don’t touch the extracted files plus the last commit that removes them. Merge commits are deleted automatically during the rebase.
 
-While looking at the Git log, please note the major contributors (to add them as code authors later).
+While reviewing the Git log, please note the major contributors (in order to add them as code authors later).
 
 (populate-repo-target)=
 ### 5. Populate the extension repo
 
-When answering the Copier questions, choose the `engine` module type only, specify yourself as an author:
+Answer the Copier questions, choosing the `engine` module type only, and specify yourself as the author:
 
 ```shell
 cd ..
@@ -125,13 +123,13 @@ git init --initial-branch=main
 copier copy --trust https://github.com/salt-extensions/salt-extension-copier ./
 ```
 
-We need to remove some boilerplate files generated by Copier:
+Remove unwanted boilerplate files:
 
 ```shell
 rm -f tests/**/test_*.py src/**/*_mod.py
 ```
 
-And then merge the history:
+Merge the history:
 
 ```shell
 git remote add repo-source ../salt
@@ -164,20 +162,19 @@ SALTEXT_NAME=stalekey salt-rewrite -F fix_saltext .
 ```
 
 :::{important}
-You might need to rewrite some imports again, the `salt-rewrite` tool currently
-assumes that your project is named `saltext.saltext_stalekey`, not `saltext.stalekey`.
+You may need to re-rewrite some imports, as `salt-rewrite` assumes the project is named `saltext.saltext_stalekey` rather than `saltext.stalekey`.
 :::
 
 ```shell
 pip install -e ".[dev,tests,docs]"
 pre-commit install --install-hooks
-pre-commit run -a  # make sure it is happy
+pre-commit run -a  # ensure it is happy
 git status
 git add .
 git commit -m 'Add extension layout'
 ```
 
-Add the main authors to pyproject.toml:
+Add the main authors to {path}`pyproject.toml`:
 
 ```shell
 vi pyproject.toml
@@ -209,7 +206,6 @@ from saltext.vault.modules import vault
 ### Unit test `tests.support` imports
 
 Many unit tests in the Salt code base use an indirect import for `unittest.mock`.
-Ensure you update them.
 
 :::{tab} old
 ```python
@@ -225,11 +221,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 ### Migrated tests in `tests/pytest`
 
-All tests in Salt core that were migrated to Pytest are found in `tests/pytests`.
-After a migration, this directory is replicated to the Saltext project, but
-Salt extension projects assume that all tests are Pytest-based and found in `tests` directly.
-To ensure everything works as expected, you should remove the `pytest` part
-of the path by moving the tests one level up.
+The generated Salt extension project does not account for a `tests/pytests` subdirectory. Its contents need to be moved to the top-level `tests` directory.
 
 ## Issues needing manual fixing
 (utils-dunder-into-saltext-utils)=
@@ -282,32 +274,25 @@ def query(base_url, entity, config_option):
 
 (utils-dunder-from-saltext-utils)=
 ### `__utils__` from Salt extension utils
-Some modules in `salt.utils` currently still expect to be called via `__utils__`.
+Some modules in `salt.utils` still expect to be accessed via `__utils__`. While this works for modules loaded through the Salt loader (e.g., those using any {question}`loaders`), it fails if your Salt extension’s utils are calling these modules directly.
 
-This is not a problem when you're calling them from modules that are loaded via the Salt loader (all {question}`loaders`).
+Here are some options to address this:
 
-On the other hand, if your Saltext utils currently call them, this cannot work.
-
-Some potential starting points:
-
-* Remove the dependency on the core module or call them from the modules calling the utils module directly
-* Migrate the dependency into the Salt extension repository and modify it locally as described [here](utils-dunder-into-saltext-utils)
-* Submit a PR with the above changes to Salt core to be able to get rid of this code duplication at some point
+* Remove the dependency on the core module or call it from the modules calling the utils directly
+* Migrate the dependency into your Salt extension repository and modify it locally as described [here](utils-dunder-into-saltext-utils)
+* Submit a PR to Salt core with the necessary changes to elimiate the code duplication in the long term.
 
 (utils-dunder-into-salt-utils)=
 ### `__utils__` from other Salt extension modules
-If any other Saltext module depends on a Salt core utility module that requires being called via `__utils__`,
-this is not a problem. You should still consider creating a PR that removes this requirement since
-[`__utils__` is scheduled for deprecation](https://github.com/saltstack/salt/issues/62191) at some point.
+If any other Saltext module relies on a Salt core utility that requires being called via `__utils__`, it will still work. However, you should consider creating a PR to remove this dependency, as [`__utils__` is scheduled for deprecation](https://github.com/saltstack/salt/issues/62191).
 
 (pre-pytest-tests)=
 ### Pre-pytest tests
 
-Not all Salt core tests have been converted to Pytest. You might need to convert them
-in order to keep them running. If you want to skip this task for now, you need to
+Salt core contains both Pytest-based and legacy tests, but Salt extension projects only support `pytest`. To keep legacy tests running, you may need to convert them. If you prefer to skip this task for now, you can:
 
-* exclude the corresponding files from `pylint`
-* skip the corresponding tests completely
+- Exclude the corresponding files from `pylint`
+- Skip the legacy tests entirely
 
 ```python
 # pylint: disable-all
@@ -320,10 +305,7 @@ pytest.skip(reason="Old non-pytest tests", allow_module_level=True)
 (library-dependencies)=
 ### Library dependencies
 
-Some modules have library dependencies. Since they were included in Salt core,
-which cannot possibly be shipped with every dependency,
-they needed to account for the library not being present.
-They typically use the following stanza to avoid a crash during import:
+Some modules have library dependencies. Since Salt core cannot include every possible dependency, these modules often include a safeguard to handle missing libraries or library alternatives. They typically use the following pattern:
 
 ```python
 HAS_LIBS = False
@@ -343,8 +325,7 @@ def __virtual__():
     return False, "Missing 'foo' library"
 ```
 
-If the dependencies are all hard dependencies, you should declare them as such in your Saltext's
-`pyproject.toml` (in `dependencies`) and remove the conditional loading:
+If all the dependencies are hard dependencies, declare them in the `dependencies` section of your Saltext's {path}`pyproject.toml` and remove the conditional import logic:
 
 ```python
 import foo
@@ -356,12 +337,9 @@ def __virtual__():
     return __virtualname__
 ```
 
-Other modules can work with several, interchangeable libraries. For this case, you should at least
-declare a dependency on one of the choices in your `optional-dependencies` for `tests`
-in order to make the tests run.
+For modules that can work with multiple interchangeable libraries, declare at least one of them in the `optional-dependencies` section for `tests` in your {path}`pyproject.toml` to ensure the tests can run.
 
 (dedicated-docs)=
 ### Dedicated docs
 
-Salt core modules are documented inline. You should consider extracting general parts of the
-inline documentation into a separate topic inside the `docs/topics` directory.
+Salt core modules often include inline documentation. Consider extracting the general parts of this inline documentation into separate topics within the {path}`docs/topics`directory.

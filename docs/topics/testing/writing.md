@@ -1,48 +1,41 @@
 (write-tests-target)=
 # Writing tests
 
-You should have basic familiarity with [pytest](https://docs.pytest.org/en/stable/contents.html).
+Familiarity with [pytest](https://docs.pytest.org/en/stable/contents.html) is recommended.
 
-## Reference
+## Overview
 
-This guide is intended to provide a quick overview and some best practices
-specific to Salt extension development.
-
-For details, refer to the [pytest-salt-factories documentation](https://pytest-salt-factories.readthedocs.io/en/latest/).
+This guide offers a quick overview and best practices specific to Salt extension development. For more details, refer to the [pytest-salt-factories documentation](https://pytest-salt-factories.readthedocs.io/en/latest/).
 
 ## Test types
 
-There are three predefined categories of tests:
+There are three main categories of tests:
 
-Unit
-:   Unit tests are intended
+**Unit**
+:   - **Purpose:** Verify low-level or hard-to-reach behavior. Use as a fallback when other test types are too complex to implement.
+    - **Approach:** Use patching and mocking to isolate the code under test.
+    - **Example applications:** Exception handling, parsing, utility functions
 
-    * to verify low-level/hard to reach behavior
-    * as a fallback when other test types are too complex to implement
+**Functional**
+:   - **Purpose:** Validate that functionality works as expected in a realistic, but lightweight environment (no running Salt daemons). Represents the preferred way of testing, if possible.
+    - **Approach:** Test modules in a typical environment. Lightweight patching is allowed, but not encouraged.
+    - **Example applications:** Execution/State/Runner/SDB module tests
 
-    They rely on patching and mocking to reduce dependencies of the
-    code under test.
-
-Functional
-:   Functional tests should verify that functionality works as expected
-    in a realistic environment and are the preferred way of testing.
-    They do not have access to a running Salt master or minion daemon,
-    hence they are faster than integration tests.
-
-Integration
-:   Integration tests should also verify that functionality works as expected
-    in a realistic environment. They are needed when the functionality
-    under test depends on a running Salt daemon.
+**Integration**
+:   - **Purpose:** Ensure functionality that depends on running daemons works correctly in a realistic environment.
+    - **Approach:** Run modules using CLI command wrappers, simulating real-world conditions.
+    - **Example applications:** Peer publishing, Salt Mine, Salt-SSH (wrapper modules), Reactor
 
 ### Unit tests
 
 #### Setup and basics
-In your test files, you usually import the modules to test directly.
+In your test files, you typically import the modules you want to test directly.
 
-In the simplest case, if your module does not reference any Salt-specific global dunders,
-you can just call the function you want to test:
+If your module does not reference any Salt-specific global dunders, you can call the function you want to test directly:
 
-```python
+```{code-block} python
+:emphasize-lines: 1, 5
+
 from saltext.foo.modules import bar
 
 
@@ -50,16 +43,16 @@ def test_bar_baz():
     res = bar.baz()
     assert res == "worked"
 ```
-If your module uses Salt-specific global dunders like `__salt__` or `__opts__`,
-they are not defined yet since the module has not been initialized by the loader.
-Calling the functions to test directly would throw a `NameError`.
 
-To fix this, you can define a fixture named `configure_loader_modules`. Its return value
-should be a mapping of modules to initialize to dunder content overrides.
+However, if your module uses Salt-specific global dunders like `__salt__` or `__opts__`, these dunders won’t be defined yet because the module hasn’t been initialized by the Salt loader. Attempting to call such functions directly would result in a `NameError`.
+
+To resolve this, define a `configure_loader_modules` fixture. This fixture returns a mapping of modules to initialize to dunder content overrides.
 
 The overrides can be empty, which just ensures that the dunders are defined:
 
-```python
+```{code-block} python
+:emphasize-lines: 2, 8
+
 import pytest
 from saltext.foo.modules import bar
 
@@ -71,10 +64,11 @@ def configure_loader_modules():
     }
 ```
 
-The following code ensures the `__salt__` dunder contains the expected `defaults.merge` key
-and that the `defaults` module has been initialized by the loader as well:
+If you need the `__salt__` dunder to contain specific keys such as `defaults.merge`, and ensure the `defaults` module is properly initialized by the loader, you can define the fixture as follows:
 
-```python
+```{code-block} python
+:emphasize-lines: 2-3, 13-21
+
 import pytest
 from salt.modules import defaults
 from saltext.foo.modules import bar
@@ -100,6 +94,7 @@ def configure_loader_modules():
 ```
 
 #### Common patterns
+
 Unit tests usually rely on a subset of the following classes/functions:
 
 * {py:class}`unittest.mock.Mock`
@@ -111,34 +106,37 @@ Please see the {py:mod}`unittest.mock docs <unittest.mock>` for details.
 #### Important fixtures
 
 ##### `minion_opts`
-Scope
+*Scope*
 :   function
 
-Description
-:   Provides default `__opts__` for use in unit tests which require realistic Salt minion opts.
+*Description*
+:   Provides default `__opts__` for unit tests requiring realistic Salt minion opts.
 
 ##### `master_opts`
-Scope
+*Scope*
 :   function
 
-Description
-:   Provides default `__opts__` for use in unit tests which require realistic Salt master opts.
+*Description*
+:   Provides default `__opts__` for unit tests requiring realistic Salt master opts.
 
 
 ### Functional tests
+
 #### Setup and basics
 
-Functional tests run in a familiar Salt environment, hence you do not need to import the modules to test.
-The `loaders` fixture provides access to most Salt module types.
-For example, if we're testing an execution module named `foobar`, we can access the initialized module like this:
+Functional tests operate within a familiar Salt environment, so you don't need to import the modules you’re testing. The `loaders` fixture provides access to most Salt module types.
 
-```python
+For example, if you're testing an execution module named `foobar`, you can access the initialized module like this:
+
+```{code-block} python
+:emphasize-lines: 5, 7
+
 import pytest
 
 
 @pytest.fixture
 def foobar_mod(loaders):
-    # this also works with `states`, `runners` etc.
+    # This also works with `states`, `runners` etc.
     return loaders.modules.foobar
 
 
@@ -147,8 +145,7 @@ def test_stuff(foobar_mod):
     assert res == "worked"
 ```
 
-If your module requires some specific Salt configuration in `__opts__`, you can define
-configuration overrides via the `(minion|master)_config_overrides` fixtures **per test file** (they are `module`-scoped):
+If your module requires specific Salt configurations in `__opts__`, you can define configuration overrides using the `minion_config_overrides` or `master_config_overrides` fixtures. These fixtures are scoped to the module, meaning they apply to all tests in the same file:
 
 ```python
 import pytest
@@ -165,9 +162,11 @@ def minion_config_overrides():
 
 ##### Creating temporary files
 
-You can create temporary files using {py:func}`pytest.helpers.temp_file <saltfactories.utils.tempfiles.temp_file>`:
+You can create temporary files using {py:func}`pytest.helpers.temp_file <saltfactories.utils.tempfiles.temp_file>`, preferrably as a context manager:
 
-```python
+```{code-block} python
+:emphasize-lines: 13
+
 import pytest
 from textwrap import dedent
 
@@ -185,13 +184,21 @@ def test_stuff(tmp_path, loaders, minion_opts):
         assert res == minion_opts
 ```
 
+In this example, a temporary file is created, used, and cleaned up automatically within the test.
+
+:::{tip}
+Temporary files are often created within fixtures, not the tests themselves. This separation of concerns improves code reuse and ensures that the actual tests are concise.
+:::
+
 ##### Testing state modules
 
 ###### Return value assertions
-When you call a state module in a functional test, the return value is a wrapper
-around the usual dictionary return. You should access its properties like this:
 
-```python
+When calling state modules in a functional test, the return value is a wrapper around the standard dictionary return. You should access its properties using the following pattern:
+
+```{code-block} python
+:emphasize-lines: 3-5
+
 def test_state_module(states):
     ret = states.my_state.present("foo")
     assert ret.result is True
@@ -200,9 +207,12 @@ def test_state_module(states):
 ```
 
 ###### Test mode
-You can also call state modules with `test=True` in functional tests:
 
-```python
+State modules can also be called with `test=True` during functional tests:
+
+```{code-block} python
+:emphasize-lines: 2
+
 def test_state_module_test(states):
     ret = states.my_state.present("foo", test=True)
     assert ret.result is None
@@ -211,48 +221,54 @@ def test_state_module_test(states):
 ```
 
 #### Important fixtures
+
 ##### `loaders`
-Scope
+*Scope*
 :   function
 
-Description
-:   Allows access to Salt loaders for several module types via its attributes.
+*Description*
+:   An instance of {py:class}`Loaders <saltfactories.utils.functional.Loaders>`, provides access to Salt loaders for several module types via its attributes.
 
+*Example*
+:   ```python
+    loaders.modules.test.ping()
+    ```
 ##### `modules`
-Scope
+*Scope*
 :   function
 
-Description
+*Description*
 :   Shortcut for `loaders.modules`.
 
 ##### `states`
-Scope
+*Scope*
 :   function
 
-Description
+*Description*
 :   Shortcut for `loaders.states`.
 
 
 ### Integration tests
+
 #### Setup and basics
 
-Integration tests run in a familiar Salt environment, hence you do not need to import the modules to test.
-You can run your modules using specific fixtures, which are wrappers around the familiar CLI commands.
+Integration tests run within a familiar Salt environment, hence you don't need to import the modules you're testing. Instead, you can run your modules using specific fixtures that wrap familiar CLI commands.
 
-Since this invokes a subprocess, the return value is a wrapper around the command's result:
+These fixtures invoke a subprocess, so their return value is a wrapper around the command's result:
 
-```python
+```{code-block} python
+:emphasize-lines: 4, 7
+
 def test_stuff(salt_call_cli):
     res = salt_call_cli.run("foobar.baz")
-    # Ensure Salt did not crash.
+    # Ensure the execution did not error.
     assert res.returncode == 0
-    # The actual return is stored as the `data` attribute.
-    # It is hydrated into a proper Python type.
+    # The actual return value is stored in the `data` attribute.
+    # It is automatically hydrated into the appropriate Python type.
     assert res.data == {"worked": True}
 ```
 
-If your modules need specific Salt configuration, you can override Salt master/minion configuration
-in your project's `tests/conftest.py`, in a fixture named `(master|minion)_config`:
+If your modules require specific Salt configurations, you can override the Salt master or minion configuration in your project's `tests/conftest.py` by defining a fixture named `master_config` or `minion_config`:
 
 ```python
 import pytest
@@ -271,10 +287,11 @@ def master_config():
 
 ##### Creating temporary state files
 
-Sometimes, you might need to test specific modules via the state compiler.
-For this purpose, you can create a temporary state file in your Salt master's file_roots:
+To test specific modules within the context of the state machinery, you can create a temporary state file in the Salt master's `file_roots`:
 
-```python
+```{code-block} python
+:emphasize-lines: 14
+
 from textwrap import dedent
 
 
@@ -282,9 +299,9 @@ def test_foobar_in_state_apply(salt_call_cli, master):
     sls = "foobar_test"
     file_contents = dedent(
         """
-            Test this:
-              foobar.present:
-                - name: baz
+        Test this:
+          foobar.present:
+            - name: baz
         """
     )
 
@@ -296,78 +313,80 @@ def test_foobar_in_state_apply(salt_call_cli, master):
 #### Important fixtures
 
 ##### `salt_call_cli`
-Scope
+*Scope*
 :   function
 
-Description
-:   Run `salt-call` commands. This is used for most integration tests.
+*Description*
+:   Runs `salt-call` commands, typically used in most integration tests.
 
-    Example:
-
-    ```python
+*Example*
+:   ```python
     res = salt_call_cli.run("state.highstate")
     assert res.returncode == 0
     ```
 
 ##### `salt_run_cli`
-Scope
+*Scope*
 :   function
 
-Description
-:   Run `salt-run` commands. This is used in runner integration tests or when
-    you need to set up fixtures on the master, e.g. syncing the fileserver.
+*Description*
+:   Runs `salt-run` commands, often used in runner integration tests or for setting up master fixtures (e.g. syncing the fileserver).
 
-    Example:
-
-    ```python
+*Example*
+:   ```python
     res = salt_run_cli.run("fileserver.update")
     assert res.returncode == 0
     assert res.data is True
     ```
 
 ##### `salt_ssh_cli`
-Scope
+*Scope*
 :   module
 
-Description
-:   Run `salt-ssh` commands. Usually used for `wrapper` module tests.
-    Only available when the Salt extension has selected `wrapper` {question}`loaders`
-    or explicitly opted in for {question}`ssh_fixtures`.
+*Description*
+:   Runs `salt-ssh` commands, usually for `wrapper` module tests. Available when the extension has enabled for `wrapper` {question}`loaders` or {question}`ssh_fixtures`.
 
-    Example:
-
-    ```python
+*Example*
+:   ```python
     res = salt_ssh_cli.run("foobar.baz")
     assert res.returncode == 0
     assert res.data == {"worked": True}
     ```
 
 ##### `master`
-Scope
+*Scope*
 :   package
 
-Description
-:   An instance of {py:class}`saltfactories.daemons.master.SaltMaster`. Can be used to
-    inspect the current configuration or create temporary files in the state/pillar tree.
+*Description*
+:   Provides an instance of {py:class}`saltfactories.daemons.master.SaltMaster`. Example uses include inspecting the current master configuration or creating temporary files in the state/pillar tree.
 
-    For the latter purpose, you can access an instance of {py:class}`saltfactories.utils.tempfiles.SaltStateTree`
-    via `master.state_tree`/`master.pillar_tree`, which in turn provides access to an instance
-    of {py:class}`saltfactories.utils.tempfiles.SaltEnv` via its `base` or `prod` attributes.
+*Example*
+:   Temporary state file in `base` env
 
-    Full example: `master.state_tree.prod.temp_file("file_name", "contents", tmp_path)`
+    ```{parsed-literal}
+    with {py:class}`master <saltfactories.daemons.master.SaltMaster>`.{py:class}`state_tree <saltfactories.utils.tempfiles.SaltStateTree>`.{py:class}`base <saltfactories.utils.tempfiles.SaltEnv>`.{py:meth}`temp_file <saltfactories.utils.tempfiles.SaltEnv.temp_file>`("file_name", "contents") as temp_sls:
+    ```
+:   Temporary pillar file in `prod` env
+
+    ```{parsed-literal}
+    with {py:class}`master <saltfactories.daemons.master.SaltMaster>`.{py:class}`pillar_tree <saltfactories.utils.tempfiles.SaltPillarTree>`.{py:class}`prod <saltfactories.utils.tempfiles.SaltEnv>`.{py:meth}`temp_file <saltfactories.utils.tempfiles.SaltEnv.temp_file>`("file_name", "contents") as temp_pillar:
+    ```
 
 
 ##### `minion`
-Scope
+*Scope*
 :   package
 
-Description
-:   An instance of {py:class}`saltfactories.daemons.minion.SaltMinion`. Can be used to
-    inspect the current configuration or create temporary files in the state/pillar tree
-    when `file_client` is set to `local`.
+*Description*
+:   Provides an instance of {py:class}`saltfactories.daemons.minion.SaltMinion`. Example uses include inspecting the current minion configuration or creating temporary files in the state/pillar tree when `file_client` is set to `local`.
 
-    For the latter purpose, you can access an instance of {py:class}`saltfactories.utils.tempfiles.SaltStateTree`
-    via `minion.state_tree`/`minion.pillar_tree`, which in turn provides access to an instance
-    of {py:class}`saltfactories.utils.tempfiles.SaltEnv` via its `base` or `prod` attributes.
+:   Temporary state file in `prod` env
 
-    Full example: `minion.state_tree.base.temp_file("file_name", "contents", tmp_path)`
+    ```{parsed-literal}
+    with {py:class}`minion <saltfactories.daemons.minion.SaltMinion>`.{py:class}`state_tree <saltfactories.utils.tempfiles.SaltStateTree>`.{py:class}`prod <saltfactories.utils.tempfiles.SaltEnv>`.{py:meth}`temp_file <saltfactories.utils.tempfiles.SaltEnv.temp_file>`("file_name", "contents") as temp_sls:
+    ```
+:   Temporary pillar file in `base` env
+
+    ```{parsed-literal}
+    with {py:class}`minion <saltfactories.daemons.minion.SaltMinion>`.{py:class}`pillar_tree <saltfactories.utils.tempfiles.SaltPillarTree>`.{py:class}`base <saltfactories.utils.tempfiles.SaltEnv>`.{py:meth}`temp_file <saltfactories.utils.tempfiles.SaltEnv.temp_file>`("file_name", "contents") as temp_pillar:
+    ```

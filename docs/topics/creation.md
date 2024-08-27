@@ -1,44 +1,37 @@
 (creation-target)=
 # Creation
 
-With Copier, creating a Salt extension project structure is easy:
+With Copier, creating a Salt extension project is easy:
 
 ```bash
 copier copy --trust https://github.com/salt-extensions/salt-extension-copier my-awesome-new-saltext
 ```
 
-You are then asked a set of questions that will shape the final project structure.
-They will be remembered for future [updates](update-target) in {path}`.copier-answers.yml`.
+You are then prompted with questions to configure your project structure. These answers are saved in {path}`.copier-answers.yml` for future [updates](update-target).
 
 :::{important}
 
 Copier needs to be invoked with the `--trust` flag in order to enable
-custom Jinja extensions required for template rendering (and, when updating, migrations).
-Effectively, this runs unsandboxed commands defined in the template on your host,
-so ensure you trust it!
+custom Jinja extensions (always) and migrations (during updates).
+This effectively runs unsandboxed commands on your host,
+so ensure you trust the template source!
 
 * [Jinja extensions][jinja-exts]
 * [tasks and migrations][tasks-migrations]
 :::
 
 ## Important considerations
+
 ### Organization vs single
-You need to decide early whether you want to [submit your project](submitting-target) to the
-[`salt-extensions` GitHub organization](gh-org-ref) or host it in your [own repository](required-secrets-target).
-This is decided by the {question}`source_url` you provide.
+Decide early whether to [submit your project](submitting-target) to the [`salt-extensions` GitHub organization](gh-org-ref) or host it in your [own repository](required-secrets-target). This is determined by the `source_url` you provide.
 
 ### GitHub vs other Git host (non-org)
-When you opt for hosting the repository yourself, you also have the option of choosing
-your Git hosting provider. Mind that the [default workflows](workflows-target) only work on GitHub.
+If hosting the repository outside the organization, you can choose your provider freely. Note that the [default workflows](workflows-target) only work on GitHub though.
 
 (first-steps-target)=
 ## First steps
 
-Many operations in your Salt extension project require to be run inside an initialized Git repository
-and a Python virtual environment with your project installed. Some `pre-commit` hooks might also
-create important files.
-
-The following steps are therefore necessary to finish your project generation:
+To finalize your project setup, ensure you initialize the Git repository and Python virtual environment and install and run the `pre-commit` hooks.
 
 ### Initialize the repository
 ```bash
@@ -46,8 +39,7 @@ git init -b main
 ```
 
 :::{important}
-Some automations might assume your default branch is called `main`. Please ensure
-this assumption holds.
+Some automations assume your default branch is `main`. Ensure this is the case.
 :::
 
 (dev-setup-target)=
@@ -58,14 +50,14 @@ source venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```
 
-This creates a venv and installs relevant dependencies, including `nox` and `pre-commit`.
+This creates a virtual environment and installs relevant dependencies, including `nox` and `pre-commit`.
 
-### Install `pre-commit` hook
+### Install the `pre-commit` hook
 ```bash
-python -m pre_commit install
+python -m pre_commit install --install-hooks
 ```
 
-This ensures `pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of some necessary documentation files. If you want to skip the checks during a commit for some reason, invoke Git like this: `git commit --no-verify`.
+This ensures `pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files. To skip these checks temporarily, use `git commit --no-verify`.
 
 ### First commit
 ```bash
@@ -73,7 +65,7 @@ git add .
 git commit -m "Initial extension layout"
 ```
 
-When `pre-commit` modifies or creates some files, the commit is aborted. Just stage the changes again and retry committing.
+In case `pre-commit` modifies or creates files, the commit is aborted. Stage the changes and try again.
 
 [jinja-exts]: https://github.com/salt-extensions/salt-extension-copier/blob/main/jinja_extensions/saltext.py
 [tasks-migrations]: https://github.com/salt-extensions/salt-extension-copier/blob/main/copier.yml

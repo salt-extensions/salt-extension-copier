@@ -1,22 +1,19 @@
 # Keeping a changelog
 
-Your Saltext project includes scaffolding for keeping a changelog via [towncrier](https://towncrier.readthedocs.io/en/stable/).
-
-This changelog is rendered as part of the documentation.
+Your Saltext project uses [towncrier](https://towncrier.readthedocs.io/en/stable/) to manage and render its {path}`CHANGELOG.md` file, which is included in the rendered documentation as well.
 
 :::{hint}
-If you selected {question}`deploy_docs` == `rolling`, this changelog contains
-upcoming changes from the `main` branch on top of the [crystallized changes
-from previous releases](changelog-build-target).
+If you selected {question}`deploy_docs` == `rolling`, the changelog will display upcoming changes from the `main` branch alongside [crystallized changes from previous releases](changelog-build-target).
 :::
 
 (news-fragment-target)=
 ## Procedure
-Each time there is a user-facing change to your project, the patch should contain a corresponding news fragment.
 
-1. There should be an issue in the bug tracker that describes the context of the change.
-2. Before merging a PR, ensure there is an added news fragment in the `changelog` directory describing the change.
-3. Its file name should follow `<issue_number>.<resolution>.md`, where `resolution` is one of the following actions:
+For every user-facing change, ensure your patch includes a corresponding news fragment:
+
+1. Ensure there is an issue in the bug tracker that describes the context of the change.
+2. Before merging a PR, ensure a news fragment describing the change is added to the `changelog` directory.
+3. Its file name should follow `<issue_number>.<resolution>.md`, where `resolution` is one of the following:
 
     * `fixed`
     * `added`
@@ -25,18 +22,18 @@ Each time there is a user-facing change to your project, the patch should contai
     * `deprecated`
     * `security`
 
-4. Its file contents are interpreted as Markdown.
+4. The file contents should be written in Markdown.
 
 ## Example
 
-A PR fixes an ungraceful crash when the `foo.bar` configuration value is missing.
-The author can create the news fragment as follows:
+Suppose a PR fixes a crash when the `foo.bar` configuration value is missing. The news fragment can be created as follows:
 
 ```bash
 echo "Fixed a crash when 'foo.bar' is missing from the configuration" > changelog/23.fixed.md
 ```
 
-This file should be submitted as part of the PR.
+Include this file in the PR.
 
 ## Building the changelog
-Before tagging a release, the individual `changelog/*.md` pieces need to be turned into the actual changelog. Please see [Building the changelog](changelog-build-target) for how to do this.
+
+Before tagging a release, the individual `changelog/*.md` files need to be compiled into the actual changelog. Refer to [Building the changelog](changelog-build-target) for instructions on how to do this.

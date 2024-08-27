@@ -1,47 +1,47 @@
 # Project layout
-The following provides an overview of important paths in your Salt extension project.
+This section provides an overview of the key paths in your Salt extension project.
 
 :::{path} .copier-answers.yml
 :::
 ## `.copier-answers.yml`
-Copier-specific data. Saves the answers to the [template questions](questions-target) as well as the template's source URI and the last version the Salt extension project was updated to.
+Stores Copier-specific data, including answers to [template questions](questions-target), the template's source URI, and the last version the project was updated to.
 
-**Should never be touched manually.** If you want to change your answers to the [template questions](questions-target), use `copier update --trust` instead. If you want to avoid updating the template version, [pass the current one in `vcs-ref`](vcs-ref-target).
+**Do not edit manually.** To change your answers, use `copier update --trust`. To avoid updating the template version, [pass the current version in `vcs-ref`](vcs-ref-target).
 
 :::{path} CHANGELOG.md
 :::
 ## `CHANGELOG.md`
-Your Salt extension project's changelog file. Should not be updated manually, but by [invoking towncrier](changelog-build-target).
+Contains the project’s changelog. Update this file using [towncrier](changelog-build-target) instead of manually.
 
 :::{path} README.md
 :::
 ## `README.md`
-Contains a brief description of your project and information for other developers. Contains a note about user documentation and – if {question}`docs_url` was set, a link to the hosted docs.
+Provides a brief project overview and developer information. Includes a note about user documentation and, if {question}`docs_url` was set, a link to the hosted documentation.
 
 :::{path} noxfile.py
 :::
 ## `noxfile.py`
-Defines several `nox` sessions. Contains glue code that [runs the test suite](run-tests-target), [builds documentation](build-docs-target) or lints your code.
+Defines `nox` sessions for [running tests](run-tests-target), [building documentation](build-docs-target), and linting code.
 
 :::{path} pyproject.toml
 :::
 ## `pyproject.toml`
-Defines your project metadata and (optional) dependencies, as well as configuration for several tools used during the lifecycle of a Salt extension repository.
+Holds project metadata, package dependencies and configuration for tools used in the project's lifecycle.
 
 :::{path} .github
 :::
 ## `.github`
-Root directory for GitHub-related configuration and workflows. Only present if your {question}`source_url` is on GitHub.
+Contains GitHub-related configurations and workflows. This directory is only present if your {question}`source_url` is on GitHub.
 
 :::{path} .github/workflows
 :::
 ### `.github/workflows`
-Root directory for your GitHub Actions {question}`workflows`.
+Houses GitHub Actions {question}`workflows`.
 
 :::{path} .github/workflows/ci.yml
 :::
 #### `.github/workflows/ci.yml`
-The meta-workflow. Calls select other local workflows, depending on inputs.
+A meta-workflow that triggers other workflows based on inputs.
 
 :::{important}
 Only present when {question}`workflows` == `enhanced`.
@@ -50,46 +50,46 @@ Only present when {question}`workflows` == `enhanced`.
 :::{path} .github/workflows/pr.yml
 :::
 #### `.github/workflows/pr.yml`
-Workflow triggered by Pull Requests and pushes to the `main` branch, including merges. Depending on {question}`workflows`, either calls the centralized workflows in [salt-extensions/central-artifacts](https://github.com/salt-extensions/central-artifacts/tree/main/.github/workflows) or the local equivalent at {path}`.github/workflows/ci.yml`.
+Handles workflows for Pull Requests and pushes to the `main` branch. Depending on {question}`workflows`, it either calls centralized workflows in [salt-extensions/central-artifacts](https://github.com/salt-extensions/central-artifacts/tree/main/.github/workflows) or local workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
 
 :::{path} .github/workflows/tag.yml
 :::
 #### `.github/workflows/tag.yml`
-Workflow triggered by [tag pushes](publishing-target) for tags beginning with `v`. Depending on {question}`workflows`, either calls the centralized workflows in [salt-extensions/central-artifacts](https://github.com/salt-extensions/central-artifacts/tree/main/.github/workflows) or the local equivalent at {path}`.github/workflows/ci.yml`.
+Triggered by [tag pushes](publishing-target) for tags beginning with `v`. Similar to {path}`pr.yml <.github/workflows/pr.yml>`, it either calls centralized workflows or local ones in {path}`ci.yml <.github/workflows/ci.yml>`.
 
 :::{path} changelog
 :::
 ## `changelog`
-Directory containing [news fragments](news-fragment-target) for `towncrier`. Also contains the default version-specific changelog template at `changelog/.template.jinja`.
+Directory containing [news fragments](news-fragment-target) for `towncrier`. Also includes the default version-specific changelog template in `changelog/.template.jinja`.
 
 :::{path} docs
 :::
 ## `docs`
-Root directory for all documentation-related files.
+Root directory for documentation-related files.
 
 :::{path} docs/conf.py
 :::
 ### `docs/conf.py`
-Sphinx configuration and plugins.
+Contains Sphinx configuration and plugins.
 
 :::{path} docs/index.rst
 :::
 ### `docs/index.rst`
-The homepage of the documentation. Should (indirectly) link to all documentation files.
+Homepage for the documentation, (indirectly) linking to all other documentation files.
 
-:::{tip}
-If your Salt extension project has a `utils` directory, you need to include the corresponding documentation manually (the Copier template/pre-commit hook does not take care of that currently).
+:::{hint}
+If your project includes a `utils` directory, manually add the corresponding documentation here (not handled by the Copier template or the pre-commit hook).
 :::
 
 :::{path} docs/ref
 :::
 ### `docs/ref`
-Directory containing autogenerated documentation of your modules. Usually, you don't need to touch this directory, but it could be used e.g. for a configuration reference document.
+Directory containing autogenerated module documentation. Typically does not require manual updates, but can be used for custom documents, like a configuration reference.
 
 :::{path} docs/topics
 :::
 ### `docs/topics`
-Intended to contain high-level guides regarding your Salt extension, such as `Configuration`.
+Intended to hold high-level guides related to your Salt extension, such as `Configuration`. By default, includes a guide on `Installation`.
 
 :::{path} src
 :::
@@ -104,34 +104,34 @@ Root directory for Pytest-based test modules.
 :::{path} tests/conftest.py
 :::
 ### `tests/conftest.py`
-Default fixtures for all tests and basic test setup steps.
+Provides default fixtures and basic test setup.
 
 :::{path} tests/functional
 :::
 ### `tests/functional`
-Root directory for functional tests.
+Contains functional tests.
 
 :::{path} tests/functional/conftest.py
 :::
 #### `tests/functional/conftest.py`
-Default fixtures available during functional tests.
+Provides default fixtures for functional tests.
 
 :::{path} tests/integration
 :::
 ### `tests/integration`
-Root directory for integration tests.
+Contains integration tests.
 
 :::{path} tests/integration/conftest.py
 :::
 #### `tests/integration/conftest.py`
-Default fixtures available during integration tests.
+Provides default fixtures for integration tests.
 
 :::{path} tests/unit
 :::
 ### `tests/unit`
-Root directory for unit tests.
+Contains unit tests.
 
 :::{path} tests/unit/conftest.py
 :::
 #### `tests/unit/conftest.py`
-Default fixtures available during unit tests.
+Provides default fixtures for unit tests.

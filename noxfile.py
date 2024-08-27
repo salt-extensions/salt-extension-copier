@@ -54,6 +54,7 @@ DOCS_REQUIREMENTS = (
     "sphinx-inline-tabs",
     "towncrier==22.12.0",
     "sphinxcontrib-towncrier",
+    "sphinx_tippy",
 )
 
 DOCSAUTO_REQUIREMENTS = ("sphinx-autobuild",)

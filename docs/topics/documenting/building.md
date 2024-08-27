@@ -2,11 +2,12 @@
 # Building documentation
 
 :::{important}
-Ensure you have already installed `nox`. If you followed the [first steps](first-steps-target), you should be fine.
+Ensure `nox` is installed. If you followed the [first steps](first-steps-target), you should be all set.
 :::
 
 ## Prerequisites
-On some systems (MacOS, WSL, some Linux distributions) building the docs requires the `enchant` library to be installed on your system.
+
+On some systems (macOS, WSL, and certain Linux distributions), you must install the `enchant` library to build the documentation.
 
 :::{tab} Linux/WSL
 ```bash
@@ -27,26 +28,26 @@ export PYENCHANT_LIBRARY_PATH=/opt/homebrew/lib/libenchant-2.2.dylib
 :::
 
 ## Build once
-If you just want to build your documentation:
+
+To build your documentation once:
 
 ```bash
 nox -e docs
 ```
 
-You can find the rendered docs in `docs/_build/html`.
+The rendered documentation will be located in `docs/_build/html`.
 
 ## Live preview
-While developing, it can help to have an automatically reloading preview of the rendered documentation.
-The following command renders the current documentation, starts an HTTP server, opens your default browser
-and watches the repository for changes.
+For continuous development, you can start a live preview that automatically reloads when changes are made:
 
 ```bash
 nox -e docs-dev
 ```
 
+This command builds the documentation, starts an HTTP server, opens your default browser, and watches for changes.
+
 :::{note}
-If you're building the documentation on a remote system, you need to override the
-host the HTTP server is listening to since it defaults to `localhost`:
+If building on a remote system, override the default `localhost` host with:
 
 ```bash
 nox -e docs-dev -- --host=1.2.3.4

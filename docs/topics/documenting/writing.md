@@ -1,21 +1,19 @@
 (writing-docs-target)=
 # Writing documentation
-Your project's documentation sources are found in `docs`.
+
+Your project's documentation is located in the {path}`docs` directory.
 
 ## Markup language
 
 ### `docs/*`
-You can write dedicated docs pages in both [MyST](https://myst-parser.readthedocs.io/en/stable/syntax/typography.html), a superset of Markdown,
-and [RST](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html).
-
-Yes, even in a mix.
+You can write dedicated documentation pages using either [MyST](https://myst-parser.readthedocs.io/en/stable/syntax/typography.html) (a Markdown superset) or [reStructuredText (rST)](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html). Mixing files of different formats is allowed.
 
 ### Docstrings
-Docstrings in modules on the other hand must be written in RST.
+Docstrings in your modules must be written in rST.
 
 ## Tagging changes between versions
-Every time a user-facing change takes place between releases, you should document
-it using the `versionadded`/`versionchanged`/`deprecated`/`versionremoved` directives.
+
+Document any user-facing changes between releases using the `versionadded`, `versionchanged`, `deprecated`, or `versionremoved` directives.
 
 :::{tab} MyST
     changed_arg
@@ -32,7 +30,7 @@ it using the `versionadded`/`versionchanged`/`deprecated`/`versionremoved` direc
         :::
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 changed_arg
     Has been doing something for a long time.
@@ -61,9 +59,11 @@ new_arg
     :::{versionadded} 1.1.0
     :::
 :::
+
 ## Cross-references
+
 ### Entities
-It's possible to cross-reference specific entities, which can improve the documentation's usability a lot.
+Improve documentation usability by cross-referencing entities. Some highlights:
 
 #### Modules
 Link to a complete module.
@@ -74,19 +74,19 @@ Link to a complete module.
 ```
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 :py:mod:`foo <saltext.foo.modules.foo_mod>`
 ```
 :::
 
 :::{hint}
-Works for all packages whose docs are registered in the `docs/conf.py`
+Works for all packages registered in the `docs/conf.py`
 `intersphinx_mapping`. This specifically includes Salt core by default.
 :::
 
 #### Functions
-Link to a specific function in a module.
+Link to a specific function within a module.
 
 :::{tab} MyST
 ```md
@@ -94,18 +94,18 @@ Link to a specific function in a module.
 ```
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 :py:func:`foo.bar <saltext.foo.modules.foo_mod.bar>`
 ```
 :::
 
 :::{hint}
-Works for all packages whose docs are registered in the `docs/conf.py`
+Works for all packages registered in the `docs/conf.py`
 `intersphinx_mapping`. This specifically includes Salt core by default.
 :::
 
-#### Salt master configuration value
+#### Salt master configuration
 Link to the documentation of a Salt master configuration value.
 
 :::{tab} MyST
@@ -114,13 +114,13 @@ Link to the documentation of a Salt master configuration value.
 ```
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 :conf_master:`ssh_minion_opts`
 ```
 :::
 
-#### Salt minion configuration value
+#### Salt minion configuration
 Link to the documentation of a Salt minion configuration value.
 
 :::{tab} MyST
@@ -129,14 +129,14 @@ Link to the documentation of a Salt minion configuration value.
 ```
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 :conf_minion:`order_masters`
 ```
 :::
 
 ### Arbitrary anchors
-You can define arbitrary anchors and reference them later in the same document or from a different one.
+Define and reference custom anchors within the same or different documents.
 
 :::{tab} MyST
 ```md
@@ -151,7 +151,7 @@ Please refer to [Something](my-custom-target)
 ```
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 .. _my-custom-target:
 Something
@@ -167,11 +167,7 @@ Please refer to :ref:`Something <my-custom-target>`
 
 ## Admonitions
 
-It's often helpful to add a related note to some topic using admonitions.
-
-:::{hint}
-They look like this.
-:::
+Use admonitions to add notes or emphasize important information.
 
 :::{tab} MyST
 
@@ -180,7 +176,7 @@ They look like this.
     :::
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 .. important::
     Ensure you understand the usage of admonitions.
@@ -192,7 +188,7 @@ They look like this.
 Ensure you understand the usage of admonitions.
 :::
 
-Commonly used admonitions are:
+Common admonitions include:
 
 * `important`
 * `hint`
@@ -203,9 +199,7 @@ Commonly used admonitions are:
 
 ## Tabs
 
-It's also possible to use tabs like we have been doing here. As you can see, all tabs with the same titles are triggered in concert.
-
-The syntax is as follows:
+You can use tabs to organize content, as shown here. Tabs with the same titles will synchronize.
 
 :::{tab} MyST
 
@@ -213,12 +207,12 @@ The syntax is as follows:
     ... is a supserset of Markdown.
     :::
 
-    :::{tab} RST
+    :::{tab} rST
     ... is not a supserset of Markdown.
     :::
 :::
 
-:::{tab} RST
+:::{tab} rST
 ```rst
 .. tab:: MyST
     ... is a supserset of Markdown.

@@ -1,8 +1,8 @@
 # Documenting your Saltext
 
-Your Salt extension's documentation is rendered via [sphinx](https://www.sphinx-doc.org/en/master/index.html).
+Your Salt extension's documentation is generated using [sphinx](https://www.sphinx-doc.org/en/master/index.html).
 
-[nox](https://nox.thea.codes/en/stable/) is used to set up a suitable environment and invoke `sphinx` correctly.
+The environment setup and `sphinx` invocation are managed by [nox](https://nox.thea.codes/en/stable/).
 
 ```{toctree}
 :maxdepth: 2

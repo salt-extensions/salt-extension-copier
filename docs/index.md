@@ -1,17 +1,10 @@
 # Create and Maintain Salt Extensions
 
-This is the documentation for [salt-extension-copier](https://github.com/salt-extensions/salt-extension-copier), a [Copier
-template](copier-template-ref) for creating and maintaining [Salt extensions](saltext-ref).
+Welcome to the documentation for [salt-extension-copier](https://github.com/salt-extensions/salt-extension-copier), a [Copier template](copier-template-ref) designed for creating and maintaining [Salt extensions](saltext-ref).
 
-It is intended to be a one-stop shop for all topics related to the
-lifecycle of Salt extensions, from [creating](creation-target) (or - as part of the
-[Great Module Migration](great-migration-ref) - [extracting](topics/extraction.md)) an extension,
-[updating it](update-target), [writing tests](write-tests-target), [building](build-docs-target), [writing](writing-docs-target) and
-[publishing](docs-publish-target) the docs through to [building](building-target) and
-[releasing](publishing-target) your Saltext on PyPI and
-[submitting](submitting-target) it to the [`salt-extensions` organization](gh-org-ref).
+This guide covers the entire Salt extension lifecycle, from [creating](creation-target) and [extracting](topics/extraction.md) extensions (as part of the [Great Module Migration](great-migration-ref)) to [updating](update-target), [writing tests](write-tests-target), [writing documentation](writing-docs-target), [publishing docs](docs-publish-target) and [releasing](publishing-target) on PyPI. It also includes information on [submitting](submitting-target) your project to the [`salt-extensions` organization](gh-org-ref) and several other topics.
 
-Wow, that's a lot. In short: We've got you covered!
+That’s a lot to take in, but don’t worry – we’ve got you covered every step of the way!
 
 ```{toctree}
 :maxdepth: 2

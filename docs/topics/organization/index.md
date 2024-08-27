@@ -1,30 +1,30 @@
 # The GitHub organization
 
 ## Goals
-The [`salt-extensions` GitHub organization](gh-org-ref) was created in light of the [Great Module Migration](great-migration-ref).
 
-Its goals are to
+The [`salt-extensions` GitHub organization](gh-org-ref) was established in light of the [Great Module Migration](great-migration-ref) to:
 
-1. ensure users have a central contact point for all kinds of modules.
-2. provide developers and contributors with a smooth development experience.
-3. coordinate necessary efforts during the module migration.
+1. Provide users with a central hub for all kinds of Salt modules.
+2. Offer developers and contributors a streamlined development experience.
+3. Coordinate efforts during the module migration process.
 
+(org-involve-target)=
 ## Getting involved
-Whether you're fixing a bug, enhancing an existing extension, improving documentation, starting a new project, migrating existing modules out of Salt core or giving feedback, your contributions are welcome!
+
+Your contributions are welcome, whether you're fixing bugs, enhancing extensions, improving documentation, starting a new project, migrating modules from Salt core or providing feedback.
 
 ### Contact
-There are several ways to get in touch with other members.
+
+There are several ways to connect with the community:
 
 #### Discord
-Many members are active in the [Salt community Discord][discord-invite] inside the `salt-extensions` channel.
+Join the [Salt community Discord][discord-invite] and participate in the `salt-extensions` channel, where many members are active.
 
 #### Working group
-The Salt Extensions working group meets in regular periods synchronously on Microsoft Teams. Check out the [Community calendar](https://saltproject.io/calendar/) or the one found on the Salt community Discord for upcoming meetings.
-
-You can find the [meeting notes on GitHub](https://github.com/salt-extensions/community).
+The Salt Extensions working group meets regularly on Microsoft Teams. Check the [Community Calendar](https://saltproject.io/calendar/) or the Discord calendar for upcoming meetings. Meeting notes are available on [GitHub](https://github.com/salt-extensions/community).
 
 #### GitHub discussions
-You can also post on the organization's [GitHub discussions](https://github.com/orgs/salt-extensions/discussions) forum.
+You can also engage with the community on the organization’s [GitHub discussions](https://github.com/orgs/salt-extensions/discussions) forum.
 
 [discord-invite]: https://discord.gg/bPah23K7mG
 

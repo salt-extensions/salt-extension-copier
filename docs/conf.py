@@ -55,12 +55,19 @@ extensions = [
     "sphinxcontrib.towncrier.ext",
     "myst_parser",
     "sphinx_inline_tabs",
+    "sphinx_tippy",
 ]
 
 myst_enable_extensions = [
     "colon_fence",
     "deflist",
     "tasklist",
+    "fieldlist",
+]
+
+tippy_rtd_urls = [
+    "https://pytest-salt-factories.readthedocs.io/en/latest/",
+    "https://docs.pytest.org/en/stable",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -93,6 +100,7 @@ html_title = "Salt Extensions"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+html_css_files = ["tippy.css"]
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
