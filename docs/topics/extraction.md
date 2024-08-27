@@ -36,13 +36,13 @@ saltext-migrate stalekey
 
 It will
 
-1. [ensure Salt is cloned and the history analysis available](clone-the-salt-repo-and-analyze-its-history)
+1. [ensure Salt is cloned and the history analysis available](clone-analyze-target)
 2. filter for paths containing `stalekey`, asking for approval, then
-3. [filter the history into a separate branch](filter-the-history-into-a-separate-branch), renaming paths as needed
-4. auto-[cleanup the history](clean-up-the-history), as far as possible non-interactively
-5. [run copier](populate-the-extension-repo) (some questions like {question}`loaders` are populated automatically) and remove the project starter boilerplate
-6. [create a virtualenv](create-a-virtualenv-and-activate-it) for your project
-7. [apply rewrites](clean-up-and-test)
+3. [filter the history into a separate branch](filter-branch-target), renaming paths as needed
+4. auto-[cleanup the history](clean-history-target), as far as possible non-interactively
+5. [run copier](populate-repo-target) (some questions like {question}`loaders` are populated automatically) and remove the project starter boilerplate
+6. [create a virtualenv](migration-venv-target) for your project
+7. [apply rewrites](migration-clean-up-target)
 8. install & run pre-commit
 9. provide an overview of issues to fix and next steps
 
@@ -65,6 +65,7 @@ pip install git-filter-repo
 If you want to install using `pip`, consider creating a virtual environment beforehand.
 :::
 
+(clone-analyze-target)=
 ### 2. Clone the Salt repo and analyze its history
 
 ```shell
@@ -84,6 +85,7 @@ The main goal here is to find all relevant files (modules, utils, automated test
 * `tests/unit/engines/test_stalekey.py` - old style unit tests (historic path, does not exist in HEAD anymore)
 * `tests/pytests/unit/engines/test_stalekey.py` - new style unit-tests that use pytest
 
+(filter-branch-target)=
 ### 3. Filter the history into a separate branch
 
 ```shell
@@ -99,6 +101,7 @@ git filter-repo \
 
 The `--path-rename` option is needed to move the files into a different directory structure used by Salt extensions.
 
+(clean-history-target)=
 ### 4. Clean up the history
 
 ```shell
@@ -110,6 +113,7 @@ The main goal here is to delete the commits that do not touch any of the extract
 
 While looking at the Git log, please note the major contributors (to add them as code authors later).
 
+(populate-repo-target)=
 ### 5. Populate the extension repo
 
 When answering the Copier questions, choose the `engine` module type only, specify yourself as an author:
@@ -137,6 +141,7 @@ git remote rm repo-source
 git tag | xargs git tag -d
 ```
 
+(migration-venv-target)=
 ### 6. Create a virtualenv and activate it
 
 To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml).
@@ -148,6 +153,7 @@ source venv/bin/activate
 
 Please ensure you're inside your virtual environment from here on.
 
+(migration-clean-up-target)=
 ### 7. Clean up and test
 
 Run the automatic fixups:
