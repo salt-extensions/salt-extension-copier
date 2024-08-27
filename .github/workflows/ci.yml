@@ -34,6 +34,23 @@ jobs:
       - pre-commit
     uses: ./.github/workflows/test-action.yml
 
+  docs:
+    name: Docs
+    needs:
+      - pre-commit
+    uses: ./.github/workflows/docs-action.yml
+
+  deploy-docs:
+    name: Deploy Docs
+    uses: ./.github/workflows/deploy-docs-action.yml
+    # Only build doc deployments from the main branch of the org repo and never for PRs.
+    if: >-
+      github.event_name != 'pull_request' &&
+      github.ref == 'refs/heads/main'
+    needs:
+      - docs
+      - test
+
   set-pipeline-exit-status:
     # This step is just so we can make github require this step, to pass checks
     # on a pull request instead of requiring all
@@ -42,6 +59,7 @@ jobs:
     if: always()
     needs:
       - test
+      - docs
     steps:
       - name: Download Exit Status Files
         if: always()
