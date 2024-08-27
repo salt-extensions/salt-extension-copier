@@ -280,7 +280,7 @@ Here are some options to address this:
 
 * Remove the dependency on the core module or call it from the modules calling the utils directly
 * Migrate the dependency into your Salt extension repository and modify it locally as described [here](utils-dunder-into-saltext-utils)
-* Submit a PR to Salt core with the necessary changes to elimiate the code duplication in the long term.
+* Submit a PR to Salt core with the necessary changes to eliminate the code duplication in the long term.
 
 (utils-dunder-into-salt-utils)=
 ### `__utils__` from other Salt extension modules
@@ -302,6 +302,7 @@ pytest.skip(reason="Old non-pytest tests", allow_module_level=True)
 ```
 
 ## Considerations
+
 (library-dependencies)=
 ### Library dependencies
 

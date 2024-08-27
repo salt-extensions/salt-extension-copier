@@ -11,7 +11,7 @@ loading system. They function similarly to custom modules found in `salt://_modu
 (great-migration-ref)=
 ## Great module migration
 
-The SaltStack team has embarked on a significant transformation known as the "Great Module Migration." This initiative involves moving many modules, which were previously part of the core Salt distribution, into separate extensions. While this shift promises to streamline Salt’s core, it also means that many modules will no longer be maintained directly by the Salt team. Instead, their future now depends on community contributors.
+The Salt Project team has embarked on a significant transformation known as the "Great Module Migration." This initiative involves moving many modules, which were previously part of the core Salt distribution, into separate extensions. While this shift promises to streamline Salt’s core, it also means that many modules will no longer be maintained directly by the Salt team. Instead, their future now depends on community contributors.
 
 ### Timeline and Key Events
 
@@ -39,7 +39,7 @@ This drastic change is driven by several key goals:
 The migration splits modules into three categories:
 
 1. **Core modules**: These will remain within the Salt codebase and follow the Salt release cycle.
-2. **Supported modules (extended core)**: These modules will move to their own repositories within the SaltStack GitHub organization, where they can be maintained separately.
+2. **Supported modules (extended core)**: These modules will move to their own repositories within the `saltstack` GitHub organization, where they can be maintained separately.
 (community-modules-target)=
 3. **Community Modules**: These will be removed from the Salt Core codebase. Community members can take over their maintenance, either in the community-run Salt Extensions GitHub organization or in their own repositories.
 
