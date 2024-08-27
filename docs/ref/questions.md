@@ -19,7 +19,7 @@ Do not include the `saltext.` namespace here.
 :::{question} author
 :::
 ## `author`
-The author’s name for PyPI package metadata and licensing.
+The main author’s name for PyPI package metadata and licensing.
 
 **Example**: `Foo Bar`
 
@@ -141,6 +141,7 @@ Select a GitHub Actions workflow style:
 
 **enhanced**
 :  Equivalent workflows to `org`, but stored in the extension repository.
+   You need to [setup required secrets](required-secrets-target) yourself.
 
 **basic**
 :  Provided for compatibility with the deprecated create-salt-extension tool (not recommended for new projects).
@@ -166,7 +167,7 @@ Decide when to [publish documentation to GitHub pages](docs-publish-target):
    This ensures upcoming unreleased changes are displayed in the changelog.  
 
 :::{important}
-Ensure your GitHub Actions workflow is allowed to publish by setting `Pages` > `Build and deployment source` to `GitHub Actions` in your repository settings.
+Ensure your GitHub Actions workflow is [allowed to publish](docs-publish-setup-target) to your GitHub Pages site.
 :::
 
 :::{note}

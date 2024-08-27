@@ -39,7 +39,7 @@ The tool will:
 4. Auto-[cleanup the history](clean-history-target), as far as possible non-interactively
 5. [Run copier](populate-repo-target) with sane defaults and remove the project starter boilerplate
 6. [Create a virtual environment](migration-venv-target) for your project
-7. [Apply rewrites](migration-clean-up-target)
+7. [Apply rewrites](migration-clean-up-target) (with fixes and improvements versus `salt-rewrite`)
 8. Install and run pre-commit
 9. Provide an overview of issues to fix and next steps
 
@@ -73,7 +73,7 @@ cd salt
 git filter-repo --analyze
 tree .git/filter-repo/analysis/
 grep stalekey .git/filter-repo/analysis/path-{all,deleted}-sizes.txt | \
-    awk '{print $5}' | sort | uniq | \
+    awk '{print $NF}' | sort | uniq | \
     grep -vE '^(.github|doc/ref|debian/|doc/locale|salt/([^/]+/)?__init__.py|tests/(pytests/)?(unit|functional|integration)/conftest.py)'
 ```
 
@@ -236,14 +236,16 @@ references:
 
 :::{tab} old
 
-```python
-# ------- salt.modules.foo ---------------
+```{code-block} python
+:caption: salt/modules/foo.py
+
 def get(entity):
     return __utils__["foo.query"](entity)
 ```
 
-```python
-# ------- salt.utils.foo -----------------
+```{code-block} python
+:caption: salt/utils/foo.py
+
 def query(entity):
     base_url = __opts__.get("foo_base_url", "https://foo.bar")
     profile = __salt__["config.option"]("foo_profile")
@@ -252,8 +254,9 @@ def query(entity):
 :::
 
 :::{tab} correct
-```python
-# ------- saltext.foo.modules.foo -------
+```{code-block} python
+:caption: saltext/foo/modules/foo.py
+
 from saltext.foo.utils import foo
 
 
@@ -261,8 +264,9 @@ def get(entity):
     base_url = __opts__.get("foo_base_url", "https://foo.bar")
     return foo.query(base_url, entity, __salt__["config.option"])
 ```
-```python
-# ------- saltext.foo.utils.foo -------
+```{code-block} python
+:caption: saltext/foo/utils/foo.py
+
 import salt.utils.http
 
 

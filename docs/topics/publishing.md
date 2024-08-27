@@ -25,7 +25,7 @@ git switch main && git fetch upstream && git rebase upstream/main
 ```
 
 (changelog-build-target)=
-## 1: Building the changelog
+## 1: Build the changelog
 
 Create and switch to a new branch:
 
@@ -41,7 +41,7 @@ towncrier build --yes --version v1.0.0
 
 This command combines all news fragments into {path}`CHANGELOG.md` and clears them. Commit the change.
 
-## 2: Submitting the changelog
+## 2: Submit the changelog
 
 Submit this commit as a PR and merge it into the default branch on `upstream`.
 
@@ -49,7 +49,7 @@ Submit this commit as a PR and merge it into the default branch on `upstream`.
 Squash-merging this PR results in a cleaner tag target.
 :::
 
-## 3: Tagging a release
+## 3: Tag a release
 
 Ensure your `main` branch is up to date (again):
 
@@ -67,7 +67,7 @@ git tag v1.0.0
 The tag must start with `v` for the default publishing workflows to work correctly.
 :::
 
-## 4: Pushing the tag
+## 4: Push the tag
 
 Push the new tag upstream to trigger the publishing workflow:
 
