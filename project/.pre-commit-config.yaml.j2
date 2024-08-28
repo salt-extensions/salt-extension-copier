@@ -56,7 +56,7 @@ repos:
         args: [--silent, -E, fix_docstrings]
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
+    rev: v3.16.0
     hooks:
       - id: pyupgrade
         name: Rewrite Code to be Py{{ python_requires[:2] | join(".") }}+
@@ -75,14 +75,14 @@ repos:
         exclude: src/{{ namespaced_package_path }}/(__init__|version).py
 
   - repo: https://github.com/psf/black
-    rev: 24.2.0
+    rev: 24.8.0
     hooks:
       - id: black
         args: [-l 100]
         exclude: src/{{ namespaced_package_path }}/version.py
 
   - repo: https://github.com/adamchainz/blacken-docs
-    rev: 1.16.0
+    rev: 1.18.0
     hooks:
       - id: blacken-docs
         args: [--skip-errors]
@@ -93,7 +93,7 @@ repos:
 
   # ----- Security ------------------------------------------------------------------------------>
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.8
+    rev: 1.7.9
     hooks:
       - id: bandit
         alias: bandit-salt
@@ -101,7 +101,7 @@ repos:
         args: [--silent, -lll, --skip, B701]
         exclude: src/{{ namespaced_package_path }}/version.py
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.8
+    rev: 1.7.9
     hooks:
       - id: bandit
         alias: bandit-tests
