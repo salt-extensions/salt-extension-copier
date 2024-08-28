@@ -13,7 +13,7 @@ loading system. They function similarly to custom modules found in `salt://_modu
 
 The Salt Project team has embarked on a significant transformation known as the "Great Module Migration." This initiative involves moving many modules, which were previously part of the core Salt distribution, into separate extensions. While this shift promises to streamline Salt’s core, it also means that many modules will no longer be maintained directly by the Salt team. Instead, their future now depends on community contributors.
 
-### Timeline and Key Events
+### Timeline and key events
 
 - **February 2016**: Salt extensions [were introduced](https://github.com/saltstack/salt/pull/31218) with the release of Salt 2016.9.
 - **November 2020**: A [major update](https://github.com/saltstack/salt/pull/58943) to Salt extensions was released in Salt 3003. [Watch the Salt Extension Overview](https://www.youtube.com/watch?v=hhomJkwxK3Q) video for more details.
@@ -24,7 +24,7 @@ The Salt Project team has embarked on a significant transformation known as the 
 - **February 2024**: The [Great Module Purge PR](https://github.com/saltstack/salt/pull/65971) was created.
 - **April 2024**: The Great Module Purge PR was merged, making 3008 the target release.
 
-### Why This Change?
+### Why this change?
 
 This drastic change is driven by several key goals:
 
@@ -34,7 +34,7 @@ This drastic change is driven by several key goals:
 4. **Efficient Salt Distributions**: Release platform-specific versions of Salt that are smaller and more efficient.
 5. **Faster Development**: With fewer modules in the core, testing and review times will decrease, accelerating development.
 
-### Categories of Modules
+### Categories of modules
 
 The migration splits modules into three categories:
 
@@ -43,7 +43,7 @@ The migration splits modules into three categories:
 (community-modules-target)=
 3. **Community Modules**: These will be removed from the Salt Core codebase. Community members can take over their maintenance, either in the community-run Salt Extensions GitHub organization or in their own repositories.
 
-### Why You Should Get Involved
+### Why you should get involved
 
 In conclusion, this migration represents a shift in how Salt is maintained and developed. It opens the door for users and organizations to have a direct impact on the tools they rely on. If you use any of the modules categorized as community modules, their future depends on people like you. By becoming a maintainer or contributor, you can ensure that the modules you depend on continue to thrive and evolve.
 

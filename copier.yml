@@ -338,55 +338,32 @@ _jinja_extensions:
 
 # Before initialization, describe briefly what this is about
 _message_before_copy: |
+
   Welcome to salt-extension-copier!
 
   Even after generation, this template can be used to perform
   updates to your project's boilerplate.
 
-  Feel free to submit a PR if you think something should be improved. :)
+
+  Anything unclear? Visit the comprehensive user documentation:
+
+    ▶ https://salt-extensions.github.io/salt-extension-copier/
 
 # Describe next steps and rough usage after project initialization
 _message_after_copy: |
-  Your Salt extension project "{{ project_name_full }}" has been created successfully!
 
-  Next steps:
+  Your Salt extension project "{{ project_name_full }}" has been created successfully! 🎉
 
-  1. Change directory to the project root:
+  You should continue with the first steps documented here:
 
-     $ cd {{ _copier_conf.dst_path }}
+    ▶ https://salt-extensions.github.io/salt-extension-copier/topics/creation.html#first-steps
 
-  2. Initialize a Git repository:
+  {%- if "github.com/salt-extensions/" in source_url %}
 
-     $ git init
+  Once you're ready, submit a repository request to the organization:
 
-  3. Create a Python virtual environment:
-
-     $ python -m venv venv --prompt='{{ project_name_full }}'
-
-  4. Source it:
-
-     $ source venv/bin/activate
-
-  5. Install your project and dependencies in editable mode:
-
-     $ python -m pip install -e '.[dev,tests,docs]'
-
-  6. Install pre-commit hooks:
-
-     $ pre-commit install
-
-  7. Run the pre-commit hooks (the commit will fail the first time):
-
-     $ git add . && git commit
-
-  8. Perform the initial commit:
-
-     $ git add . && git commit -m "Initial extension layout"
-
-
-  To run the test suite:
-
-     $ nox -e tests-3
+    ▶ https://salt-extensions.github.io/salt-extension-copier/topics/organization/submitting.html
+  {%- endif %}
 
 
   Please update the tests :) Happy hacking!

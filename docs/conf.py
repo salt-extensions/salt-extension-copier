@@ -70,6 +70,9 @@ tippy_rtd_urls = [
     "https://docs.pytest.org/en/stable",
 ]
 
+# Only show sneaky peeks in the `furo` main container, never in navigation
+tippy_anchor_parent_selector = "div.main"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 

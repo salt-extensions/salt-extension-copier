@@ -28,9 +28,10 @@ You can also engage with the community on the organization’s [GitHub discussio
 
 [discord-invite]: https://discord.gg/bPah23K7mG
 
+## Quick links
+
 ```{toctree}
 :maxdepth: 2
-:hidden:
 
 submitting
 ```

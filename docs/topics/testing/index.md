@@ -4,9 +4,10 @@ Your Salt extension's test suite is based on [pytest](https://docs.pytest.org/en
 
 The environment setup and `pytest` invocation are managed by [nox](https://nox.thea.codes/en/stable/).
 
+## Quick links
+
 ```{toctree}
-:maxdepth: 2
-:hidden:
+:maxdepth: 4
 
 running
 writing
