@@ -111,31 +111,28 @@ repos:
   # <---- Security -------------------------------------------------------------------------------
 
   # ----- Code Analysis ------------------------------------------------------------------------->
-  - repo: https://github.com/saltstack/mirrors-nox
-    rev: v2022.11.21
+
+  - repo: local
     hooks:
       - id: nox
         alias: lint-src
         name: Lint Source Code
+        language: python
+        entry: nox -e lint-code-pre-commit --
         files: ^((setup|noxfile)|src/.*)\.py$
         require_serial: true
-        args:
-          - -e
-          - lint-code-pre-commit
-          - --
+        additional_dependencies:
+          - nox==2024.4.15
 
-  - repo: https://github.com/saltstack/mirrors-nox
-    rev: v2022.11.21
-    hooks:
       - id: nox
         alias: lint-tests
         name: Lint Tests
+        language: python
+        entry: nox -e lint-tests-pre-commit --
         files: ^tests/.*\.py$
         require_serial: true
-        args:
-          - -e
-          - lint-tests-pre-commit
-          - --
+        additional_dependencies:
+          - nox==2024.4.15
 
 {%- if "github.com" in source_url %}
 
