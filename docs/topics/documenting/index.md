@@ -4,9 +4,10 @@ Your Salt extension's documentation is generated using [sphinx](https://www.sphi
 
 The environment setup and `sphinx` invocation are managed by [nox](https://nox.thea.codes/en/stable/).
 
+## Quick links
+
 ```{toctree}
-:maxdepth: 2
-:hidden:
+:maxdepth: 4
 
 building
 writing

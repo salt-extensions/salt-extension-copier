@@ -347,4 +347,4 @@ For modules that can work with multiple interchangeable libraries, declare at le
 (dedicated-docs)=
 ### Dedicated docs
 
-Salt core modules often include inline documentation. Consider extracting the general parts of this inline documentation into separate topics within the {path}`docs/topics`directory.
+Salt core modules often include inline documentation. Consider extracting the general parts of this inline documentation into separate topics within the {path}`docs/topics` directory.
