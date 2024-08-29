@@ -248,6 +248,11 @@ copyright_begin:
   # Cannot use when: false to set this once automatically during
   # creation since the value is not recorded then.
 
+relax_pylint:
+  type: bool
+  help: Suppress some Pylint messages that can cause noise or be difficult to solve with legacy code.
+  default: false
+
 # ===========================================
 # | Computed values for less ugly templates |
 # ===========================================

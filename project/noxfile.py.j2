@@ -1,10 +1,34 @@
-# pylint: disable=missing-module-docstring,import-error,protected-access,missing-function-docstring
+{%- set pylint_tests_disable = [
+    "I",
+    "redefined-outer-name",
+    "no-member",
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "attribute-defined-outside-init",
+    "inconsistent-return-statements",
+    "too-few-public-methods",
+] -%}
+
+{%- if relax_pylint -%}
+{#-
+    Fixtures whose values are not used should be requested via `@pytest.mark.usefixtures`.
+    This decorator does not work on fixture functions though.
+-#}
+{%-   do pylint_tests_disable.extend(
+  [
+    "unused-argument",
+  ]
+) -%}
+{%- endif -%}
+
 import datetime
 import json
 import os
 import shutil
 import sys
 import tempfile
+from importlib import metadata
 from pathlib import Path
 
 import nox
@@ -16,6 +40,9 @@ from nox.virtualenv import VirtualEnv
 nox.options.reuse_existing_virtualenvs = True
 #  Don't fail on missing interpreters
 nox.options.error_on_missing_interpreters = False
+# Speed up all sessions by using uv if possible
+if tuple(map(int, metadata.version("nox").split("."))) >= (2024, 3):
+    nox.options.default_venv_backend = "uv|virtualenv"
 
 # Python versions to test against
 PYTHON_VERSIONS = ("3" {%- for i in range(python_requires[1], max_python_minor + 1) %}, "3.{{ i }}"{%- endfor %})
@@ -84,14 +111,17 @@ def _install_requirements(
     install_extras=None,
 ):
     install_extras = install_extras or []
+    no_progress = "--progress-bar=off"
+    if isinstance(session._runner.venv, VirtualEnv) and session._runner.venv.venv_backend == "uv":
+        no_progress = "--no-progress"
     if SKIP_REQUIREMENTS_INSTALL is False:
         # Always have the wheel package installed
-        session.install("--progress-bar=off", "wheel", silent=PIP_INSTALL_SILENT)
+        session.install(no_progress, "wheel", silent=PIP_INSTALL_SILENT)
         if install_coverage_requirements:
-            session.install("--progress-bar=off", COVERAGE_REQUIREMENT, silent=PIP_INSTALL_SILENT)
+            session.install(no_progress, COVERAGE_REQUIREMENT, silent=PIP_INSTALL_SILENT)
 
         if install_salt:
-            session.install("--progress-bar=off", SALT_REQUIREMENT, silent=PIP_INSTALL_SILENT)
+            session.install(no_progress, SALT_REQUIREMENT, silent=PIP_INSTALL_SILENT)
 
         if install_test_requirements:
             install_extras.append("tests")
@@ -103,7 +133,7 @@ def _install_requirements(
                 "EXTRA_REQUIREMENTS_INSTALL='%s'",
                 EXTRA_REQUIREMENTS_INSTALL,
             )
-            install_command = ["--progress-bar=off"]
+            install_command = [no_progress]
             install_command += [req.strip() for req in EXTRA_REQUIREMENTS_INSTALL.split()]
             session.install(*install_command, silent=PIP_INSTALL_SILENT)
 
@@ -256,7 +286,7 @@ def _lint(session, rcfile, flags, paths, tee_output=True):
         install_salt=False,
         install_coverage_requirements=False,
         install_test_requirements=False,
-        install_extras=["dev", "tests"],
+        install_extras=["lint", "tests"],
     )
 
     if tee_output:
@@ -319,12 +349,25 @@ def _lint_pre_commit(session, rcfile, flags, paths):
         )
 
     # Let's patch nox to make it run inside the pre-commit virtualenv
-    session._runner.venv = VirtualEnv(
-        os.environ["VIRTUAL_ENV"],
-        interpreter=session._runner.func.python,
-        reuse_existing=True,
-        venv=True,
-    )
+    try:
+        # nox >= 2024.03.02
+        # pylint: disable=unexpected-keyword-arg
+        venv = VirtualEnv(
+            os.environ["VIRTUAL_ENV"],
+            interpreter=session._runner.func.python,
+            reuse_existing=True,
+            venv_backend="venv",
+        )
+    except TypeError:
+        # nox < 2024.03.02
+        # pylint: disable=unexpected-keyword-arg
+        venv = VirtualEnv(
+            os.environ["VIRTUAL_ENV"],
+            interpreter=session._runner.func.python,
+            reuse_existing=True,
+            venv=True,
+        )
+    session._runner.venv = venv
     _lint(session, rcfile, flags, paths, tee_output=False)
 
 
@@ -356,7 +399,7 @@ def lint_tests(session):
     Run PyLint against the test suite. Set PYLINT_REPORT to a path to capture output.
     """
     flags = [
-        "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring"
+        "--disable={{ pylint_tests_disable | join(",") }}",
     ]
     if session.posargs:
         paths = session.posargs
@@ -384,7 +427,7 @@ def lint_tests_pre_commit(session):
     Run PyLint against the code and the test suite. Set PYLINT_REPORT to a path to capture output.
     """
     flags = [
-        "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring",
+        "--disable={{ pylint_tests_disable | join(",") }}",
     ]
     if session.posargs:
         paths = session.posargs
@@ -417,34 +460,6 @@ def docs(session):
                 session.error("\n" + "".join(contents))
     session.run("make", "html", "SPHINXOPTS=-W", external=True)
     os.chdir(str(REPO_ROOT))
-
-
-@nox.session(name="docs-html", python="3")
-@nox.parametrize("clean", [False, True])
-@nox.parametrize("include_api_docs", [False, True])
-def docs_html(session, clean, include_api_docs):
-    """
-    Build Sphinx HTML Documentation
-
-    TODO: Add option for `make linkcheck` and `make coverage`
-          calls via Sphinx. Ran into problems with two when
-          using Furo theme and latest Sphinx.
-    """
-    _install_requirements(
-        session,
-        install_coverage_requirements=False,
-        install_test_requirements=False,
-        install_source=True,
-        install_extras=["docs"],
-    )
-    if include_api_docs:
-        gen_api_docs(session)
-    build_dir = Path("docs", "_build", "html")
-    sphinxopts = "-Wn"
-    if clean:
-        sphinxopts += "E"
-    args = [sphinxopts, "--keep-going", "docs", str(build_dir)]
-    session.run("sphinx-build", *args, external=True)
 
 
 @nox.session(name="docs-dev", python="3")
@@ -515,30 +530,3 @@ def docs_crosslink_info(session):
         "python", "-m", "sphinx.ext.intersphinx", mapping_entry[0].rstrip("/") + "/objects.inv"
     )
     os.chdir(str(REPO_ROOT))
-
-
-@nox.session(name="gen-api-docs", python="3")
-def gen_api_docs(session):
-    """
-    Generate API Docs
-    """
-    _install_requirements(
-        session,
-        install_coverage_requirements=False,
-        install_test_requirements=False,
-        install_source=True,
-        install_extras=["docs"],
-    )
-    try:
-        shutil.rmtree("docs/ref")
-    except FileNotFoundError:
-        pass
-    session.run(
-        "sphinx-apidoc",
-        "--implicit-namespaces",
-        "--module-first",
-        "-o",
-        "docs/ref/",
-        "src/{{ package_namespace }}",
-        "src/{{ namespaced_package_path }}/config/schemas",
-    )

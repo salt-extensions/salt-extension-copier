@@ -198,3 +198,15 @@ A contact email for Code of Conduct complaints.
 The starting year of the copyright range.
 
 **Example**: `2024`
+
+:::{question} relax_pylint
+:::
+## `relax_pylint`
+Suppress some Pylint messages that can cause noise (`consider-using-f-string`)
+or be time-intense (`too-many-*`) or difficult
+(`redefined-builtin`, `redefined-outer-name`) to solve with legacy code.
+
+Additionally suppresses `unused-argument` in the test suite, often caused
+by requesting fixtures in the function signature instead of using
+`@pytest.mark.usefixtures`. Note that the decorator does not work on
+fixtures requesting other fixtures.

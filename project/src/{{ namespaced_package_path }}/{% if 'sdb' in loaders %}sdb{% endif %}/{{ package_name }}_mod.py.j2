@@ -29,4 +29,5 @@ def get(key, profile=None):
 
         salt '*' sdb.get "sdb://{{ package_name }}/foo"
     """
-    return key
+    profile = profile or {}
+    return profile.get(key, key)
