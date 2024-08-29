@@ -439,34 +439,6 @@ def docs(session):
     os.chdir(str(REPO_ROOT))
 
 
-@nox.session(name="docs-html", python="3")
-@nox.parametrize("clean", [False, True])
-@nox.parametrize("include_api_docs", [False, True])
-def docs_html(session, clean, include_api_docs):
-    """
-    Build Sphinx HTML Documentation
-
-    TODO: Add option for `make linkcheck` and `make coverage`
-          calls via Sphinx. Ran into problems with two when
-          using Furo theme and latest Sphinx.
-    """
-    _install_requirements(
-        session,
-        install_coverage_requirements=False,
-        install_test_requirements=False,
-        install_source=True,
-        install_extras=["docs"],
-    )
-    if include_api_docs:
-        gen_api_docs(session)
-    build_dir = Path("docs", "_build", "html")
-    sphinxopts = "-Wn"
-    if clean:
-        sphinxopts += "E"
-    args = [sphinxopts, "--keep-going", "docs", str(build_dir)]
-    session.run("sphinx-build", *args, external=True)
-
-
 @nox.session(name="docs-dev", python="3")
 def docs_dev(session):
     """
@@ -535,30 +507,3 @@ def docs_crosslink_info(session):
         "python", "-m", "sphinx.ext.intersphinx", mapping_entry[0].rstrip("/") + "/objects.inv"
     )
     os.chdir(str(REPO_ROOT))
-
-
-@nox.session(name="gen-api-docs", python="3")
-def gen_api_docs(session):
-    """
-    Generate API Docs
-    """
-    _install_requirements(
-        session,
-        install_coverage_requirements=False,
-        install_test_requirements=False,
-        install_source=True,
-        install_extras=["docs"],
-    )
-    try:
-        shutil.rmtree("docs/ref")
-    except FileNotFoundError:
-        pass
-    session.run(
-        "sphinx-apidoc",
-        "--implicit-namespaces",
-        "--module-first",
-        "-o",
-        "docs/ref/",
-        "src/{{ package_namespace }}",
-        "src/{{ namespaced_package_path }}/config/schemas",
-    )
