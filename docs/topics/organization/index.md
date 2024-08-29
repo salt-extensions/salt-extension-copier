@@ -26,7 +26,7 @@ The Salt Extensions working group meets regularly on Microsoft Teams. Check the 
 #### GitHub discussions
 You can also engage with the community on the organization’s [GitHub discussions](https://github.com/orgs/salt-extensions/discussions) forum.
 
-[discord-invite]: https://discord.gg/bPah23K7mG
+[discord-invite]: https://discord.com/invite/J7b7EscrAs
 
 ## Quick links
 
