@@ -1,4 +1,27 @@
-# pylint: disable=missing-module-docstring,import-error,protected-access,missing-function-docstring
+{%- set pylint_tests_disable = [
+    "I",
+    "redefined-outer-name",
+    "no-member",
+    "missing-module-docstring",
+    "missing-function-docstring",
+    "missing-class-docstring",
+    "attribute-defined-outside-init",
+    "inconsistent-return-statements",
+    "too-few-public-methods",
+] -%}
+
+{%- if relax_pylint -%}
+{#-
+    Fixtures whose values are not used should be requested via `@pytest.mark.usefixtures`.
+    This decorator does not work on fixture functions though.
+-#}
+{%-   do pylint_tests_disable.extend(
+  [
+    "unused-argument",
+  ]
+) -%}
+{%- endif -%}
+
 import datetime
 import json
 import os
@@ -263,7 +286,7 @@ def _lint(session, rcfile, flags, paths, tee_output=True):
         install_salt=False,
         install_coverage_requirements=False,
         install_test_requirements=False,
-        install_extras=["dev", "tests"],
+        install_extras=["lint", "tests"],
     )
 
     if tee_output:
@@ -376,7 +399,7 @@ def lint_tests(session):
     Run PyLint against the test suite. Set PYLINT_REPORT to a path to capture output.
     """
     flags = [
-        "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring"
+        "--disable={{ pylint_tests_disable | join(",") }}",
     ]
     if session.posargs:
         paths = session.posargs
@@ -404,7 +427,7 @@ def lint_tests_pre_commit(session):
     Run PyLint against the code and the test suite. Set PYLINT_REPORT to a path to capture output.
     """
     flags = [
-        "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring",
+        "--disable={{ pylint_tests_disable | join(",") }}",
     ]
     if session.posargs:
         paths = session.posargs

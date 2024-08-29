@@ -2,6 +2,8 @@ import pytest
 from plumbum import ProcessExecutionError
 from plumbum import local
 
+from tests.helpers.pre_commit import check_pre_commit_rerun
+from tests.helpers.pre_commit import parse_pre_commit
 from tests.helpers.venv import ProjectVenv
 
 pytestmark = [
@@ -57,8 +59,14 @@ def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
         except ProcessExecutionError as err:
             retry_count += 1
             saved_err = err
+            if not check_pre_commit_rerun(err.stderr):
+                retry_count = max_retry + 1
     else:
-        raise saved_err
+        passing, failing = parse_pre_commit(saved_err.stderr)
+        msg = f"pre-commit failure\nPassing: {', '.join(passing)}\nFailing: {', '.join(failing)}"
+        for hook, out in failing.items():
+            msg += f"\n\n{hook}:\n{out}"
+        raise AssertionError(msg)
 
 
 # We need to test both org and enhanced workflows (with actionlint/shellcheck)
@@ -94,7 +102,12 @@ def test_testsuite_works(project, project_venv):
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 def test_docs_build_works(project, project_venv):
     with ProjectVenv(project) as venv, local.cwd(project):
-        _commit_with_pre_commit(venv, max_retry=3)
+        for check in (False, True):
+            venv.run(
+                venv.venv_python,
+                str(project / ".pre-commit-hooks" / "make-autodocs.py"),
+                check=check,
+            )
         res = project_venv.run(
             str(project_venv.venv_python), "-m", "nox", "-e", "docs", check=False
         )

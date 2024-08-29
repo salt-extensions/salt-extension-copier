@@ -1,0 +1,1 @@
+Updated pylint configuration
