@@ -123,6 +123,7 @@ repos:
         require_serial: true
         additional_dependencies:
           - nox==2024.4.15
+          - uv==0.4.0  # Makes this hook much faster
 
       - id: nox
         alias: lint-tests
@@ -133,6 +134,7 @@ repos:
         require_serial: true
         additional_dependencies:
           - nox==2024.4.15
+          - uv==0.4.0  # Makes this hook much faster
 
 {%- if "github.com" in source_url %}
 
