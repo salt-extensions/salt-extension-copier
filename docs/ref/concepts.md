@@ -19,7 +19,7 @@ The Salt Project team has embarked on a significant transformation known as the 
 - **November 2020**: A [major update](https://github.com/saltstack/salt/pull/58943) to Salt extensions was released in Salt 3003. [Watch the Salt Extension Overview](https://www.youtube.com/watch?v=hhomJkwxK3Q) video for more details.
 - **July 2022**: Tom Hatch submitted a [SEP](https://github.com/saltstack/salt-enhancement-proposals/blob/24660626d9fe26953cd4581be0804ddfd0ceeb90/extention-migration.md) to migrate numerous built-in modules to extensions.
 - **October 2023**: A [project board](https://github.com/orgs/salt-extensions/projects/5/views/1) was created to track the migration process.
-- **December 2023**: The Broadcom event forced an immediate shift in strategy, leading to the announcement that there [won't be any deprecation period](https://www.youtube.com/watch?v=CubGR8rTy3Y&t=245s) for [community-designated](community-modules-target) modules.
+- **December 2023**: The Broadcom event forced an immediate shift in strategy, leading to the announcement that there <a href="https://www.youtube.com/watch?v=CubGR8rTy3Y&t=1452s">won't be any deprecation period</a> for [community-designated](community-modules-target) modules.
 - **January 2024**: A [list of modules to be extracted](https://github.com/saltstack/great-module-migration) was opened for public comment. Take your time to review it. The modules are being migrated into the [salt-extensions](https://github.com/salt-extensions) community org.
 - **February 2024**: The [Great Module Purge PR](https://github.com/saltstack/salt/pull/65971) was created.
 - **April 2024**: The Great Module Purge PR was merged, making 3008 the target release.

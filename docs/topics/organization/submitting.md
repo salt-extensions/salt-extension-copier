@@ -13,4 +13,4 @@ By hosting your project within the organization, you gain:
 
 ## Requesting a repository
 
-To request a repository, please complete this [Repository Request Form](https://github.com/salt-extensions/community/issues/new?assignees=&labels=repo&projects=&template=repo.yml&title=%5BRepo+request%5D%3A+) on GitHub.
+To request a repository, please complete this <a href="https://github.com/salt-extensions/community/issues/new?assignees=&labels=repo&projects=&template=repo.yml&title=%5BRepo+request%5D%3A+">Repository Request Form</a> on GitHub.
