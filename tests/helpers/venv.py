@@ -42,15 +42,17 @@ class VirtualEnv:
     venv_bin_dir: Path = field(init=False, repr=False)
 
     def __post_init__(self):
-        environ = os.environ.copy()
-        if self.env:
-            environ.update(self.env)
-        self.full_environ = environ
         if sys.platform == "nt":
             self.venv_python = self.venv_dir / "Scripts" / "python.exe"
         else:
             self.venv_python = self.venv_dir / "bin" / "python"
         self.venv_bin_dir = self.venv_python.parent
+        environ = os.environ.copy()
+        environ["VIRTUAL_ENV"] = str(self.venv_dir)
+        environ["PATH"] = f"{self.venv_bin_dir}:{environ['PATH']}"
+        if self.env:
+            environ.update(self.env)
+        self.full_environ = environ
 
     def __enter__(self):
         try:
@@ -176,6 +178,7 @@ class ProjectVenv(VirtualEnv):
         # TODO maybe don't hardcode this
         if sys.platform == "darwin" and platform.processor() == "arm":
             self.env["PYENCHANT_LIBRARY_PATH"] = "/opt/homebrew/lib/libenchant-2.2.dylib"
+        self.venv_dir = self.project_dir / ".venv"
         super().__post_init__()
 
     def _create_virtualenv(self):
@@ -184,6 +187,7 @@ class ProjectVenv(VirtualEnv):
                 local["git"]("status")
             except ProcessExecutionError:
                 # installation needs to be run inside a git repository
-                local["git"]("init")
-        super()._create_virtualenv()
+                local["git"]("init", "--initial-branch=main")
+        if not (self.venv_dir / "pyvenv.cfg").exists():
+            super()._create_virtualenv()
         self.install(f"{self.project_dir}[dev,docs,tests]")

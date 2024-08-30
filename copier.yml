@@ -297,30 +297,36 @@ project_name_full:
 # ========================================
 
 _migrations:
+  # (Re)initialize the project and run pre-commit after updating
+  - "'{{ copier_python }}' '{{ _copier_conf.src_path }}/tasks/initialize.py' migrate"
   - version: 0.3.0
-    before:
-      # The minimum Python version was raised from 3.7 to 3.8. If the default answer
-      # is not changed before rendering the template, it fails.
-      - >
-          awk '/^python_requires:/ {sub("3.7", "3.8")}1' {{ _copier_conf.answers_file }} >
-          {{ _copier_conf.answers_file }}.tmp &&
-          mv {{ _copier_conf.answers_file }}.tmp {{ _copier_conf.answers_file }}
+    when: '{{ _stage == "before" }}'
+    # The minimum Python version was raised from 3.7 to 3.8. If the default answer
+    # is not changed before rendering the template, it fails.
+    command: >-
+      awk '/^python_requires:/ {sub("3.7", "3.8")}1' {{ _copier_conf.answers_file }} >
+      {{ _copier_conf.answers_file }}.tmp &&
+      mv {{ _copier_conf.answers_file }}.tmp {{ _copier_conf.answers_file }}
 
-# Once we require copier>=9.3.0, we can migrate to the new syntax:
-# _migrations:
-#   - version: 0.3.0
-#     when: '{{ _stage == "before" }}'
-#     command: >-
-#       awk '/^python_requires:/ {sub("3.7", "3.8")}1' {{ _copier_conf.answers_file }} >
-#       {{ _copier_conf.answers_file }}.tmp &&
-#       mv {{ _copier_conf.answers_file }}.tmp {{ _copier_conf.answers_file }}
+_tasks:
+  # Don't run this when updating (updating copies the template twice).
+  # This breaks when recopying.
+  # We should be able to simplify this check in the future to:
+  # if _copier_conf.operation == "copy".
+  - >-
+    {%- if
+      not _copier_conf.answers.last
+      and '.new_copy.' not in _copier_conf.dst_path.name
+      and '.old_copy.' not in _copier_conf.dst_path.name -%}
+        '{{ copier_python }}' '{{ _copier_conf.src_path }}/tasks/initialize.py' init
+    {%- endif -%}
 
 # =====================================
 # | Copier settings for this template |
 # =====================================
 
-# We need multiselect functionality
-_min_copier_version: "9.1.0"
+# We need the new migration syntax
+_min_copier_version: "9.3.0"
 
 # The template root is found here
 _subdirectory: project

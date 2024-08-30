@@ -15,7 +15,7 @@ Once your Salt extension is ready, you can submit it to PyPI.
 * It is either in the `salt-extensions` organization or you have set up the [required secrets](required-secrets-target).
 * You have commit rights to the repository.
 * You have added a git remote `upstream` to your local repository, pointing to the official repository via **SSH**.
-* You have followed the [first steps](first-steps-target) to setup your repository and virtual environment.
+* You have followed the [first steps](first-steps-target) to setup your repository and virtual environment or Copier executed the steps automatically.
 * You have activated your virtual environment.
 
 Ensure your `main` branch is up to date:

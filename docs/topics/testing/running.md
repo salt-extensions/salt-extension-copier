@@ -2,7 +2,7 @@
 # Running the test suite
 
 :::{important}
-Ensure `nox` is installed. If you followed the [first steps](first-steps-target), you should be ready to go.
+Ensure `nox` is installed. If you followed the [first steps](first-steps-target) or Copier executed the steps automatically, you should be ready to go.
 :::
 
 ## Basic

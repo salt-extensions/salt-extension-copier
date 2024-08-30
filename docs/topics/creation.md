@@ -31,6 +31,16 @@ If hosting the repository outside the organization, you can choose your provider
 (first-steps-target)=
 ## First steps
 
+:::{important}
+Usually not needed anymore. Copier attempts to run all of the below steps for you, with the exception of committing.
+
+When the automation fails for some reason or you skipped it, ensure you execute the following steps manually.
+:::
+
+:::{hint}
+If you want to skip this automation, set `SKIP_INIT_MIGRATE=1` in the Copier environment.
+:::
+
 To finalize your project setup, ensure you initialize the Git repository and Python virtual environment and install and run the `pre-commit` hooks.
 
 ### Initialize the repository
@@ -45,7 +55,7 @@ Some automations assume your default branch is `main`. Ensure this is the case.
 (dev-setup-target)=
 ### Initialize the Python virtual environment
 ```bash
-python -m venv venv
+python -m venv .venv
 source venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```

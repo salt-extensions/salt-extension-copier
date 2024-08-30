@@ -15,7 +15,13 @@ pytestmark = [
         "loaders",
         "source_url",
         "workflows",
+        "skip_init_migrate",
     ),
+]
+
+
+git = local["git"][
+    "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
 ]
 
 
@@ -32,6 +38,52 @@ def test_copy_works(copie, answers):
     _assert_worked(res)
 
 
+@pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
+def test_project_init_works(copie, answers):
+    res = copie.copy(extra_answers=answers)
+    _assert_worked(res)
+    proj = res.project_dir
+    # ensure git init worked and the default branch is main
+    assert (proj / ".git").is_dir()
+    with local.cwd(proj):
+        assert "On branch main" in git("status")
+    # ensure venv was created
+    assert (proj / ".venv").is_dir()
+    assert (proj / ".venv" / "pyvenv.cfg").exists()
+    # ensure pre-commit ran
+    assert (proj / "docs" / "ref" / "beacons" / "index.rst").exists()
+
+
+@pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
+@pytest.mark.parametrize("project", ("0.2.0",), indirect=True)
+def test_project_migration_works(copie, project, project_venv, request):
+    def _check_version(expected):
+        for line in project_venv.run("pip", "show", "pre-commit").stdout.splitlines():
+            if "Version" in line:
+                assert (line.split(": ")[1] == "2.13.0") is expected
+                break
+        else:
+            raise AssertionError("Failed parsing pip output")
+
+    assert not (new_file := project / "CODE-OF-CONDUCT.md").exists()
+    # delete boilerplate, should not be regenerated after update
+    # also, this makes pylint fail
+    boilerplate = next(project.glob("src/**/sdb/*_mod.py"))
+    boilerplate.unlink()
+    # downgrade pre-commit below required version
+    project_venv.run("pip", "install", "pre-commit==2.13.0")
+    _check_version(True)
+    request.getfixturevalue("project_committed")
+    res = copie.update(project)
+    _assert_worked(res)
+    # ensure upgrade worked
+    assert new_file.exists()
+    # ensure boilerplate was not recreated
+    assert not boilerplate.exists()
+    # ensure the project was reinstalled
+    _check_version(False)
+
+
 @pytest.mark.usefixtures("project_committed")
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 @pytest.mark.parametrize("project", ("0.0.2",), indirect=True)
@@ -44,9 +96,6 @@ def test_update_from_002_works(copie, project):
 
 
 def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
-    git = local["git"][
-        "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
-    ]
     venv.run(venv.venv_python, "-m", "pre_commit", "install")
     retry_count = 1
     saved_err = None

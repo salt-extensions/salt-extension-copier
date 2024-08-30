@@ -145,7 +145,7 @@ git tag | xargs git tag -d
 To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml).
 
 ```shell
-python3.10 -m venv venv --prompt saltext-stalekey
+python3.10 -m venv .venv --prompt saltext-stalekey
 source venv/bin/activate
 ```
 
