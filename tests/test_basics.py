@@ -58,20 +58,24 @@ def test_project_init_works(copie, answers):
 @pytest.mark.parametrize("project", ("0.2.0",), indirect=True)
 def test_project_migration_works(copie, project, project_venv, request):
     def _check_version(expected):
-        for line in project_venv.run("pip", "show", "pre-commit").stdout.splitlines():
-            if "Version" in line:
-                assert (line.split(": ")[1] == "2.13.0") is expected
-                break
-        else:
-            raise AssertionError("Failed parsing pip output")
+        curr = project_venv.run_module("pre_commit", "--version").stdout.split()[-1]
+        assert (curr == "2.13.0") is expected
 
     assert not (new_file := project / "CODE-OF-CONDUCT.md").exists()
     # delete boilerplate, should not be regenerated after update
-    # also, this makes pylint fail
-    boilerplate = next(project.glob("src/**/sdb/*_mod.py"))
-    boilerplate.unlink()
+    # also, all of this makes pylint fail
+    boilerplate = [
+        next(project.glob(ptrn))
+        for ptrn in (
+            "src/**/sdb/*_mod.py",
+            "tests/unit/sdb/test_*.py",
+            "tests/unit/fileserver/test_*.py",
+        )
+    ]
+    for bpl in boilerplate:
+        bpl.unlink()
     # downgrade pre-commit below required version
-    project_venv.run("pip", "install", "pre-commit==2.13.0")
+    project_venv.install("pre-commit==2.13.0")
     _check_version(True)
     request.getfixturevalue("project_committed")
     res = copie.update(project)
@@ -79,7 +83,8 @@ def test_project_migration_works(copie, project, project_venv, request):
     # ensure upgrade worked
     assert new_file.exists()
     # ensure boilerplate was not recreated
-    assert not boilerplate.exists()
+    for bpl in boilerplate:
+        assert not bpl.exists()
     # ensure the project was reinstalled
     _check_version(False)
 
@@ -96,7 +101,7 @@ def test_update_from_002_works(copie, project):
 
 
 def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
-    venv.run(venv.venv_python, "-m", "pre_commit", "install")
+    venv.run_module("pre_commit", "install")
     retry_count = 1
     saved_err = None
 
@@ -142,9 +147,7 @@ def test_first_commit_works(project):
 )
 def test_testsuite_works(project, project_venv):
     with local.cwd(project):
-        res = project_venv.run(
-            str(project_venv.venv_python), "-m", "nox", "-e", "tests-3", check=False
-        )
+        res = project_venv.run_module("nox", "-e", "tests-3", check=False)
     assert res.returncode == 0
 
 
@@ -157,7 +160,5 @@ def test_docs_build_works(project, project_venv):
                 str(project / ".pre-commit-hooks" / "make-autodocs.py"),
                 check=check,
             )
-        res = project_venv.run(
-            str(project_venv.venv_python), "-m", "nox", "-e", "docs", check=False
-        )
+        res = project_venv.run_module("nox", "-e", "docs", check=False)
     assert res.returncode == 0

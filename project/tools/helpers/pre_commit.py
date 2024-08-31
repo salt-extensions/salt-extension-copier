@@ -70,10 +70,9 @@ def run_pre_commit(venv, retries=2):
     """
 
     def _run_pre_commit_loop(retries_left):
-        for path in list_untracked():
-            # Ensure pre-commit runs on all paths.
-            # We don't want to git add . because this removes merge conflicts
-            git("add", "--intent-to-add", str(path))
+        # Ensure pre-commit runs on all paths.
+        # We don't want to git add . because this removes merge conflicts
+        git("add", "--intent-to-add", *map(str, list_untracked()))
         with local.venv(venv):
             try:
                 local["python"]("-m", "pre_commit", "run", "--all-files")

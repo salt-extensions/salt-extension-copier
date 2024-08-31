@@ -20,10 +20,10 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: '3.10'
 
       - name: Install Nox
         run: |
@@ -40,77 +40,134 @@ jobs:
         run: |
           nox --force-color -e tests -- -vv tests/
 
-      # - name: Create CodeCov Flags
-      #   if: always()
-      #   id: codecov-flags
-      #   run: |
-      #     echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtests-${{ runner.os }}.log
+          path: artifacts/runtests-*.log
 
-      # - name: Upload Project Code Coverage
-      #   if: always()
-      #   continue-on-error: true
-      #   shell: bash
-      #   env:
-      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      #     REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},project
-      #     REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-      #     REPORT_PATH: artifacts/coverage-project.xml
-      #   run: |
-      #     if [ ! -f codecov.sh ]; then
-      #       n=0
-      #       until [ "$n" -ge 5 ]
-      #       do
-      #       if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-      #           break
-      #       fi
-      #         n=$((n+1))
-      #         sleep 15
-      #       done
-      #     fi
-      #     if [ -f codecov.sh ]; then
-      #       n=0
-      #       until [ "$n" -ge 5 ]
-      #       do
-      #         if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-      #             break
-      #         fi
-      #         n=$((n+1))
-      #         sleep 15
-      #       done
-      #     fi
+      - name: Set Exit Status
+        if: always()
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
-      # - name: Upload Tests Code Coverage
-      #   if: always()
-      #   continue-on-error: true
-      #   shell: bash
-      #   env:
-      #     CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-      #     REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},tests
-      #     REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-      #     REPORT_PATH: artifacts/coverage-tests.xml
-      #   run: |
-      #     if [ ! -f codecov.sh ]; then
-      #       n=0
-      #       until [ "$n" -ge 5 ]
-      #       do
-      #       if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-      #           break
-      #       fi
-      #         n=$((n+1))
-      #         sleep 15
-      #       done
-      #     fi
-      #     if [ -f codecov.sh ]; then
-      #       n=0
-      #       until [ "$n" -ge 5 ]
-      #       do
-      #         if bash codecov.sh -R $(pwd) -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-      #             break
-      #         fi
-      #         n=$((n+1))
-      #         sleep 15
-      #       done
-      #     fi
+      - name: Upload Exit Status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exitstatus-${{ github.job }}
+          path: exitstatus
+          if-no-files-found: error
+
+  Windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # We need the full history for update tests
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Download libeay32.dll
+        run: |
+          PY_LOC="$(which python.exe)"
+          export PY_LOC
+          echo "${PY_LOC}"
+          PY_DIR="$(dirname "${PY_LOC}")"
+          export PY_DIR
+          echo "${PY_DIR}"
+          curl https://repo.saltproject.io/windows/dependencies/64/libeay32.dll --output "${PY_DIR}/libeay32.dll"
+          ls -l "${PY_DIR}"
+        shell: bash
+
+      - name: Install Nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install nox
+
+      - name: Install Test Requirements
+        shell: bash
+        run: |
+          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
+          nox --force-color -e tests --install-only
+
+      - name: Test
+        shell: bash
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
+          nox --force-color -e tests -- -vv tests/
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: runtests-${{ runner.os }}.log
+          path: artifacts/runtests-*.log
+
+      - name: Set Exit Status
+        if: always()
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > exitstatus/${{ github.job }}
+
+      - name: Upload Exit Status
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: exitstatus-${{ github.job }}
+          path: exitstatus
+          if-no-files-found: error
+
+  macOS:
+    runs-on: macOS-latest
+    timeout-minutes: 45
+
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # We need the full history for update tests
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install nox
+
+      - name: Install Test Requirements
+        run: |
+          nox --force-color -e tests --install-only
+          brew install enchant
+
+      - name: Test
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e tests -- -vv tests/
 
       - name: Upload Logs
         if: always()

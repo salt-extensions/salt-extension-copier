@@ -1,3 +1,4 @@
+import sys
 from functools import wraps
 from pathlib import Path
 
@@ -54,11 +55,13 @@ def finish_task(msg, success, err_exit=False, extra=None):
     We usually want to exit with 0, even when something fails,
     because a failing task/migration should not crash Copier.
     """
-    print("\n")
+    print("\n", file=sys.stderr)
     if success:
-        prompt.pprint(f"\n    ✓ {msg}", bold=True, bg=prompt.DARKGREEN)
+        prompt.pprint(f"\n    ✓ {msg}", bold=True, bg=prompt.DARKGREEN, stream=sys.stderr)
     elif success is None:
-        prompt.pprint(f"\n    ✓ {msg}", bold=True, fg=prompt.YELLOW, bg=prompt.DARKGREEN)
+        prompt.pprint(
+            f"\n    ✓ {msg}", bold=True, fg=prompt.YELLOW, bg=prompt.DARKGREEN, stream=sys.stderr
+        )
         success = True
     else:
         prompt.warn(f"    ✗ {msg}", extra)

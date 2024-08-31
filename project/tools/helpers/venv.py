@@ -52,8 +52,8 @@ def create_venv(project_root=".", directory=None):
             f"--prompt=saltext-{discover_project_name()}",
         )
         prompt.status("Installing pip into venv")
-        # Ensure there's still a `pip` inside the venv for compatibility
-        uv("pip", "install", "pip")
+        # Ensure there's still a `pip` (+ setuptools/wheel) inside the venv for compatibility
+        uv("venv", "--seed")
     else:
         prompt.status("Did not find `uv`. Falling back to `venv`")
         try:
@@ -74,15 +74,15 @@ def ensure_project_venv(project_root=".", reinstall=True):
         venv = discover_venv(project_root)
         prompt.status(f"Found existing virtual environment at {venv}")
     except RuntimeError:
-        venv = create_venv()
+        venv = create_venv(project_root)
     if not reinstall:
         return venv
     prompt.status("Installing project and dependencies")
     with local.venv(venv):
         if uv is not None:
-            uv("pip", "install", "-qe", ".[dev,tests,docs]")
+            uv("pip", "install", "-e", ".[dev,tests,docs]")
         else:
-            local["python"]("-m", "pip", "install", "-qe", ".[dev,tests,docs]")
+            local["python"]("-m", "pip", "install", "-e", ".[dev,tests,docs]")
         prompt.status("Installing pre-commit hooks")
         local["python"]("-m", "pre_commit", "install", "--install-hooks")
     return venv

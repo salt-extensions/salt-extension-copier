@@ -1,4 +1,3 @@
-import os
 from dataclasses import asdict
 from typing import Generator
 
@@ -81,21 +80,16 @@ def answers(author, author_email, loaders, no_saltext_namespace, project_name, w
 
 @pytest.fixture(params=(True,))
 def skip_init_migrate(request):
-    return bool(request.param)
+    # Copier uses plumbum as well, which is already initialized.
+    # Overriding via os.environ thus has no effect.
+    with local.env(SKIP_INIT_MIGRATE=str(int(request.param))):
+        yield bool(request.param)
 
 
 @pytest.fixture
-def project(answers, request, copie, skip_init_migrate):
+def project(answers, request, copie, skip_init_migrate):  # pylint: disable=unused-argument
     vcs_ref = getattr(request, "param", "HEAD")
-    old_skip_init_migrate = os.environ.get("SKIP_INIT_MIGRATE")
-    try:
-        os.environ["SKIP_INIT_MIGRATE"] = str(int(skip_init_migrate))
-        res = copie.copy(extra_answers=answers, vcs_ref=vcs_ref)
-    finally:
-        if old_skip_init_migrate is not None:
-            os.environ["SKIP_INIT_MIGRATE"] = old_skip_init_migrate
-        else:
-            del os.environ["SKIP_INIT_MIGRATE"]
+    res = copie.copy(extra_answers=answers, vcs_ref=vcs_ref)
 
     assert res.exit_code == 0
     assert res.exception is None

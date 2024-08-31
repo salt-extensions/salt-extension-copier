@@ -1,5 +1,6 @@
 from collections import ChainMap
 from pathlib import Path
+from typing import Optional
 
 import yaml
 from copier import run_copy
@@ -9,7 +10,7 @@ from pytest_copie.plugin import Result
 from pytest_copie.plugin import _add_yaml_include_constructor
 
 
-def load_copier_yaml(template_dir: Path | None = None) -> ChainMap:
+def load_copier_yaml(template_dir: Optional[Path] = None) -> ChainMap:
     template_dir = template_dir or Path(".")
     files = template_dir.glob("copier.*")
     try:
@@ -24,8 +25,8 @@ class UpgradedCopie(Copie):
 
     def copy(
         self,
-        extra_answers: dict | None = None,
-        template_dir: Path | None = None,
+        extra_answers: Optional[dict] = None,
+        template_dir: Optional[Path] = None,
         vcs_ref: str = "HEAD",
     ) -> Result:
         """
@@ -74,7 +75,7 @@ class UpgradedCopie(Copie):
             return Result(exception=e, exit_code=-1)
 
     def update(
-        self, project_dir: Path, extra_answers: dict | None = None, vcs_ref: str = "HEAD"
+        self, project_dir: Path, extra_answers: Optional[dict] = None, vcs_ref: str = "HEAD"
     ) -> Result:
         try:
             worker = run_update(

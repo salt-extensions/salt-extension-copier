@@ -43,6 +43,18 @@ class ProcessResult:
         if self.retcode not in expected:
             raise ProcessExecutionError(self.argv, self.retcode, self.stdout, self.stderr)
 
+    def __str__(self):
+        msg = [
+            "Process execution result:",
+            f"Command: {shlex.join(self.argv)}",
+            f"Retcode: {self.retcode}",
+            "Stdout:" + " " * 8 + "|",
+        ]
+        msg += [" " * 8 + "| " + line for line in str(self.stdout).splitlines()]
+        msg.append("Stderr:" + " " * 8 + "|")
+        msg += [" " * 8 + "| " + line for line in str(self.stderr).splitlines()]
+        return "\n".join(msg)
+
 
 class ProcessExecutionError(OSError):
     """
@@ -85,7 +97,7 @@ class Local:
         with local.cwd(some_path), local.env(FOO="bar"):
             some_cmd("baz")
 
-        # A changed path requires to rediscover commands.
+        # A changed $PATH requires to rediscover commands.
         with local.prepend_path(important_path):
             local["other_cmd"]()
         with local.venv(venv_path):
@@ -94,7 +106,8 @@ class Local:
     """
 
     def __init__(self):
-        self._env = os.environ.copy()
+        # Explicitly cast values to strings to avoid problems on Windows
+        self._env = {k: str(v) for k, v in os.environ.items()}
         self._cwd = Path(os.getcwd())
 
     def __getitem__(self, exe):
@@ -129,7 +142,7 @@ class Local:
         for commands inside this context.
         """
         prev = self._env.copy()
-        self._env.update(kwargs)
+        self._env.update((k, str(v)) for k, v in kwargs.items())
         try:
             yield
         finally:
@@ -160,7 +173,7 @@ class Local:
         venv_bin_dir = venv_dir / "bin"
         if platform.system() == "Windows":
             venv_bin_dir = venv_dir / "Scripts"
-        with self.path_prepend(venv_bin_dir), self.env(VIRTUAL_ENV=venv_dir):
+        with self.path_prepend(venv_bin_dir), self.env(VIRTUAL_ENV=str(venv_dir)):
             yield
 
 
@@ -176,7 +189,7 @@ class Executable:
         return self._exe
 
     def __repr__(self):
-        return str(self)
+        return f"Executable <{self._exe}>"
 
 
 @dataclass(frozen=True)
@@ -190,15 +203,15 @@ class Command:
 
     def __post_init__(self):
         if not isinstance(self.exe, Executable):
-            if not self._which(self.exe):
+            if not (full_exe := self._which(self.exe)):
                 raise CommandNotFound(self.exe)
-            object.__setattr__(self, "exe", Executable(self.exe))
+            object.__setattr__(self, "exe", Executable(full_exe))
 
     def _which(self, exe):
         return shutil.which(exe)
 
     def _get_env(self, overrides=None):
-        base = os.environ.copy()
+        base = {k: str(v) for k, v in os.environ.items()}
         base.update(overrides or {})
         return base
 

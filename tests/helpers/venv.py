@@ -42,7 +42,7 @@ class VirtualEnv:
     venv_bin_dir: Path = field(init=False, repr=False)
 
     def __post_init__(self):
-        if sys.platform == "nt":
+        if platform.system() == "Windows":
             self.venv_python = self.venv_dir / "Scripts" / "python.exe"
         else:
             self.venv_python = self.venv_dir / "bin" / "python"
@@ -65,10 +65,13 @@ class VirtualEnv:
         shutil.rmtree(str(self.venv_dir), ignore_errors=True)
 
     def install(self, *args, **kwargs):
-        return self.run(self.venv_python, "-m", "pip", "install", *args, **kwargs)
+        return self.run_module("pip", "install", *args, **kwargs)
 
     def uninstall(self, *args, **kwargs):
-        return self.run(self.venv_python, "-m", "pip", "uninstall", "-y", *args, **kwargs)
+        return self.run_module("pip", "uninstall", "-y", *args, **kwargs)
+
+    def run_module(self, module, *args, **kwargs):
+        return self.run(str(self.venv_python), "-m", module, *args, **kwargs)
 
     def run(self, *args, **kwargs):
         check = kwargs.pop("check", True)
@@ -107,7 +110,7 @@ class VirtualEnv:
         virtualenv because it will fail otherwise
         """
         try:
-            if sys.platform == "nt":
+            if sys.platform.startswith("win"):
                 return os.path.join(sys.real_prefix, os.path.basename(sys.executable))
             python_binary_names = [
                 "python{}.{}".format(*sys.version_info),
@@ -139,7 +142,7 @@ class VirtualEnv:
 
     def get_installed_packages(self):
         data = {}
-        ret = self.run(str(self.venv_python), "-m", "pip", "list", "--format", "json")
+        ret = self.run_module("pip", "list", "--format", "json")
         for pkginfo in json.loads(ret.stdout):
             data[pkginfo["name"]] = pkginfo["version"]
         return data
@@ -156,6 +159,7 @@ class VirtualEnv:
             cmd.append("--system-site-packages")
         cmd.append(str(self.venv_dir))
         self.run(*cmd, cwd=str(self.venv_dir.parent))
+        self.run_module("ensurepip")
         log.debug("Created virtualenv in %s", self.venv_dir)
 
 

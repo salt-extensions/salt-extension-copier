@@ -6,6 +6,7 @@ from pathlib import Path
 from task_helpers.pythonpath import project_tools
 
 with project_tools():
+    from helpers import prompt
     from helpers.copier import finish_task
     from helpers.git import ensure_git
     from helpers.git import list_untracked
@@ -41,12 +42,14 @@ if __name__ == "__main__":
         init = False
     else:
         finish_task(f"Unknown invocation context: {ctx}", False, True)
+
     if os.environ.get("SKIP_INIT_MIGRATE", "0") == "1":
         finish_task(
             f"Skipping post-copy {'initialization' if init else 'migration'}, SKIP_INIT_MIGRATE is set",
             True,
         )
     try:
+        prompt.ensure_utf8()
         ensure_git()
         if not init:
             remove_untracked_unwanted()
