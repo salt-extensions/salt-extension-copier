@@ -3,11 +3,14 @@ import os
 import sys
 from pathlib import Path
 
-from helpers.copier import finish_task
-from helpers.git import ensure_git
-from helpers.git import list_untracked
-from helpers.pre_commit import run_pre_commit
-from helpers.venv import ensure_project_venv
+from task_helpers.pythonpath import project_tools
+
+with project_tools():
+    from helpers.copier import finish_task
+    from helpers.git import ensure_git
+    from helpers.git import list_untracked
+    from helpers.pre_commit import run_pre_commit
+    from helpers.venv import ensure_project_venv
 
 # Globs for files that should not be regenerated during updates if deleted.
 # This functionality can be removed once _copier_conf.operation is available.
