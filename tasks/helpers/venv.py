@@ -1,0 +1,88 @@
+from pathlib import Path
+
+from . import prompt
+from .cmd import CommandNotFound
+from .cmd import local
+from .copier import discover_project_name
+
+# Should follow the version used for relenv packages, see
+# https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml
+RECOMMENDED_PYVER = "3.10"
+# For discovery of existing virtual environment, descending priority.
+VENV_DIRS = (
+    ".venv",
+    "venv",
+    ".env",
+    "env",
+)
+
+
+try:
+    uv = local["uv"]
+except CommandNotFound:
+    uv = None
+
+
+def is_venv(path):
+    if (venv_path := Path(path)).is_dir and (venv_path / "pyvenv.cfg").exists():
+        return venv_path
+    return False
+
+
+def discover_venv(project_root="."):
+    base = Path(project_root).resolve()
+    for name in VENV_DIRS:
+        if found := is_venv(base / name):
+            return found
+    raise RuntimeError(f"No venv found in {base}")
+
+
+def create_venv(project_root=".", directory=None):
+    base = Path(project_root).resolve()
+    venv = (base / (directory or VENV_DIRS[0])).resolve()
+    if is_venv(venv):
+        raise RuntimeError(f"Venv at {venv} already exists")
+    prompt.status(f"Creating virtual environment at {venv}")
+    if uv is not None:
+        prompt.status("Found `uv`. Creating venv")
+        uv(
+            "venv",
+            "--python",
+            RECOMMENDED_PYVER,
+            f"--prompt=saltext-{discover_project_name()}",
+        )
+        prompt.status("Installing pip into venv")
+        # Ensure there's still a `pip` inside the venv for compatibility
+        uv("pip", "install", "pip")
+    else:
+        prompt.status("Did not find `uv`. Falling back to `venv`")
+        try:
+            python = local[f"python{RECOMMENDED_PYVER}"]
+        except CommandNotFound:
+            python = local["python3"]
+            version = python("--version").split(" ")[1]
+            if not version.startswith(RECOMMENDED_PYVER):
+                raise RuntimeError(
+                    f"No `python{RECOMMENDED_PYVER}` executable found in $PATH, exiting"
+                )
+        python("-m", "venv", VENV_DIRS[0], f"--prompt=saltext-{discover_project_name()}")
+    return venv
+
+
+def ensure_project_venv(project_root=".", reinstall=True):
+    try:
+        venv = discover_venv(project_root)
+        prompt.status(f"Found existing virtual environment at {venv}")
+    except RuntimeError:
+        venv = create_venv()
+    if not reinstall:
+        return venv
+    prompt.status("Installing project and dependencies")
+    with local.venv(venv):
+        if uv is not None:
+            uv("pip", "install", "-qe", ".[dev,tests,docs]")
+        else:
+            local["python"]("-m", "pip", "install", "-qe", ".[dev,tests,docs]")
+        prompt.status("Installing pre-commit hooks")
+        local["python"]("-m", "pre_commit", "install", "--install-hooks")
+    return venv
