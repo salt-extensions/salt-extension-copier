@@ -49,7 +49,7 @@ class VirtualEnv:
         self.venv_bin_dir = self.venv_python.parent
         environ = os.environ.copy()
         environ["VIRTUAL_ENV"] = str(self.venv_dir)
-        environ["PATH"] = f"{self.venv_bin_dir}:{environ['PATH']}"
+        environ["PATH"] = f"{self.venv_bin_dir}{os.pathsep}{environ['PATH']}"
         if self.env:
             environ.update(self.env)
         self.full_environ = environ

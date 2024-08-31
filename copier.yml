@@ -298,7 +298,10 @@ project_name_full:
 
 _migrations:
   # (Re)initialize the project and run pre-commit after updating
-  - "'{{ copier_python }}' '{{ _copier_conf.src_path }}/tasks/initialize.py' migrate"
+  - >-
+    '{{ copier_python }}'
+    '{{ "{src}{sep}tasks{sep}initialize.py".format(src=_copier_conf.src_path, sep=_copier_conf.sep) }}'
+    migrate
   - version: 0.3.0
     when: '{{ _stage == "before" }}'
     # The minimum Python version was raised from 3.7 to 3.8. If the default answer
@@ -318,7 +321,7 @@ _tasks:
       not _copier_conf.answers.last
       and '.new_copy.' not in _copier_conf.dst_path.name
       and '.old_copy.' not in _copier_conf.dst_path.name -%}
-        '{{ copier_python }}' '{{ _copier_conf.src_path }}/tasks/initialize.py' init
+        '{{ copier_python }}' '{{ "{src}{sep}tasks{sep}initialize.py".format(src=_copier_conf.src_path, sep=_copier_conf.sep) }}' init
     {%- endif -%}
 
 # =====================================
