@@ -70,19 +70,27 @@ def create_venv(project_root=".", directory=None):
 
 
 def ensure_project_venv(project_root=".", reinstall=True):
+    exists = False
     try:
         venv = discover_venv(project_root)
         prompt.status(f"Found existing virtual environment at {venv}")
+        exists = True
     except RuntimeError:
         venv = create_venv(project_root)
     if not reinstall:
         return venv
-    prompt.status("Installing project and dependencies")
+    prompt.status(("Reinstalling" if exists else "Installing") + " project and dependencies")
     with local.venv(venv):
         if uv is not None:
             uv("pip", "install", "-e", ".[dev,tests,docs]")
         else:
-            local["python"]("-m", "pip", "install", "-e", ".[dev,tests,docs]")
-        prompt.status("Installing pre-commit hooks")
-        local["python"]("-m", "pre_commit", "install", "--install-hooks")
+            try:
+                # We install uv into the virtualenv, so it might be available now.
+                # It speeds up this step a lot.
+                local["uv"]("pip", "install", "-e", ".[dev,tests,docs]")
+            except CommandNotFound:
+                local["python"]("-m", "pip", "install", "-e", ".[dev,tests,docs]")
+        if not exists or not (Path(project_root) / ".git" / "hooks" / "pre-commit").exists():
+            prompt.status("Installing pre-commit hooks")
+            local["python"]("-m", "pre_commit", "install", "--install-hooks")
     return venv
