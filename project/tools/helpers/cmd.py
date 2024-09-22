@@ -48,11 +48,11 @@ class ProcessResult:
             "Process execution result:",
             f"Command: {shlex.join(self.argv)}",
             f"Retcode: {self.retcode}",
-            "Stdout:" + " " * 8 + "|",
+            "Stdout:   |",
         ]
-        msg += [" " * 8 + "| " + line for line in str(self.stdout).splitlines()]
-        msg.append("Stderr:" + " " * 8 + "|")
-        msg += [" " * 8 + "| " + line for line in str(self.stderr).splitlines()]
+        msg += [" " * 10 + "| " + line for line in str(self.stdout).splitlines()]
+        msg.append("Stderr:   |")
+        msg += [" " * 10 + "| " + line for line in str(self.stderr).splitlines()]
         return "\n".join(msg)
 
 
@@ -76,11 +76,11 @@ class ProcessExecutionError(OSError):
             "Process finished with unexpected exit code",
             f"Retcode: {self.retcode}",
             f"Command: {shlex.join(self.argv)}",
-            "Stdout:" + " " * 8 + "|",
+            "Stdout:   |",
         ]
-        msg += [" " * 8 + "| " + line for line in str(self.stdout).splitlines()]
-        msg.append("Stderr:" + " " * 8 + "|")
-        msg += [" " * 8 + "| " + line for line in str(self.stderr).splitlines()]
+        msg += [" " * 10 + "| " + line for line in str(self.stdout).splitlines()]
+        msg.append("Stderr:   |")
+        msg += [" " * 10 + "| " + line for line in str(self.stderr).splitlines()]
         return "\n".join(msg)
 
 
