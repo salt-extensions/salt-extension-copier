@@ -30,19 +30,26 @@ If hosting the repository outside the organization, you can choose your provider
 
 (first-steps-target)=
 ## First steps
+Before hacking away on your new Salt extension, you need to initialize a Git repository and set up a development environment.
 
-:::{important}
-Usually not needed anymore. Copier attempts to run all of the below steps for you, with the exception of committing.
+Contributors to existing Salt extension projects need to do the latter after cloning.
 
-When the automation fails for some reason or you skipped it, ensure you execute the following steps manually.
-:::
+### Automatic
+This process is automated completely in the following cases:
+
+* For maintainers: When creating/updating a project via Copier, unless `SKIP_INIT_MIGRATE=1` was set in the environment (repo initialization + dev env setup + pre-commit hook installation + running pre-commit).
+* For all developers: When `direnv` is installed and the project's `.envrc` is allowed to run (dev env setup + pre-commit hook installation).
 
 :::{hint}
-If you want to skip this automation, set `SKIP_INIT_MIGRATE=1` in the Copier environment.
+Without `direnv`, you can still call the automation script manually after entering the project root directory:
+
+```bash
+python3 tools/initialize.py
+source .venv/bin/activate
+```
 :::
 
-To finalize your project setup, ensure you initialize the Git repository and Python virtual environment and install and run the `pre-commit` hooks.
-
+### Manual
 ### Initialize the repository
 ```bash
 git init -b main
@@ -69,7 +76,7 @@ python -m pre_commit install --install-hooks
 
 This ensures `pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files. To skip these checks temporarily, use `git commit --no-verify`.
 
-### First commit
+## First commit
 ```bash
 git add .
 git commit -m "Initial extension layout"

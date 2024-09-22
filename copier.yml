@@ -368,7 +368,14 @@ _message_after_copy: |
 
   Your Salt extension project "{{ project_name_full }}" has been created successfully! 🎉
 
-  You should continue with the first steps documented here:
+  At this point, your development environment should be ready to go.
+  If you have installed `direnv`, it can be activated automatically,
+  otherwise you need to source the Python virtual environment manually:
+
+    $ cd '{{ _copier_conf.dst_path }}'
+    $ source .venv/bin/activate
+
+  If you encounter any problems, try the manual steps documented here:
 
     ▶ https://salt-extensions.github.io/salt-extension-copier/topics/creation.html#first-steps
 
