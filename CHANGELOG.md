@@ -4,6 +4,50 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.0 (2024-09-23)
+
+
+### Removed
+
+- Removed unnecessary `docs-html` and `gen-api-docs` nox sessions
+- Removed unused saltpylint dependency
+
+
+### Changed
+
+- Changed nox pre-commit hook to local hook, added support for recent nox versions
+- Homogenized YAML syntax in `org`/`enhanced` workflows
+- Increased default pylint strictness
+- Made rolling doc releases the default when `source_url` is in org
+- Pinned pylint version used for linting
+- Switched nox venv backend to uv, which reduced the time for pre-commit linting and other nox sessions significantly
+- Updated pre-commit hook versions
+- Updated pylint configuration
+
+
+### Fixed
+
+- Fixed unwanted regeneration of deleted boilerplate during updates [#41](https://github.com/salt-extensions/salt-extension-copier/issues/41)
+- Added Copier template test runs on macOS and Windows and fixed some template issues on Windows
+- Ensured pylint lints against the minimum required Python version
+- Fixed `deploy-docs` if condition in `enhanced` workflow
+- Fixed license classifier usage when non-apache `license` is selected
+- Fixed unreleased version in rendered docs changelog with `enhanced` workflow
+- Made merge conflict pre-commit hook always run
+- Removed duplicate pre-commit hook for merge conflict check
+
+
+### Added
+
+- Automated most post-copy/update tasks like repo initialization, dev env setup and pre-commit installation and running [#45](https://github.com/salt-extensions/salt-extension-copier/issues/45)
+- Added 3006.9 to known point releases
+- Added `(master|minion)_config` fixtures to easily allow daemon configuration overrides
+- Added `actionlint` with `shellcheck` integration as a pre-commit hook
+- Added `relax_pylint` question to suppress some annoying messages, especially with legacy code
+- Added a `.envrc` for direnv that runs the new initialization script, ensuring that development environments are present and in sync for all developers
+- Added development environment initialization script to generated projects
+- Allowed overriding parameters to sphinx-autobuild in `docs-html` nox session
+
 ## 0.3.7 (2024-08-05)
 
 Correct meta files, remove install note, better docs URL default

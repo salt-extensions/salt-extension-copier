@@ -1,1 +1,0 @@
-Removed unused saltpylint dependency

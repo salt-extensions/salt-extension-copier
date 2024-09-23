@@ -1,1 +1,0 @@
-Increased default pylint strictness
