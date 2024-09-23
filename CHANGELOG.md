@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.1 (2024-09-23)
+
+
+### Fixed
+
+- Fixed check-merge-conflict pre-commit hook false positive in RST files with specific Saltext name lengths [#52](https://github.com/salt-extensions/salt-extension-copier/issues/52)
+
 ## 0.4.0 (2024-09-23)
 
 
