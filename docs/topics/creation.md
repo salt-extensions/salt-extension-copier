@@ -36,6 +36,9 @@ Contributors to existing Salt extension projects need to do the latter after clo
 
 (automatic-init-target)=
 ### Automatic
+:::{versionadded} 0.4.0
+:::
+
 This process is automated completely in the following cases:
 
 * For maintainers: When creating/updating a project via Copier, unless `SKIP_INIT_MIGRATE=1` was set in the environment ([repo initialization](repo-init-target) + [dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target) + running pre-commit).

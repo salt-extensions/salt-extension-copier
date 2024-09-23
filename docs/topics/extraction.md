@@ -6,6 +6,12 @@ A tool named [saltext-migrate](https://github.com/salt-extensions/salt-extension
 
 ### 1. Install `saltext-migrate` and `git-filter-repo`
 
+:::{important}
+Ensure you always use the latest HEAD of `saltext-migrate` to avoid incompatibilities with new template versions or already fixed bugs.
+
+When encountering a bug, first try to update the tool.
+:::
+
 :::{tab} pipx
 ```bash
 pipx install git-filter-repo
@@ -142,7 +148,7 @@ git tag | xargs git tag -d
 (migration-venv-target)=
 ### 6. Create a virtualenv and activate it
 
-:::{important}
+:::{versionchanged} 0.4.0
 Creating a virtualenv is usually not necessary anymore since [Copier takes care of it](automatic-init-target) now. You still need to ensure you're inside the virtual environment from here on.
 :::
 
