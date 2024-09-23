@@ -9,7 +9,7 @@ To render the template, you only need a functional [Copier][copier-docs] install
 It’s recommended to install Copier globally using [pipx][pipx-docs]:
 
 ```bash
-pipx install 'copier>=9.1' && \
+pipx install 'copier>=9.3' && \
  pipx inject copier copier-templates-extensions
 ```
 :::
@@ -19,7 +19,7 @@ pipx install 'copier>=9.1' && \
 Alternatively, you can install Copier with `pip`, preferably inside a virtual environment:
 
 ```bash
-python -m pip install copier copier-templates-extensions
+python -m pip install 'copier>=9.3' copier-templates-extensions
 ```
 :::
 

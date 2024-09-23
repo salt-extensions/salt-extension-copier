@@ -78,8 +78,16 @@ def answers(author, author_email, loaders, no_saltext_namespace, project_name, w
     return {k: v for k, v in defaults.items() if v is not None}
 
 
+@pytest.fixture(params=(True,))
+def skip_init_migrate(request):
+    # Copier uses plumbum as well, which is already initialized.
+    # Overriding via os.environ thus has no effect.
+    with local.env(SKIP_INIT_MIGRATE=str(int(request.param))):
+        yield bool(request.param)
+
+
 @pytest.fixture
-def project(answers, request, copie):
+def project(answers, request, copie, skip_init_migrate):  # pylint: disable=unused-argument
     vcs_ref = getattr(request, "param", "HEAD")
     res = copie.copy(extra_answers=answers, vcs_ref=vcs_ref)
 
@@ -111,3 +119,5 @@ def project_venv(project):
 def pytest_make_parametrize_id(config, val, argname):  # pylint: disable=unused-argument
     if argname == "no_saltext_namespace":
         return f"{'no_' if val else ''}ns"
+    if argname == "skip_init_migrate":
+        return f"{'no_' if val else ''}init"

@@ -1,4 +1,5 @@
 import copy
+import sys
 from pathlib import Path
 
 import yaml
@@ -51,6 +52,7 @@ class SaltExt(ContextHook):
             "salt_python_support": copy.deepcopy(self.sps),
             "singular_loader_dirs": SINGULAR_LOADER_DIRS,
             "salt_latest_point": copy.deepcopy(self.slp),
+            "copier_python": sys.executable,
         }
 
 

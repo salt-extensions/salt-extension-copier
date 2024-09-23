@@ -36,7 +36,19 @@ git clone --origin upstream {{ source_url | replace("https://", "git@") | replac
 cd {{ project_name_full }}
 ```
 
-Then follow the [first steps][first-steps], skipping the repository initialization and first commit.
+#### Automatic
+If you have installed [direnv][direnv], allowing the project's `.envrc` ensures
+a proper development environment is present and the virtual environment is active.
+
+Without `direnv`, you can still run the automation explicitly:
+
+```bash
+python3 tools/initialize.py
+source .venv/bin/activate
+```
+
+#### Manual
+Please follow the [first steps][first-steps], skipping the repository initialization and first commit.
 
 {%- if "github.com" in source_url %}
 
@@ -93,6 +105,7 @@ appreciate every contribution!
 [rendering-docs]: https://salt-extensions.github.io/salt-extension-copier/topics/documenting/building.html
 [first-steps]: https://salt-extensions.github.io/salt-extension-copier/topics/creation.html#initialize-the-python-virtual-environment
 [submitting-pr]: https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork
+[direnv]: https://direnv.net
 {%- if tracker_url %}
 [issues]: {{ tracker_url }}
 {%- endif %}

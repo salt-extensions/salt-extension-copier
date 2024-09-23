@@ -15,7 +15,13 @@ pytestmark = [
         "loaders",
         "source_url",
         "workflows",
+        "skip_init_migrate",
     ),
+]
+
+
+git = local["git"][
+    "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
 ]
 
 
@@ -32,6 +38,57 @@ def test_copy_works(copie, answers):
     _assert_worked(res)
 
 
+@pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
+def test_project_init_works(copie, answers):
+    res = copie.copy(extra_answers=answers)
+    _assert_worked(res)
+    proj = res.project_dir
+    # ensure git init worked and the default branch is main
+    assert (proj / ".git").is_dir()
+    with local.cwd(proj):
+        assert "On branch main" in git("status")
+    # ensure venv was created
+    assert (proj / ".venv").is_dir()
+    assert (proj / ".venv" / "pyvenv.cfg").exists()
+    # ensure pre-commit ran
+    assert (proj / "docs" / "ref" / "beacons" / "index.rst").exists()
+
+
+@pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
+@pytest.mark.parametrize("project", ("0.2.0",), indirect=True)
+def test_project_migration_works(copie, project, project_venv, request):
+    def _check_version(expected):
+        curr = project_venv.run_module("pre_commit", "--version").stdout.split()[-1]
+        assert (curr == "2.13.0") is expected
+
+    assert not (new_file := project / "CODE-OF-CONDUCT.md").exists()
+    # delete boilerplate, should not be regenerated after update
+    # also, all of this makes pylint fail
+    boilerplate = [
+        next(project.glob(ptrn))
+        for ptrn in (
+            "src/**/sdb/*_mod.py",
+            "tests/unit/sdb/test_*.py",
+            "tests/unit/fileserver/test_*.py",
+        )
+    ]
+    for bpl in boilerplate:
+        bpl.unlink()
+    # downgrade pre-commit below required version
+    project_venv.install("pre-commit==2.13.0")
+    _check_version(True)
+    request.getfixturevalue("project_committed")
+    res = copie.update(project)
+    _assert_worked(res)
+    # ensure upgrade worked
+    assert new_file.exists()
+    # ensure boilerplate was not recreated
+    for bpl in boilerplate:
+        assert not bpl.exists()
+    # ensure the project was reinstalled
+    _check_version(False)
+
+
 @pytest.mark.usefixtures("project_committed")
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 @pytest.mark.parametrize("project", ("0.0.2",), indirect=True)
@@ -44,10 +101,7 @@ def test_update_from_002_works(copie, project):
 
 
 def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
-    git = local["git"][
-        "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
-    ]
-    venv.run(venv.venv_python, "-m", "pre_commit", "install")
+    venv.run_module("pre_commit", "install")
     retry_count = 1
     saved_err = None
 
@@ -93,9 +147,7 @@ def test_first_commit_works(project):
 )
 def test_testsuite_works(project, project_venv):
     with local.cwd(project):
-        res = project_venv.run(
-            str(project_venv.venv_python), "-m", "nox", "-e", "tests-3", check=False
-        )
+        res = project_venv.run_module("nox", "-e", "tests-3", check=False)
     assert res.returncode == 0
 
 
@@ -108,7 +160,5 @@ def test_docs_build_works(project, project_venv):
                 str(project / ".pre-commit-hooks" / "make-autodocs.py"),
                 check=check,
             )
-        res = project_venv.run(
-            str(project_venv.venv_python), "-m", "nox", "-e", "docs", check=False
-        )
+        res = project_venv.run_module("nox", "-e", "docs", check=False)
     assert res.returncode == 0

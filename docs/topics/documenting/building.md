@@ -2,7 +2,7 @@
 # Building documentation
 
 :::{important}
-Ensure `nox` is installed. If you followed the [first steps](first-steps-target), you should be all set.
+Ensure `nox` is installed. If you executed the [first steps](first-steps-target) in some way, you should be all set.
 :::
 
 ## Prerequisites

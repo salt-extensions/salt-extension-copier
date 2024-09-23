@@ -42,15 +42,17 @@ class VirtualEnv:
     venv_bin_dir: Path = field(init=False, repr=False)
 
     def __post_init__(self):
-        environ = os.environ.copy()
-        if self.env:
-            environ.update(self.env)
-        self.full_environ = environ
-        if sys.platform == "nt":
+        if platform.system() == "Windows":
             self.venv_python = self.venv_dir / "Scripts" / "python.exe"
         else:
             self.venv_python = self.venv_dir / "bin" / "python"
         self.venv_bin_dir = self.venv_python.parent
+        environ = os.environ.copy()
+        environ["VIRTUAL_ENV"] = str(self.venv_dir)
+        environ["PATH"] = f"{self.venv_bin_dir}{os.pathsep}{environ['PATH']}"
+        if self.env:
+            environ.update(self.env)
+        self.full_environ = environ
 
     def __enter__(self):
         try:
@@ -63,10 +65,13 @@ class VirtualEnv:
         shutil.rmtree(str(self.venv_dir), ignore_errors=True)
 
     def install(self, *args, **kwargs):
-        return self.run(self.venv_python, "-m", "pip", "install", *args, **kwargs)
+        return self.run_module("pip", "install", *args, **kwargs)
 
     def uninstall(self, *args, **kwargs):
-        return self.run(self.venv_python, "-m", "pip", "uninstall", "-y", *args, **kwargs)
+        return self.run_module("pip", "uninstall", "-y", *args, **kwargs)
+
+    def run_module(self, module, *args, **kwargs):
+        return self.run(str(self.venv_python), "-m", module, *args, **kwargs)
 
     def run(self, *args, **kwargs):
         check = kwargs.pop("check", True)
@@ -105,7 +110,7 @@ class VirtualEnv:
         virtualenv because it will fail otherwise
         """
         try:
-            if sys.platform == "nt":
+            if sys.platform.startswith("win"):
                 return os.path.join(sys.real_prefix, os.path.basename(sys.executable))
             python_binary_names = [
                 "python{}.{}".format(*sys.version_info),
@@ -137,7 +142,7 @@ class VirtualEnv:
 
     def get_installed_packages(self):
         data = {}
-        ret = self.run(str(self.venv_python), "-m", "pip", "list", "--format", "json")
+        ret = self.run_module("pip", "list", "--format", "json")
         for pkginfo in json.loads(ret.stdout):
             data[pkginfo["name"]] = pkginfo["version"]
         return data
@@ -154,6 +159,7 @@ class VirtualEnv:
             cmd.append("--system-site-packages")
         cmd.append(str(self.venv_dir))
         self.run(*cmd, cwd=str(self.venv_dir.parent))
+        self.run_module("ensurepip")
         log.debug("Created virtualenv in %s", self.venv_dir)
 
 
@@ -176,6 +182,7 @@ class ProjectVenv(VirtualEnv):
         # TODO maybe don't hardcode this
         if sys.platform == "darwin" and platform.processor() == "arm":
             self.env["PYENCHANT_LIBRARY_PATH"] = "/opt/homebrew/lib/libenchant-2.2.dylib"
+        self.venv_dir = self.project_dir / ".venv"
         super().__post_init__()
 
     def _create_virtualenv(self):
@@ -184,6 +191,7 @@ class ProjectVenv(VirtualEnv):
                 local["git"]("status")
             except ProcessExecutionError:
                 # installation needs to be run inside a git repository
-                local["git"]("init")
-        super()._create_virtualenv()
+                local["git"]("init", "--initial-branch=main")
+        if not (self.venv_dir / "pyvenv.cfg").exists():
+            super()._create_virtualenv()
         self.install(f"{self.project_dir}[dev,docs,tests]")
