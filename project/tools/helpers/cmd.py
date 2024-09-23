@@ -108,7 +108,6 @@ class Local:
     def __init__(self):
         # Explicitly cast values to strings to avoid problems on Windows
         self._env = {k: str(v) for k, v in os.environ.items()}
-        self._cwd = Path(os.getcwd())
 
     def __getitem__(self, exe):
         """
@@ -128,12 +127,13 @@ class Local:
         """
         Set the default current working directory for commands inside this context.
         """
-        prev = self._cwd
-        self._cwd = self._cwd / path
+        prev = Path(os.getcwd())
+        new = prev / path
+        os.cwd(new)
         try:
             yield
         finally:
-            self._cwd = prev
+            os.cwd(prev)
 
     @contextmanager
     def env(self, **kwargs):
@@ -278,10 +278,6 @@ class LocalCommand(Command):
         base = self._local._env.copy()
         base.update(overrides or {})
         return base
-
-    def run(self, *args, **kwargs):
-        kwargs.setdefault("cwd", self._local._cwd)
-        return super().run(*args, **kwargs)
 
 
 # Should be imported from here.
