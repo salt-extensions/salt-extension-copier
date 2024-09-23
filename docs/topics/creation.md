@@ -34,11 +34,16 @@ Before hacking away on your new Salt extension, you need to initialize a Git rep
 
 Contributors to existing Salt extension projects need to do the latter after cloning.
 
+(automatic-init-target)=
 ### Automatic
 This process is automated completely in the following cases:
 
 * For maintainers: When creating/updating a project via Copier, unless `SKIP_INIT_MIGRATE=1` was set in the environment ([repo initialization](repo-init-target) + [dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target) + running pre-commit).
 * For all developers: When `direnv` is installed and the project's `.envrc` is allowed to run ([dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target)).
+
+:::{important}
+The automation either requires [`uv`](https://github.com/astral-sh/uv) or the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml) to be available on your system, at the time of writing Python 3.10.
+:::
 
 :::{hint}
 Without `direnv`, you can still call the automation script manually after entering the project root directory:
@@ -62,8 +67,12 @@ Some automations assume your default branch is `main`. Ensure this is the case.
 
 (dev-setup-target)=
 ### Initialize the Python virtual environment
+:::{important}
+To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.10.
+:::
+
 ```bash
-python -m venv .venv
+python3.10 -m venv .venv
 source venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```

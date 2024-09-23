@@ -143,7 +143,7 @@ git tag | xargs git tag -d
 ### 6. Create a virtualenv and activate it
 
 :::{important}
-Creating a virtualenv is usually not necessary anymore since Copier takes care of it now. You still need to ensure you're inside the virtual environment from here on.
+Creating a virtualenv is usually not necessary anymore since [Copier takes care of it](automatic-init-target) now. You still need to ensure you're inside the virtual environment from here on.
 :::
 
 To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml).
