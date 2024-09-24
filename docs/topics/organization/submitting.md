@@ -9,7 +9,7 @@ By hosting your project within the organization, you gain:
 
 - A fully configured repository with maintainer rights and pre-configured CI.
 - Increased discoverability of your extension.
-- Automated Copier template updates (not yet implemented).
+- Automated Copier template updates.
 
 ## Requesting a repository
 
