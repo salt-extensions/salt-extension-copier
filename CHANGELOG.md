@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.2 (2024-09-24)
+
+
+### Changed
+
+- Ignored keyword-arg-before-vararg pylint warning by default because `salt.utils.args.get_function_argspec` does not work with this style
+
 ## 0.4.1 (2024-09-23)
 
 
