@@ -97,4 +97,7 @@ def run_pre_commit(venv, retries=2):
         prompt.warn(f"Pre-commit is failing. {msg}")
         for i, failing_hook in enumerate(failing):
             prompt.warn(f"✗ Failing hook ({i + 1}): {failing_hook}", failing[failing_hook])
+    finally:
+        # Undo git add --intent-to-add to allow RenovateBot to detect new files correctly
+        git("restore", "--staged", ".")
     return False
