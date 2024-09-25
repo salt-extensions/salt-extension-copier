@@ -31,6 +31,12 @@ jobs:
             deleted:
               - deleted:
                 - '**'
+            pre-commit:
+              - added|modified|deleted:
+                - .pre-commit-hooks/**
+                - .pre-commit-config.y?(a)ml
+                - .pylintrc
+                - pyproject.toml
 
       - name: Echo Changed Files Output
         run: echo "${{ toJSON(steps.changed-files.outputs) }}"

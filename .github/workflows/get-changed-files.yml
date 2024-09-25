@@ -31,6 +31,9 @@ jobs:
             deleted:
               - deleted:
                 - '**'
+            pre-commit:
+              - added|modified|deleted:
+                - .pre-commit-config.y?(a)ml
 
       - name: Echo Changed Files Output
         run: echo "${{ toJSON(steps.changed-files.outputs) }}"

@@ -32,7 +32,7 @@ jobs:
           pre-commit install --install-hooks
 
       - name: Check ALL Files On Branch
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' || fromJSON(inputs.changed-files)['pre-commit'] == 'true'
         run: |
           pre-commit run --show-diff-on-failure --color=always --all-files
 
