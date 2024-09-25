@@ -4,6 +4,14 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.3 (2024-09-25)
+
+
+### Changed
+
+- Made pre-commit run on all files in PRs that change lint config
+- Made repo automation reset git index after running pre-commit to allow RenovateBot to detect new files correctly
+
 ## 0.4.2 (2024-09-24)
 
 
