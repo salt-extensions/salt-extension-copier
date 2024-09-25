@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.4 (2024-09-25)
+
+
+### Fixed
+
+- Fixed RenovateBot warning about merge conflicts after update
+
 ## 0.4.3 (2024-09-25)
 
 
