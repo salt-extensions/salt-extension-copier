@@ -4,6 +4,27 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.5 (2024-09-27)
+
+
+### Changed
+
+- Allowed specifying a minor version in max_salt_version
+- Improved test version matrix generation in enhanced workflow
+
+
+### Fixed
+
+- Fixed basic workflow tests running against .0 minor releases only
+- Fixed project environment initialization crash during first copy. This crash did not result in any issues other than a warning after copy.
+- Moved migrations into Python script, making them more platform-agnostic
+- Updated salt-rewrite URL in pre-commit config
+
+
+### Added
+
+- Added `os_support` question when enhanced workflows were selected, influencing the OS the tests are run on
+
 ## 0.4.4 (2024-09-25)
 
 
