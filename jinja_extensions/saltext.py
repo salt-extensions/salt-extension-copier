@@ -35,7 +35,12 @@ class SaltExt(ContextHook):
             (Path(__file__).parent.parent / "data" / "salt_python_support.yaml").read_text()
         )
         self.sps = {
-            version: {"min": tuple(defs["min"]), "max": tuple(defs["max"])}
+            version: {
+                "min": tuple(defs["min"]),
+                "max": tuple(defs["max"]),
+                "onedir": tuple(defs.get("onedir", defs["max"])),
+                "lts": defs.get("lts", False),
+            }
             for version, defs in sps.items()
         }
         self.slp = yaml.safe_load(

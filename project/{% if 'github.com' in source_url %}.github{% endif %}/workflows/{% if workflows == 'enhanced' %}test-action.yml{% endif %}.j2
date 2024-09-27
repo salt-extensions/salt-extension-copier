@@ -12,17 +12,34 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 5
-      matrix:
-        include:
 {%- endraw %}
+{%- set test_matrix = [] %}
 {%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+
+{%-   if sver == max_salt_version_major %}
+{%-     set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
+{%-   else %}
+{%-     set sver_minor = salt_latest_point[sver] %}
+{%-   endif %}
+
+{%-   if salt_python_support[sver]["lts"] %}
+{%-     set min_pyver = (python_requires[1], salt_python_support[sver]["min"][1]) | max %}
+{%-   else %}
+{%-     set min_pyver = (python_requires[1], salt_python_support[sver]["onedir"][1]) | max %}
+{%-   endif %}
+
 {%-   for pyver in range(
-        (python_requires[1], salt_python_support[sver]["min"][1]) | max,
+        min_pyver,
         (max_python_minor, salt_python_support[sver]["max"][1]) | min + 1
       ) %}
-          - {salt-version: "{{ sver }}.{{ ((salt_latest_point[sver], max_salt_version_minor) | min) if sver == max_salt_version_major else salt_latest_point[sver] }}", python-version: "3.{{ pyver }}"}
+{%-     do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
 {%-   endfor %}
+{%- endfor %}
+      max-parallel: {{ (test_matrix | length, 12) | min }}
+      matrix:
+        include:
+{%- for sver, pyver in test_matrix %}
+          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
 {%- endfor %}
 {%- raw %}
 
@@ -154,14 +171,24 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 3
+{%- endraw %}
+{%- set test_matrix = [] %}
+{%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+
+{%-   if sver == max_salt_version_major %}
+{%-     set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
+{%-   else %}
+{%-     set sver_minor = salt_latest_point[sver] %}
+{%-   endif %}
+
+{%-   set pyver = (python_requires[1], salt_python_support[sver]["min"][1], 8) | max %}
+{%-   do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
+{%- endfor %}
+      max-parallel: {{ (test_matrix | length, 3) | min }}
       matrix:
         include:
-{%- endraw %}
-
-{%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
-{%-   set pyver = (python_requires[1], salt_python_support[sver]["min"][1], 8) | max %}
-          - {salt-version: "{{ sver }}.{{ ((salt_latest_point[sver], max_salt_version_minor) | min) if sver == max_salt_version_major else salt_latest_point[sver] }}", python-version: "3.{{ pyver }}"}
+{%- for sver, pyver in test_matrix %}
+          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
 {%- endfor %}
 {%- raw %}
 
@@ -309,13 +336,18 @@ jobs:
 
     strategy:
       fail-fast: false
-      max-parallel: 3
-      matrix:
-        include:
 {%- endraw %}
 
+{%- set test_matrix = [] %}
 {%- set macos_pyver = [] %}
 {%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+
+{%-   if sver == max_salt_version_major %}
+{%-     set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
+{%-   else %}
+{%-     set sver_minor = salt_latest_point[sver] %}
+{%-   endif %}
+
 {%-   set pyver = (python_requires[1], salt_python_support[sver]["min"][1], 8) | max + 1 %}
 {%-   if pyver in macos_pyver %}
 {%-     if pyver + (sver - salt_version_major) <= salt_python_support[sver]["max"][1] %}
@@ -325,7 +357,13 @@ jobs:
 {%-     endif %}
 {%-   endif %}
 {%-   do macos_pyver.append(pyver) %}
-          - {salt-version: "{{ sver }}.{{ ((salt_latest_point[sver], max_salt_version_minor) | min) if sver == max_salt_version_major else salt_latest_point[sver] }}", python-version: "3.{{ pyver }}"}
+{%-   do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
+{%- endfor %}
+      max-parallel: {{ (test_matrix | length, 3) | min }}
+      matrix:
+        include:
+{%- for sver, pyver in test_matrix %}
+          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
 {%- endfor %}
 {%- raw %}
 
