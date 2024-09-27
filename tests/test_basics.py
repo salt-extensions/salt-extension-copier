@@ -49,9 +49,12 @@ def test_copy_works_with_salt_minor_version(copie, answers):
 
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
-def test_project_init_works(copie, answers):
+def test_project_init_works(copie, answers, capfd):
     res = copie.copy(extra_answers=answers)
     _assert_worked(res)
+    # ensure the environment initialization did not fail
+    # (it does not cause an exit code > 0 since it's optional)
+    assert "Failed initializing environment" not in capfd.readouterr().err
     proj = res.project_dir
     # ensure git init worked and the default branch is main
     assert (proj / ".git").is_dir()
@@ -66,7 +69,7 @@ def test_project_init_works(copie, answers):
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.2.0",), indirect=True)
-def test_project_migration_works(copie, project, project_venv, request):
+def test_project_migration_works(copie, project, project_venv, request, capfd):
     def _check_version(expected):
         curr = project_venv.run_module("pre_commit", "--version").stdout.split()[-1]
         assert (curr == "2.13.0") is expected
@@ -90,7 +93,10 @@ def test_project_migration_works(copie, project, project_venv, request):
     request.getfixturevalue("project_committed")
     res = copie.update(project)
     _assert_worked(res)
-    # ensure upgrade worked
+    # ensure the environment migration did not fail
+    # (it does not cause an exit code > 0 since it's optional)
+    assert "Failed migrating environment" not in capfd.readouterr().err
+    # ensure the upgrade worked
     assert new_file.exists()
     # ensure boilerplate was not recreated
     for bpl in boilerplate:
