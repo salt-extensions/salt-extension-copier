@@ -48,7 +48,6 @@ class SaltExt(ContextHook):
             return {}
         return {
             "python_requires": tuple(int(x) for x in context["python_requires"].split(".")),
-            "max_python_minor": self.sps[context["max_salt_version"]]["max"][1],
             "salt_python_support": copy.deepcopy(self.sps),
             "singular_loader_dirs": SINGULAR_LOADER_DIRS,
             "salt_latest_point": copy.deepcopy(self.slp),

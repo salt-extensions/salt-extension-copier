@@ -45,6 +45,16 @@ def no_saltext_namespace(request):
     return request.param
 
 
+@pytest.fixture
+def salt_version(copier_yaml, request):
+    return getattr(request, "param", copier_yaml["salt_version"]["default"])
+
+
+@pytest.fixture
+def max_salt_version(copier_yaml, request):
+    return getattr(request, "param", copier_yaml["max_salt_version"]["default"])
+
+
 @pytest.fixture(params=("org",))
 def source_url(project_name, request):
     if not request.param:
@@ -65,13 +75,25 @@ def workflows(source_url, request):
 
 
 @pytest.fixture(params=((),))
-def answers(author, author_email, loaders, no_saltext_namespace, project_name, workflows, request):
+def answers(
+    author,
+    author_email,
+    loaders,
+    max_salt_version,
+    no_saltext_namespace,
+    salt_version,
+    project_name,
+    workflows,
+    request,
+):
     defaults = {
         "project_name": project_name,
         "author": author,
         "author_email": author_email,
         "loaders": loaders,
         "no_saltext_namespace": no_saltext_namespace,
+        "salt_version": salt_version,
+        "max_salt_version": max_salt_version,
         "workflows": workflows,
     }
     defaults.update(request.param)

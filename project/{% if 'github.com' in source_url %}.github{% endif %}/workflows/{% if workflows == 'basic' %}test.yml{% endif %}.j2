@@ -72,12 +72,12 @@ jobs:
       matrix:
         include:
 {%- endraw %}
-{%- for sversion in range(salt_version | int, max_salt_version + 1) %}
-{%-   for python_version in range(
-        (python_requires[1], salt_python_support[sversion]["min"][1]) | max,
-        (max_python_minor, salt_python_support[sversion]["max"][1]) | min + 1
+{%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-   for pyver in range(
+        (python_requires[1], salt_python_support[sver]["min"][1]) | max,
+        (max_python_minor, salt_python_support[sver]["max"][1]) | min + 1
       ) %}
-          - {salt-version: "{{ sversion }}", python-version: "3.{{ python_version }}"}
+          - {salt-version: "{{ sver }}.{{ ((salt_latest_point[sver], max_salt_version_minor) | min) if sver == max_salt_version_major else salt_latest_point[sver] }}", python-version: "3.{{ pyver }}"}
 {%-   endfor %}
 {%- endfor %}
 {%- raw %}
@@ -201,15 +201,15 @@ jobs:
       matrix:
         include:
 {%- endraw %}
-{%- for sversion in range(salt_version | int, max_salt_version + 1) %}
-{%-   if sversion != max_salt_version %}
-          - {salt-version: "{{ sversion }}", python-version: "{{ (salt_python_support[sversion]["min"], python_requires) | max | join(".") }}"}
+{%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-   if sver != max_salt_version_major %}
+          - {salt-version: "{{ sver }}.{{ salt_latest_point[sver] }}", python-version: "{{ (salt_python_support[sver]["min"], python_requires) | max | join(".") }}"}
 {%-   else %}
-{%-     for python_version in range(
-          (python_requires[1], salt_python_support[sversion]["min"][1]) | max,
-          (max_python_minor, salt_python_support[sversion]["max"][1]) | min + 1
+{%-     for pyver in range(
+          (python_requires[1], salt_python_support[sver]["min"][1]) | max,
+          (max_python_minor, salt_python_support[sver]["max"][1]) | min + 1
         ) %}
-          - {salt-version: "{{ sversion }}", python-version: "3.{{ python_version }}"}
+          - {salt-version: "{{ sver }}.{{ (salt_latest_point[sver], max_salt_version_minor) | min }}", python-version: "3.{{ pyver }}"}
 {%-     endfor %}
 {%-   endif %}
 {%- endfor %}
@@ -339,15 +339,15 @@ jobs:
       matrix:
         include:
 {%- endraw %}
-{%- for sversion in range(salt_version | int, max_salt_version + 1) %}
-{%-   if sversion != max_salt_version | int %}
-          - {salt-version: "{{ sversion }}", python-version: "{{ salt_python_support[sversion]["max"] | join(".") }}"}
+{%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-   if sver != max_salt_version_major %}
+          - {salt-version: "{{ sver }}.{{ salt_latest_point[sver] }}", python-version: "{{ salt_python_support[sver]["max"] | join(".") }}"}
 {%-   else %}
-{%-     for python_version in range(
-          (python_requires[1], salt_python_support[sversion]["min"][1]) | max,
-          (max_python_minor, salt_python_support[sversion]["max"][1]) | min + 1
+{%-     for pyver in range(
+          (python_requires[1], salt_python_support[sver]["min"][1]) | max,
+          (max_python_minor, salt_python_support[sver]["max"][1]) | min + 1
         ) %}
-          - {salt-version: "{{ sversion }}", python-version: "3.{{ python_version }}"}
+          - {salt-version: "{{ sver }}.{{ (salt_latest_point[sver], max_salt_version_minor) | min }}", python-version: "3.{{ pyver }}"}
 {%-     endfor %}
 {%-   endif %}
 {%- endfor %}
