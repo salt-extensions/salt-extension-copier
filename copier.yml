@@ -236,6 +236,24 @@ workflows:
     organization (rely on centralized artifacts from salt-extensions org): org
   when: '{{ "github.com" in source_url }}'
 
+os_support:
+  when: '{{ workflows == "enhanced" }}'
+  type: str
+  multiselect: true
+  help: Supported OS. Influences where tests run.
+  default:
+    - Linux
+    - macOS
+    - Windows
+  choices:
+    - Linux
+    - macOS
+    - Windows
+  validator: >-
+    {%- if not os_support -%}
+      At least one supported OS is required.
+    {%- endif -%}
+
 deploy_docs:
   type: str
   help: >-

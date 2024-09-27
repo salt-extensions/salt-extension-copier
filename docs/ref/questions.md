@@ -150,6 +150,17 @@ Select a GitHub Actions workflow style:
 Not asked if {question}`source_url` is not on GitHub.
 :::
 
+:::{question} os_support
+:::
+## `os_support`
+Select supported operating systems. Usually, you should leave the default of `Linux`, `macOS` and `Windows`, but some extensions only make sense on specific systems.
+
+This question influences on which systems the tests are run.
+
+:::{note}
+Only asked if `enhanced` {question}`workflows` were selected.
+:::
+
 :::{question} deploy_docs
 :::
 ## `deploy_docs`
