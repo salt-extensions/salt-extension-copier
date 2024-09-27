@@ -346,7 +346,7 @@ max_salt_version_minor:
   type: int
   when: false
   default: >-
-    {%- if "." in max_salt_version -%}
+    {%- if "." in (max_salt_version | string) -%}
       {{- max_salt_version.split(".") | last -}}
     {%- else -%}
       {%- import "data/salt_latest_point.yaml" as spr -%}
