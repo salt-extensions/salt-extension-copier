@@ -137,14 +137,17 @@ Add support for running containers in the test suite (for functional and integra
 Select a GitHub Actions workflow style:
 
 **org**
-:  Rely on reusable workflows from the `salt-extensions` GitHub organization.
+:  Rely on reusable (centralized) workflows from the `salt-extensions` GitHub organization.
 
 **enhanced**
-:  Equivalent workflows to `org`, but stored in the extension repository.
-   You need to [setup required secrets](required-secrets-target) yourself.
+:  Equivalent workflows to `org`, but stored in the extension repository. Ensures you can modify the workflows.
 
 **basic**
 :  Provided for compatibility with the deprecated create-salt-extension tool (not recommended for new projects).
+
+:::{important}
+If you are not hosting within the `salt-extensions` GitHub organization, you need to [setup required secrets](required-secrets-target) yourself.
+:::
 
 :::{note}
 Not asked if {question}`source_url` is not on GitHub.
