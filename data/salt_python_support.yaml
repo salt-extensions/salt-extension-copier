@@ -37,7 +37,7 @@
     - 8
   max:
     - 3
-    - 12
+    - 10  # 3.11/3.12 have pinned requirements, but they are not stable yet
   onedir:
     - 3
     - 10
