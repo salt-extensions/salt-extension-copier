@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.6 (2024-10-04)
+
+
+### Changed
+
+- Reduced maximum Python support of 3007 to 3.10 since 3.11 and 3.12 have issues
+
 ## 0.4.5 (2024-09-27)
 
 
