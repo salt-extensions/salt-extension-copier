@@ -1,4 +1,4 @@
-{%- set welcome = "``{}``: Integrate Salt with {}".format(project_name_full, project_name | capitalize) %}
+{%- set welcome = "``{}``: Integrate Salt with {}".format(project_name_full, integration_name or project_name.replace("-", " ").title()) %}
 {%- set welcome_ruler = "=" * welcome|length %}
 {{- welcome }}
 {{ welcome_ruler }}
