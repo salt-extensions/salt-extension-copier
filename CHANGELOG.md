@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.4.7 (2024-10-04)
+
+
+### Fixed
+
+- Fixed codecov uploads in enhanced workflow
+
 ## 0.4.6 (2024-10-04)
 
 
