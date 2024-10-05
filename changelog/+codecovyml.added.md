@@ -1,0 +1,1 @@
+Added default `.codecov.yml`
