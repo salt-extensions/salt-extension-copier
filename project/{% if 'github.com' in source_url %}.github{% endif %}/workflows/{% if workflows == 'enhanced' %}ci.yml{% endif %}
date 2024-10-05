@@ -87,7 +87,7 @@ jobs:
       - docs
       - build-python-package
     secrets:
-      PYPI_API_TOKEN: "${{ secrets.PYPI_API_TOKEN }}"
+      TEST_PYPI_API_TOKEN: "${{ secrets.TEST_PYPI_API_TOKEN }}"
     with:
       version: "${{ inputs.version }}"
 
