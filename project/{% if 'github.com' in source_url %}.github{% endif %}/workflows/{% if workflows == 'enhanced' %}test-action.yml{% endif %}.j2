@@ -82,70 +82,26 @@ jobs:
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Project Code Coverage
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},project
-          REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-          REPORT_PATH: artifacts/coverage-project.xml
-        run: |
-          if [ ! -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-            if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-                break
-            fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
-          if [ -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-                  break
-              fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
+        uses: codecov/codecov-action@v4.5.0  # https://github.com/codecov/codecov-action/issues/1594
+        with:
+          file: artifacts/coverage-project.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ steps.codecov-flags.outputs.flags }},project
+          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
+          use_oidc: true
+          version: v0.7.5
 
       - name: Upload Tests Code Coverage
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},tests
-          REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-          REPORT_PATH: artifacts/coverage-tests.xml
-        run: |
-          if [ ! -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-            if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-                break
-            fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
-          if [ -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-                  break
-              fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          file: artifacts/coverage-tests.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ steps.codecov-flags.outputs.flags }},tests
+          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
+          use_oidc: true
+          version: v0.7.5
 
       - name: Upload Logs
         if: always()
@@ -251,70 +207,26 @@ jobs:
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Project Code Coverage
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},project
-          REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-          REPORT_PATH: artifacts/coverage-project.xml
-        run: |
-          if [ ! -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-            if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-                break
-            fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
-          if [ -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-                  break
-              fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          file: artifacts/coverage-project.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ steps.codecov-flags.outputs.flags }},project
+          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
+          use_oidc: true
+          version: v0.7.5
 
       - name: Upload Tests Code Coverage
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},tests
-          REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-          REPORT_PATH: artifacts/coverage-tests.xml
-        run: |
-          if [ ! -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-            if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-                break
-            fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
-          if [ -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-                  break
-              fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          file: artifacts/coverage-tests.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ steps.codecov-flags.outputs.flags }},tests
+          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
+          use_oidc: true
+          version: v0.7.5
 
       - name: Upload Logs
         if: always()
@@ -414,70 +326,26 @@ jobs:
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Project Code Coverage
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},project
-          REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-          REPORT_PATH: artifacts/coverage-project.xml
-        run: |
-          if [ ! -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-            if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-                break
-            fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
-          if [ -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-                  break
-              fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          file: artifacts/coverage-project.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ steps.codecov-flags.outputs.flags }},project
+          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
+          use_oidc: true
+          version: v0.7.5
 
       - name: Upload Tests Code Coverage
-        if: always()
-        continue-on-error: true
-        shell: bash
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          REPORT_FLAGS: ${{ steps.codecov-flags.outputs.flags }},tests
-          REPORT_NAME: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-          REPORT_PATH: artifacts/coverage-tests.xml
-        run: |
-          if [ ! -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-            if curl --max-time 30 -L https://codecov.io/bash --output codecov.sh; then
-                break
-            fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
-          if [ -f codecov.sh ]; then
-            n=0
-            until [ "$n" -ge 5 ]
-            do
-              if bash codecov.sh -R "$(pwd)" -n "${REPORT_NAME}" -f "${REPORT_PATH}" -F "${REPORT_FLAGS}"; then
-                  break
-              fi
-              n=$((n+1))
-              sleep 15
-            done
-          fi
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          file: artifacts/coverage-tests.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ steps.codecov-flags.outputs.flags }},tests
+          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
+          use_oidc: true
+          version: v0.7.5
 
       - name: Upload Logs
         if: always()
