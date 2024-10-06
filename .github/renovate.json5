@@ -1,9 +1,10 @@
 {
+    prHourlyLimit: 10,
     enabledManagers: ["custom.regex", "github-actions"],
     customManagers: [
         {
             customType: "regex",
-            fileMatch: ["^data/versions.yaml$", "^.github/workflows/.+\\.ya?ml$", "^\\.pre-commit-config\\.yaml$"],
+            fileMatch: ["^data/versions.yaml$", "^\\.pre-commit-config\\.yaml$"],
             matchStrings: [
                 "# renovate: datasource=(?<datasource>git.*-tags) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_\\/\\-]+?\\s*:\\s*[\"']?(?<currentDigest>[a-f0-9]+?)\\s+#\\s*(?<currentValue>v?[0-9\.]+?)[\"']?\\s",
                 "# renovate: datasource=(?<datasource>docker) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_\\/\\-]+?\\s*:\\s*[\"']?([^:\\s]+:)?(?<currentValue>.+?)@(?<currentDigest>sha256:[a-f0-9]+?)[\"']?\\s",
@@ -34,9 +35,14 @@
             matchUpdateTypes: ["major", "minor"],
             enabled: false,
         },
+        {
+            matchPackageNames: ["docker.io/library/python"],
+            matchUpdateTypes: ["patch"],
+            automerge: true,
+        },
         // Groups for salt-extension-copier itself
         {
-            matchDatasources: ["github-runners"],
+            matchDepTypes: ["github-runner"],
             groupName: "github-runners",
             branchNameStrict: true,
         },
@@ -56,13 +62,13 @@
         },
         // Groups for generated project dependencies
         {
-            matchFileNames: ["^data/versions.yaml$"],
-            matchDatasources: ["github-runners"],
+            matchFileNames: ["data/versions.yaml"],
+            matchDepTypes: ["github-runner"],
             groupName: "[project] github-runners",
             branchNameStrict: true,
         },
         {
-            matchFileNames: ["^data/versions.yaml$"],
+            matchFileNames: ["data/versions.yaml"],
             matchDepTypes: ["devDependencies"],
             matchUpdateTypes: ["patch", "minor"],
             groupName: "[project] dev (non-major)",
@@ -70,7 +76,7 @@
             branchNameStrict: true,
         },
         {
-            matchFileNames: ["^data/versions.yaml$"],
+            matchFileNames: ["data/versions.yaml"],
             matchDepTypes: ["action", "actionMisc"],
             matchUpdateTypes: ["patch", "minor"],
             groupName: "[project] action (non-major)",
