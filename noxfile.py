@@ -228,12 +228,25 @@ def _lint_pre_commit(session, rcfile, flags, paths):
         )
 
     # Let's patch nox to make it run inside the pre-commit virtualenv
-    session._runner.venv = VirtualEnv(
-        os.environ["VIRTUAL_ENV"],
-        interpreter=session._runner.func.python,
-        reuse_existing=True,
-        venv=True,
-    )
+    try:
+        # nox >= 2024.03.02
+        # pylint: disable=unexpected-keyword-arg
+        venv = VirtualEnv(
+            os.environ["VIRTUAL_ENV"],
+            interpreter=session._runner.func.python,
+            reuse_existing=True,
+            venv_backend="venv",
+        )
+    except TypeError:
+        # nox < 2024.03.02
+        # pylint: disable=unexpected-keyword-arg
+        venv = VirtualEnv(
+            os.environ["VIRTUAL_ENV"],
+            interpreter=session._runner.func.python,
+            reuse_existing=True,
+            venv=True,
+        )
+    session._runner.venv = venv
     _lint(session, rcfile, flags, paths, tee_output=False)
 
 
