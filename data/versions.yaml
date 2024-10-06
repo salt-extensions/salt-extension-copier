@@ -24,7 +24,7 @@ nox: '2024.4.15'
 remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
 
 # renovate: datasource=git-tags depName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
-pre_commit_hooks: '2c9f875913ee60ca25ce70243dc24d5b6415598c  # v4.6.0'
+pre_commit_hooks: 'cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b  # v5.0.0'
 
 # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
 # skip this for now, 3.17 requires Python 3.9+
