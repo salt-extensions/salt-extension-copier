@@ -1,4 +1,5 @@
 {%- set pyver = salt_python_support[salt_version_major]["max"][1] -%}
+{%- raw -%}
 ---
 name: Salt Extension Python Package
 
@@ -12,16 +13,19 @@ on:
 jobs:
   build:
     name: Build Python Packages (wheel and sdist)
-    runs-on: ubuntu-latest
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
         with:
           fetch-depth: 0
 
       - name: Set up Python 3.{{ pyver }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
         with:
           python-version: "3.{{ pyver }}"
+{%- raw %}
 
       - name: Install build tools
         run: >-
@@ -30,7 +34,6 @@ jobs:
           build
           setuptools_scm
           --user
-{%- raw %}
 
       - name: Echo Version
         run: echo "${{ inputs.version }}"
@@ -39,7 +42,9 @@ jobs:
         run: python -m build --outdir dist/
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+{%- endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%- raw %}
         if: always()
         with:
           name: salt-extension-${{ inputs.version }}-packages
@@ -54,7 +59,9 @@ jobs:
 
       - name: Upload Exit Status
         if: always()
-        uses: actions/upload-artifact@v4
+{%- endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%- raw %}
         with:
           name: exitstatus-${{ github.job }}
           path: exitstatus

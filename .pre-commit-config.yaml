@@ -2,7 +2,8 @@
 minimum_pre_commit_version: 3.2.0
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    # renovate: datasource=git-tags depName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
+    rev: 2c9f875913ee60ca25ce70243dc24d5b6415598c  # v4.6.0
     hooks:
       - id: trailing-whitespace
         args:
@@ -21,7 +22,9 @@ repos:
         language_version: python3
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
+    # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
+    # skip this for now, 3.17 requires Python 3.9+
+    rev: 32151ac97cbfd7f9dcd22e49516fb32266db45b4  # v3.16.0
     hooks:
       - id: pyupgrade
         name: Rewrite code for Py3.8+
@@ -29,7 +32,8 @@ repos:
           - --py38-plus
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
+    rev: c235f5e450b4b84e58d114ed4c589cbf454175a3  # 5.13.2
     hooks:
       - id: isort
         args:
@@ -38,8 +42,9 @@ repos:
           - --force-single-line
         exclude: project/src/\{\{ namespaced_package_path \}\}/__init__.py
 
-  - repo: https://github.com/psf/black-pre-commit-mirror
-    rev: 24.2.0
+  - repo: https://github.com/psf/black
+    # renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
+    rev: b965c2a5026f8ba399283ba3e01898b012853c79  # 24.8.0
     hooks:
       - id: black
         name: Autoformat Python code
@@ -47,22 +52,24 @@ repos:
           - --line-length=100
           - --target-version=py38
 
-  - repo: https://github.com/saltstack/mirrors-nox
-    rev: v2022.11.21
+  - repo: local
     hooks:
       - id: nox
         alias: lint-tests
         name: Lint Tests
+        language: python
+        entry: nox -e lint-tests-pre-commit --
         files: ^tests/.*\.py$
         require_serial: true
-        args:
-          - -e
-          - lint-tests-pre-commit
-          - --
+        additional_dependencies:
+          # renovate: datasource=pypi depName=nox depType=devDependencies
+          - nox==2024.4.15
 
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
-    rev: 1ca29a1b5d949b3586800190ad6cc98317cb43b8  # v1.7.1.15
+    # renovate: datasource=git-tags depName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
+    rev: c01fb5723b54075325cd9b5e5665a9ae84baf950  # v1.7.1.15
     hooks:
       - id: actionlint
         additional_dependencies:
-          - shellcheck-py>=0.9.0.5
+          # renovate: datasource=pypi depName=shellcheck-py depType=devDependencies
+          - shellcheck-py==0.10.0.1

@@ -45,6 +45,9 @@ class SaltExt(ContextHook):
         self.slp = yaml.safe_load(
             (Path(__file__).parent.parent / "data" / "salt_latest_point.yaml").read_text()
         )
+        self.versions = yaml.safe_load(
+            (Path(__file__).parent.parent / "data" / "versions.yaml").read_text()
+        )
 
     def hook(self, context):
         if "python_requires" not in context:
@@ -55,6 +58,7 @@ class SaltExt(ContextHook):
             "salt_python_support": copy.deepcopy(self.sps),
             "singular_loader_dirs": SINGULAR_LOADER_DIRS,
             "salt_latest_point": copy.deepcopy(self.slp),
+            "versions": copy.deepcopy(self.versions),
         }
 
 

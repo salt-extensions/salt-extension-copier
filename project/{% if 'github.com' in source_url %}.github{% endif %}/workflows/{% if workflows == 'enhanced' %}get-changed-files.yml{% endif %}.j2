@@ -1,3 +1,4 @@
+{%- raw -%}
 ---
 on:
   workflow_call:
@@ -9,18 +10,25 @@ on:
 jobs:
   get-changed-files:
     name: Get Changed Files
-    runs-on: ubuntu-latest
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
     permissions:
       contents: read  # for dorny/paths-filter to fetch a list of changed files
       pull-requests: read  # for dorny/paths-filter to read pull requests
     outputs:
       changed-files: ${{ toJSON(steps.changed-files.outputs) }}
+
     steps:
-      - uses: actions/checkout@v4
+{%- endraw %}
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%- raw %}
 
       - name: Get Changed Files
         id: changed-files
-        uses: dorny/paths-filter@v3
+{%- endraw %}
+        uses: dorny/paths-filter@{{ versions["dorny/paths-filter"] }}
+{%- raw %}
         with:
           token: ${{ github.token }}
           list-files: escape
@@ -40,3 +48,4 @@ jobs:
 
       - name: Echo Changed Files Output
         run: echo "${{ toJSON(steps.changed-files.outputs) }}"
+{%- endraw %}

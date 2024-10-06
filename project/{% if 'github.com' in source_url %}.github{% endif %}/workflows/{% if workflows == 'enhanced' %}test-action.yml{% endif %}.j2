@@ -8,10 +8,10 @@ on:
 jobs:
 {%- endraw %}
 {%- if "Linux" in os_support %}
-{%-   raw %}
 
   Linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%-   raw %}
     timeout-minutes: 30
 
     strategy:
@@ -45,15 +45,17 @@ jobs:
 {%-   for sver, pyver in test_matrix %}
           - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
 {%-   endfor %}
-{%-   raw %}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%-   raw %}
         with:
           fetch-depth: 2  # coverage: Issue detecting commit SHA
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+{%-   endraw %}
+        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
+{%-   raw %}
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -82,7 +84,9 @@ jobs:
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Project Code Coverage
-        uses: codecov/codecov-action@v4.5.0  # https://github.com/codecov/codecov-action/issues/1594
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
         with:
           file: artifacts/coverage-project.xml
           disable_search: true
@@ -90,10 +94,14 @@ jobs:
           flags: ${{ steps.codecov-flags.outputs.flags }},project
           name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
           use_oidc: true
-          version: v0.7.5
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
 
       - name: Upload Tests Code Coverage
-        uses: codecov/codecov-action@v4.5.0
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
         with:
           file: artifacts/coverage-tests.xml
           disable_search: true
@@ -101,11 +109,15 @@ jobs:
           flags: ${{ steps.codecov-flags.outputs.flags }},tests
           name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
           use_oidc: true
-          version: v0.7.5
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
 
       - name: Upload Logs
         if: always()
-        uses: actions/upload-artifact@v4
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
         with:
           name: runtests-${{ runner.os }}-py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}.log
           path: artifacts/runtests-*.log
@@ -118,7 +130,9 @@ jobs:
 
       - name: Upload Exit Status
         if: always()
-        uses: actions/upload-artifact@v4
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
         with:
           name: exitstatus-${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
           path: exitstatus
@@ -126,10 +140,10 @@ jobs:
 {%-   endraw %}
 {%- endif %}
 {%- if "Windows" in os_support %}
-{%-   raw %}
 
   Windows:
-    runs-on: windows-latest
+    runs-on: windows-{{ versions["windows"] }}
+{%-   raw %}
     timeout-minutes: 40
 
     strategy:
@@ -153,15 +167,17 @@ jobs:
 {%-   for sver, pyver in test_matrix %}
           - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
 {%-   endfor %}
-{%-   raw %}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%-   raw %}
         with:
           fetch-depth: 2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+{%-   endraw %}
+        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
+{%-   raw %}
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -207,7 +223,9 @@ jobs:
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Project Code Coverage
-        uses: codecov/codecov-action@v4.5.0
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
         with:
           file: artifacts/coverage-project.xml
           disable_search: true
@@ -215,10 +233,14 @@ jobs:
           flags: ${{ steps.codecov-flags.outputs.flags }},project
           name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
           use_oidc: true
-          version: v0.7.5
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
 
       - name: Upload Tests Code Coverage
-        uses: codecov/codecov-action@v4.5.0
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
         with:
           file: artifacts/coverage-tests.xml
           disable_search: true
@@ -226,11 +248,15 @@ jobs:
           flags: ${{ steps.codecov-flags.outputs.flags }},tests
           name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
           use_oidc: true
-          version: v0.7.5
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
 
       - name: Upload Logs
         if: always()
-        uses: actions/upload-artifact@v4
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
         with:
           name: runtests-${{ runner.os }}-py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}.log
           path: artifacts/runtests-*.log
@@ -243,7 +269,9 @@ jobs:
 
       - name: Upload Exit Status
         if: always()
-        uses: actions/upload-artifact@v4
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
         with:
           name: exitstatus-${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
           path: exitstatus
@@ -252,10 +280,10 @@ jobs:
 {%- endif %}
 
 {%- if "macOS" in os_support %}
-{%-   raw %}
 
   macOS:
-    runs-on: macOS-latest
+    runs-on: macos-{{ versions["macos"] }}
+{%-   raw %}
     timeout-minutes: 40
 
     strategy:
@@ -292,12 +320,16 @@ jobs:
 {%-   raw %}
 
     steps:
-      - uses: actions/checkout@v4
+{%-   endraw %}
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%-   raw %}
         with:
           fetch-depth: 2
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+{%-   endraw %}
+        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
+{%-   raw %}
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -326,7 +358,9 @@ jobs:
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
 
       - name: Upload Project Code Coverage
-        uses: codecov/codecov-action@v4.5.0
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
         with:
           file: artifacts/coverage-project.xml
           disable_search: true
@@ -334,10 +368,14 @@ jobs:
           flags: ${{ steps.codecov-flags.outputs.flags }},project
           name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
           use_oidc: true
-          version: v0.7.5
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
 
       - name: Upload Tests Code Coverage
-        uses: codecov/codecov-action@v4.5.0
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
         with:
           file: artifacts/coverage-tests.xml
           disable_search: true
@@ -345,11 +383,15 @@ jobs:
           flags: ${{ steps.codecov-flags.outputs.flags }},tests
           name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
           use_oidc: true
-          version: v0.7.5
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
 
       - name: Upload Logs
         if: always()
-        uses: actions/upload-artifact@v4
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
         with:
           name: runtests-${{ runner.os }}-py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}.log
           path: artifacts/runtests-*.log
@@ -362,7 +404,9 @@ jobs:
 
       - name: Upload Exit Status
         if: always()
-        uses: actions/upload-artifact@v4
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
         with:
           name: exitstatus-${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
           path: exitstatus

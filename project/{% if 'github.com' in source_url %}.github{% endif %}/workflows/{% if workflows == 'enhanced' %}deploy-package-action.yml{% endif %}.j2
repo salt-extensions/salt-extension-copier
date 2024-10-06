@@ -1,3 +1,4 @@
+{%- raw -%}
 ---
 name: Deploy Salt Extension Python Package
 
@@ -20,16 +21,23 @@ on:
 jobs:
   build:
     name: Publish Python Package to ${{ fromJSON('["PyPI", "Test PyPI"]')[inputs.test] }}
-    runs-on: ubuntu-latest
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
+
     steps:
       - name: Download Python Package Artifacts
-        uses: actions/download-artifact@v4
+{%- endraw %}
+        uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
+{%- raw %}
         with:
           name: salt-extension-${{ inputs.version }}-packages
           path: dist
 
       - name: Publish distribution to Test PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+{%- endraw %}
+        uses: pypa/gh-action-pypi-publish@{{ versions["pypa/gh-action-pypi-publish"] }}
+{%- raw %}
         if: ${{ inputs.test }}
         with:
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
@@ -47,7 +55,10 @@ jobs:
               dist/*
 
       - name: Publish distribution to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+{%- endraw %}
+        uses: pypa/gh-action-pypi-publish@{{ versions["pypa/gh-action-pypi-publish"] }}
+{%- raw %}
         if: ${{ !inputs.test }}
         with:
           password: ${{ secrets.PYPI_API_TOKEN }}
+{%- endraw %}

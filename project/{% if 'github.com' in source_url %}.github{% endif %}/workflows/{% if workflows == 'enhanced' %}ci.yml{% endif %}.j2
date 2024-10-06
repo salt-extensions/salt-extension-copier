@@ -1,3 +1,4 @@
+{%- raw -%}
 ---
 name: CI
 
@@ -29,10 +30,13 @@ jobs:
 
   changed-files-debug:
     name: Changed Files Debug Output
-    runs-on: ubuntu-latest
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
     if: always()
     needs:
       - get-changed-files
+
     steps:
       - name: Echo Changed Files Output
         run: echo "${{ toJSON(needs.get-changed-files.outputs.changed-files) }}"
@@ -107,7 +111,9 @@ jobs:
     # This step is just so we can make github require this step, to pass checks
     # on a pull request instead of requiring all
     name: Set the CI Pipeline Exit Status
-    runs-on: ubuntu-latest
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
     if: always()
     needs:
       - test
@@ -116,10 +122,13 @@ jobs:
       - build-python-package
       - deploy-python-package-test-pypi
       - deploy-python-package
+
     steps:
       - name: Download Exit Status Files
         if: always()
-        uses: actions/download-artifact@v4
+{%- endraw %}
+        uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
+{%- raw %}
         with:
           path: exitstatus
           pattern: exitstatus-*
@@ -127,7 +136,9 @@ jobs:
 
       - name: Delete Exit Status Artifacts
         if: always()
-        uses: geekyeggo/delete-artifact@v5
+{%- endraw %}
+        uses: geekyeggo/delete-artifact@{{ versions["geekyeggo/delete-artifact"] }}
+{%- raw %}
         with:
           name: exitstatus-*
           useGlob: true
@@ -142,3 +153,4 @@ jobs:
         if: always()
         run:
           echo "All workflows finished"
+{%- endraw %}

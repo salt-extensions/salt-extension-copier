@@ -1,3 +1,4 @@
+{%- raw -%}
 ---
 name: Publish Documentation
 
@@ -34,30 +35,39 @@ jobs:
     permissions:
       pages: write
       id-token: write
+{%- endraw %}
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+
     steps:
       - name: Download built docs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
+{%- raw %}
         with:
           name: ${{ inputs.artifact-name }}
           path: html-docs
 
       - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v3
+{%- endraw %}
+        uses: actions/upload-pages-artifact@{{ versions["actions/upload-pages-artifact"] }}
+{%- raw %}
         with:
           name: html-docs-pages
           path: html-docs
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+{%- endraw %}
+        uses: actions/deploy-pages@{{ versions["actions/deploy-pages"] }}
+{%- raw %}
         with:
           artifact_name: html-docs-pages
 
       - name: Delete GitHub Pages artifact
         if: always()
-        uses: geekyeggo/delete-artifact@v5
+{%- endraw %}
+        uses: geekyeggo/delete-artifact@{{ versions["geekyeggo/delete-artifact"] }}
+{%- raw %}
         with:
           name: html-docs-pages
           failOnError: false
@@ -70,8 +80,11 @@ jobs:
 
       - name: Upload Exit Status
         if: always()
-        uses: actions/upload-artifact@v4
+{%- endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%- raw %}
         with:
           name: exitstatus-${{ github.job }}
           path: exitstatus
           if-no-files-found: error
+{%- endraw %}

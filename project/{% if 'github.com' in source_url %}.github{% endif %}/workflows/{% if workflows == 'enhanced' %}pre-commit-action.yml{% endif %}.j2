@@ -1,3 +1,4 @@
+{%- raw -%}
 ---
 name: Pre-Commit
 
@@ -12,9 +13,11 @@ on:
 jobs:
   Pre-Commit:
     name: Pre-Commit
-    runs-on: ubuntu-latest
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
     container:
-      image: python:3.10.14-slim-bookworm
+      image: docker.io/library/python:{{ versions["python_container"] }}
+{%- raw %}
 
     steps:
       - name: Install System Deps
@@ -22,8 +25,10 @@ jobs:
           apt-get update
           apt-get install -y enchant-2 git gcc make zlib1g-dev libc-dev libffi-dev g++ libxml2 libxml2-dev libxslt-dev libcurl4-openssl-dev libssl-dev libgnutls28-dev
           git config --global --add safe.directory "$(pwd)"
+{%- endraw %}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%- raw %}
 
       - name: Install Pre-Commit
         run: |
@@ -49,8 +54,11 @@ jobs:
 
       - name: Upload Exit Status
         if: always()
-        uses: actions/upload-artifact@v4
+{%- endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%- raw %}
         with:
           name: exitstatus-${{ github.job }}
           path: exitstatus
           if-no-files-found: error
+{%- endraw %}

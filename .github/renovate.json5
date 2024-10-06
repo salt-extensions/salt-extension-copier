@@ -1,0 +1,81 @@
+{
+    enabledManagers: ["custom.regex", "github-actions"],
+    customManagers: [
+        {
+            customType: "regex",
+            fileMatch: ["^data/versions.yaml$", "^.github/workflows/.+\\.ya?ml$", "^\\.pre-commit-config\\.yaml$"],
+            matchStrings: [
+                "# renovate: datasource=(?<datasource>git.*-tags) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_\\/\\-]+?\\s*:\\s*[\"']?(?<currentDigest>[a-f0-9]+?)\\s+#\\s*(?<currentValue>v?[0-9\.]+?)[\"']?\\s",
+                "# renovate: datasource=(?<datasource>docker) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_\\/\\-]+?\\s*:\\s*[\"']?([^:\\s]+:)?(?<currentValue>.+?)@(?<currentDigest>sha256:[a-f0-9]+?)[\"']?\\s",
+                "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_]+?\\s*:\\s*[\"']?(?<currentValue>v?[0-9\.]+?)[\"']?\\s",
+            ],
+        },
+        {
+            customType: "regex",
+            fileMatch: ["^\\.pre-commit-config\\.yaml$"],
+            matchStrings: [
+                "# renovate: datasource=(?<datasource>pypi) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+-\\s*[\"']?[A-Za-z0-9_\\-\\.]+?==(?<currentValue>.+?)[\"']?\\s",
+            ],
+        },
+    ],
+    packageRules: [
+        {
+            matchDepTypes: ["action", "actionMisc", "devDependencies"],
+            matchDatasources: ["/git.*-tags/", "docker"],
+            matchPackageNames: ["!https://github.com/codecov/codecov-cli"],
+            pinDigests: true,
+        },
+        {
+            matchPackageNames: ["docker.io/library/python"],
+            separateMinorPatch: true,  // We want to keep Python major.minor - this needs to be separate and before the next step
+        },
+        {
+            matchPackageNames: ["docker.io/library/python"],
+            matchUpdateTypes: ["major", "minor"],
+            enabled: false,
+        },
+        // Groups for salt-extension-copier itself
+        {
+            matchDatasources: ["github-runners"],
+            groupName: "github-runners",
+            branchNameStrict: true,
+        },
+        {
+            matchDepTypes: ["devDependencies"],
+            matchUpdateTypes: ["patch", "minor"],
+            groupName: "dev (non-major)",
+            automerge: true,
+            branchNameStrict: true,
+        },
+        {
+            matchDepTypes: ["action", "actionMisc"],
+            matchUpdateTypes: ["patch", "minor"],
+            groupName: "action (non-major)",
+            automerge: true,
+            branchNameStrict: true,
+        },
+        // Groups for generated project dependencies
+        {
+            matchFileNames: ["^data/versions.yaml$"],
+            matchDatasources: ["github-runners"],
+            groupName: "[project] github-runners",
+            branchNameStrict: true,
+        },
+        {
+            matchFileNames: ["^data/versions.yaml$"],
+            matchDepTypes: ["devDependencies"],
+            matchUpdateTypes: ["patch", "minor"],
+            groupName: "[project] dev (non-major)",
+            automerge: true,
+            branchNameStrict: true,
+        },
+        {
+            matchFileNames: ["^data/versions.yaml$"],
+            matchDepTypes: ["action", "actionMisc"],
+            matchUpdateTypes: ["patch", "minor"],
+            groupName: "[project] action (non-major)",
+            automerge: true,
+            branchNameStrict: true,
+        },
+    ],
+}

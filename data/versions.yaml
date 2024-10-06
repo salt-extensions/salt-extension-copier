@@ -1,0 +1,107 @@
+###########################################################
+#  pre-commit
+###########################################################
+
+# renovate: datasource=git-tags depName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
+actionlint: 'c01fb5723b54075325cd9b5e5665a9ae84baf950  # v1.7.1.15'
+
+# renovate: datasource=git-tags depName=https://github.com/PyCQA/bandit depType=devDependencies
+bandit: '691f465b4bac758ea1d6dfa9b57d3881a12954fd  # 1.7.9'
+
+# renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
+black: 'b965c2a5026f8ba399283ba3e01898b012853c79  # 24.8.0'
+
+# renovate: datasource=git-tags depName=https://github.com/adamchainz/blacken-docs depType=devDependencies
+blacken_docs: '4c97c4a0d921007af6fefae92d8447cfbf63720b  # 1.18.0'
+
+# renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
+isort: 'c235f5e450b4b84e58d114ed4c589cbf454175a3  # 5.13.2'
+
+# renovate: datasource=pypi depName=nox depType=devDependencies
+nox: '2024.4.15'
+
+# renovate: datasource=git-tags depName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
+remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
+
+# renovate: datasource=git-tags depName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
+pre_commit_hooks: '2c9f875913ee60ca25ce70243dc24d5b6415598c  # v4.6.0'
+
+# renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
+# skip this for now, 3.17 requires Python 3.9+
+pyupgrade: '32151ac97cbfd7f9dcd22e49516fb32266db45b4  # v3.16.0'
+
+# renovate: datasource=git-tags depName=https://github.com/saltstack/salt-rewrite depType=devDependencies
+salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
+
+# renovate: datasource=pypi depName=shellcheck-py depType=devDependencies
+shellcheck: '0.10.0.1'
+
+# renovate: datasource=pypi depName=uv depType=devDependencies
+uv: '0.4.0'
+
+
+###########################################################
+#  GitHub Actions
+###########################################################
+
+# renovate: datasource=git-tags depName=https://github.com/actions/checkout depType=action
+actions/checkout: 'd632683dd7b4114ad314bca15554477dd762a938  # v4.2.0'
+
+# renovate: datasource=git-tags depName=https://github.com/actions/deploy-pages depType=action
+actions/deploy-pages: 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4.0.5'
+
+# renovate: datasource=git-tags depName=https://github.com/actions/download-artifact depType=action
+actions/download-artifact: 'fa0a91b85d4f404e444e00e005971372dc801d16  # v4.1.8'
+
+# renovate: datasource=git-tags depName=https://github.com/actions/setup-python depType=action
+actions/setup-python: 'f677139bbe7f9c59b41e40162b753c062f5d49a3  # v5.2.0'
+
+# renovate: datasource=git-tags depName=https://github.com/actions/upload-artifact depType=action
+actions/upload-artifact: '50769540e7f4bd5e21e526ee35c689e35e0d6874  # v4.4.0'
+
+# renovate: datasource=git-tags depName=https://github.com/actions/upload-pages-artifact depType=action
+actions/upload-pages-artifact: '56afc609e74202658d3ffba0e8f6dda462b719fa  # v3.0.1'
+
+# renovate: datasource=git-tags depName=https://github.com/codecov/codecov-action depType=action
+# skip this for now: https://github.com/codecov/codecov-action/issues/1594
+codecov/codecov-action: 'e28ff129e5465c2c0dcc6f003fc735cb6ae0c673  # v4.5.0'
+
+# renovate: datasource=git-tags depName=https://github.com/dorny/paths-filter depType=action
+dorny/paths-filter: 'de90cc6fb38fc0963ad72b210f1f284cd68cea36  # v3.0.2'
+
+# renovate: datasource=git-tags depName=https://github.com/geekyeggo/delete-artifact depType=action
+geekyeggo/delete-artifact: '7ee91e82b4a7f3339cd8b14beace3d826a2aac39  # v5.1.0'
+
+# renovate: datasource=git-tags depName=https://github.com/pypa/gh-action-pypi-publish depType=action
+pypa/gh-action-pypi-publish: 'c44d2f0e52f028349e3ecafbf7f32561da677277  # v1.10.3'
+
+###########################################################
+#  GitHub Runners
+###########################################################
+
+# renovate: datasource=github-runners depName=macos depType=github-runner
+macos: '14'
+
+# renovate: datasource=github-runners depName=ubuntu depType=github-runner
+ubuntu: '22.04'
+
+# renovate: datasource=github-runners depName=windows depType=github-runner
+windows: '2022'
+
+###########################################################
+#  GitHub Actions containers
+###########################################################
+
+# renovate: datasource=docker depName=docker.io/library/python depType=actionMisc
+python_container: '3.10.14-slim-bookworm@sha256:2407c61b1a18067393fecd8a22cf6fceede893b6aaca817bf9fbfe65e33614a3'
+
+
+###########################################################
+#  Misc
+###########################################################
+
+# renovate: datasource=git-tags depName=https://github.com/codecov/codecov-cli depType=actionMisc
+codecov_cli: 'v0.7.5'
+
+# renovate: datasource=pypi depName=coverage depType=devDependencies
+coverage: '7.6.1'

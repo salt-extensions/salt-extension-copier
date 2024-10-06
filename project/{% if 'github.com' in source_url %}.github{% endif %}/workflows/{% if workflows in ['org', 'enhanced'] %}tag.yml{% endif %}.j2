@@ -15,12 +15,16 @@ on:
 
 jobs:
   get_tag_version:
-    runs-on: ubuntu-latest
+{%-   endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%-   raw %}
     outputs:
       version: ${{ steps.get_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+{%-   endraw %}
+        uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%-   raw %}
 
       - name: Extract tag name
         id: get_version
