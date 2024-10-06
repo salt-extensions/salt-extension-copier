@@ -9,7 +9,7 @@ on:
 jobs:
   get-changed-files:
     name: Get Changed Files
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read  # for dorny/paths-filter to fetch a list of changed files
       pull-requests: read  # for dorny/paths-filter to read pull requests
