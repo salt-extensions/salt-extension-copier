@@ -28,19 +28,6 @@ jobs:
     name: Get Changed Files
     uses: ./.github/workflows/get-changed-files.yml
 
-  changed-files-debug:
-    name: Changed Files Debug Output
-{%- endraw %}
-    runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
-    if: always()
-    needs:
-      - get-changed-files
-
-    steps:
-      - name: Echo Changed Files Output
-        run: echo "${{ toJSON(needs.get-changed-files.outputs.changed-files) }}"
-
   pre-commit:
     name: Pre-Commit
     uses: ./.github/workflows/pre-commit-action.yml
