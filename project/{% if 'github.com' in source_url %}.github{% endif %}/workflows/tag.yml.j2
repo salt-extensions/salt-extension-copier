@@ -1,12 +1,6 @@
+{%- raw -%}
 ---
 name: Tagged Releases
-{%- set base = "." %}
-{%- set suffix = "" %}
-{%- if workflows == "org" %}
-{%-   set base = "salt-extensions/central-artifacts" %}
-{%-   set suffix = "@main" %}
-{%- endif %}
-{%- raw %}
 
 on:
   push:
@@ -33,7 +27,7 @@ jobs:
   call_central_workflow:
     needs: get_tag_version
 {%- endraw %}
-    uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
+    uses: ./.github/workflows/ci.yml
     with:
       deploy-docs: {{ (deploy_docs in ["rolling", "release"]) | lower }}
 {%- raw %}

@@ -36,26 +36,22 @@ Contains GitHub-related configurations and workflows. This directory is only pre
 :::{path} .github/workflows
 :::
 ### `.github/workflows`
-Houses GitHub Actions {question}`workflows`.
+Houses GitHub Actions [workflows](workflows-target).
 
 :::{path} .github/workflows/ci.yml
 :::
 #### `.github/workflows/ci.yml`
 A meta-workflow that triggers other workflows based on inputs.
 
-:::{important}
-Only present when {question}`workflows` == `enhanced`.
-:::
-
 :::{path} .github/workflows/pr.yml
 :::
 #### `.github/workflows/pr.yml`
-Handles workflows for Pull Requests and pushes to the `main` branch. Depending on {question}`workflows`, it either calls centralized workflows in [salt-extensions/central-artifacts](https://github.com/salt-extensions/central-artifacts/tree/main/.github/workflows) or local workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
+Handles workflows for Pull Requests and pushes to the `main` branch. Delegates to workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
 
 :::{path} .github/workflows/tag.yml
 :::
 #### `.github/workflows/tag.yml`
-Triggered by [tag pushes](publishing-target) for tags beginning with `v`. Similar to {path}`pr.yml <.github/workflows/pr.yml>`, it either calls centralized workflows or local ones in {path}`ci.yml <.github/workflows/ci.yml>`.
+Triggered by [tag pushes](publishing-target) for tags beginning with `v`. Similar to {path}`pr.yml <.github/workflows/pr.yml>`, it delegates to workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
 
 :::{path} changelog
 :::

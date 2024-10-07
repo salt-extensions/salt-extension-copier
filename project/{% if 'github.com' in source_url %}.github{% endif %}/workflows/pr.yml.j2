@@ -1,12 +1,6 @@
+{%- raw -%}
 ---
 name: Pull Request or Push
-{%- set base = "." %}
-{%- set suffix = "" %}
-{%- if workflows == "org" %}
-{%-   set base = "salt-extensions/central-artifacts" %}
-{%-   set suffix = "@main" %}
-{%- endif %}
-{%- raw %}
 
 on:
   push:
@@ -20,11 +14,13 @@ jobs:
   call_central_workflow:
     name: CI
 {%- endraw %}
-    uses: {{ base }}/.github/workflows/ci.yml{{ suffix }}
+    uses: ./.github/workflows/ci.yml
     with:
       deploy-docs: {{ (deploy_docs == "rolling") | lower }}
+{%- raw %}
     permissions:
       contents: write
       id-token: write
       pages: write
       pull-requests: read
+{%- endraw %}
