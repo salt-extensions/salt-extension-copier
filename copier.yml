@@ -209,6 +209,9 @@ max_salt_version:
     {%-     endif -%}
     {%-   endif -%}
     {%- endif -%}
+    {%- if (max_salt_version | float) < (salt_version | float) -%}
+      Maximum version needs to be at least {{ salt_version }}
+    {%- endif -%}
 
 no_saltext_namespace:
   type: bool
@@ -226,18 +229,7 @@ test_containers:
   help: Add support for test containers in functional/integration tests
   default: false
 
-workflows:
-  type: str
-  help: Choose which workflow style to create
-  default: '{{ "org" if "github.com/salt-extensions/" in source_url else "enhanced" }}'
-  choices:
-    basic (== official creation tool): basic
-    enhanced (~ organization, but local): enhanced
-    organization (rely on centralized artifacts from salt-extensions org): org
-  when: '{{ "github.com" in source_url }}'
-
 os_support:
-  when: '{{ workflows == "enhanced" }}'
   type: str
   multiselect: true
   help: Supported OS. Influences where tests run.
@@ -265,7 +257,7 @@ deploy_docs:
     never: never
     when tagging a release: release
     all events on `main` (rolling): rolling
-  when: '{{ "github.com" in source_url and workflows != "basic" }}'
+  when: '{{ "github.com" in source_url }}'
 
 docs_url:
   type: str

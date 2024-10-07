@@ -110,11 +110,7 @@ The minimum Python version to support. Also affects pre-commit autoformatting ho
 :::{question} max_salt_version
 :::
 ## `max_salt_version`
-The maximum Salt version to support.
-
-:::{hint}
-This is only relevant when non-centralized {question}`workflows` are used, as it affects the Salt versions tests are run against.
-:::
+The maximum Salt version to support. Influences the Salt versions tests are run against.
 
 :::{question} no_saltext_namespace
 :::
@@ -131,38 +127,12 @@ Include test fixtures for Salt-SSH tests (`salt_ssh_cli` etc.). Defaults to true
 ## `test_containers`
 Add support for running containers in the test suite (for functional and integration tests).
 
-:::{question} workflows
-:::
-## `workflows`
-Select a GitHub Actions workflow style:
-
-**org**
-:  Rely on reusable (centralized) workflows from the `salt-extensions` GitHub organization.
-
-**enhanced**
-:  Equivalent workflows to `org`, but stored in the extension repository. Ensures you can modify the workflows.
-
-**basic**
-:  Provided for compatibility with the deprecated create-salt-extension tool (not recommended for new projects).
-
-:::{important}
-If you are not hosting within the `salt-extensions` GitHub organization, you need to [setup required secrets](required-secrets-target) yourself.
-:::
-
-:::{note}
-Not asked if {question}`source_url` is not on GitHub.
-:::
-
 :::{question} os_support
 :::
 ## `os_support`
 Select supported operating systems. Usually, you should leave the default of `Linux`, `macOS` and `Windows`, but some extensions only make sense on specific systems.
 
 This question influences on which systems the tests are run.
-
-:::{note}
-Only asked if `enhanced` {question}`workflows` were selected.
-:::
 
 :::{question} deploy_docs
 :::
@@ -189,7 +159,7 @@ The current workflows do not support versioned documentation.
 :::
 
 :::{note}
-Not asked if {question}`source_url` is not on GitHub or the `basic` {question}`workflows` have been selected.
+Not asked if {question}`source_url` is not on GitHub.
 :::
 
 :::{question} docs_url

@@ -3,17 +3,12 @@
 
 Your Salt extension repository includes several workflows out of the box if your {question}`source_url` is on GitHub.
 
-:::{note}
-The workflows used within the `salt-extensions` organization (`org`) are equivalent
-to the `enhanced` ones.
-:::
-
 ## Provided functions
 
 The workflows currently:
 
 * Ensure `pre-commit` checks pass
-* Run the test suite
+* Run the test suite and upload code coverage reports
 * Build the documentation
 * Optionally deploy built documentation to GitHub Pages
 * Optionally build and release your project to PyPI
@@ -51,5 +46,5 @@ The built HTML documentation, also available for preview when triggered by a Pul
 
 ## Workflows call stack
 1. {path}`.github/workflows/pr.yml` or {path}`.github/workflows/tag.yml` is triggered
-2. {path}`.github/workflows/ci.yml` (or its equivalent centralized workflow) is called as the main entry point to CI
+2. {path}`.github/workflows/ci.yml` is called as the main entry point to CI
 3. Depending on the event and inputs, select additional workflows perform the necessary tasks.

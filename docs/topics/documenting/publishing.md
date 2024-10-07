@@ -1,8 +1,7 @@
 (docs-publish-target)=
 # Publishing documentation
 
-If your {question}`source_url` is on GitHub and you selected either `org` or
-`enhanced` {question}`workflows`, you can automatically deploy your documentation to your repository's GitHub Pages site. This deployment is controlled by the {question}`deploy_docs` setting.
+If your {question}`source_url` is on GitHub, you can automatically deploy your documentation to your repository's GitHub Pages site. This deployment is controlled by the {question}`deploy_docs` setting.
 
 (docs-publish-setup-target)=
 ## Setup

@@ -40,7 +40,6 @@ def test_copy_works(copie, answers):
     _assert_worked(res)
 
 
-@pytest.mark.parametrize("workflows", ("basic", "enhanced"), indirect=True)
 @pytest.mark.parametrize("salt_version", ("3006.5",), indirect=True)
 @pytest.mark.parametrize("max_salt_version", ("3007.0",), indirect=True)
 def test_copy_works_with_salt_minor_version(copie, answers):
@@ -139,8 +138,6 @@ def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
         raise AssertionError(msg)
 
 
-# We need to test both org and enhanced workflows (with actionlint/shellcheck)
-@pytest.mark.parametrize("source_url", ("org", "non_org"), indirect=True)
 def test_first_commit_works(project):
     """
     Ensure the generated project can be committed after generation

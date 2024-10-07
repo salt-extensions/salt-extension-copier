@@ -70,6 +70,7 @@ def source_url(project_name, request):
 
 @pytest.fixture
 def workflows(source_url, request):
+    # Dropped in release 0.5.0, but still needed for upgrade tests
     default = "org" if "github.com/salt-extensions/" in source_url else "enhanced"
     return getattr(request, "param", default)
 
