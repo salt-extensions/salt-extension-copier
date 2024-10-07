@@ -2,6 +2,7 @@ import os
 
 from packaging.version import Version
 
+from .copier import load_copier_conf
 from .pythonpath import project_tools
 
 with project_tools():
@@ -17,6 +18,7 @@ STAGE = os.environ["STAGE"]
 
 
 MIGRATIONS = []
+COPIER_CONF = load_copier_conf()
 
 
 def run_migrations():
@@ -51,7 +53,7 @@ def _run_migrations_after(answers):
         func(answers.copy())
 
 
-def migration(trigger, stage="after", desc=None):
+def migration(trigger, stage="after", desc=None, after=None):
     """
     Decorator for declaring a general migration.
 
@@ -108,7 +110,12 @@ def migration(trigger, stage="after", desc=None):
         # Other decorators delegate to this one, only create a general
         # migration if it's not already another subtype
         if not isinstance(func, Migration):
-            func = Migration(func, desc=desc or func.__name__.replace("_", " "))
+            nonlocal desc
+            if desc is None:
+                desc = func.__name__.replace("_", " ")
+            elif not desc:
+                desc = None
+            func = Migration(func, desc=desc)
         global MIGRATIONS
         MIGRATIONS.append((trigger_version, func))
         return func
@@ -116,7 +123,7 @@ def migration(trigger, stage="after", desc=None):
     return wrapper
 
 
-def var_migration(trigger, varname):
+def var_migration(trigger, varname, after=None):
     """
     Decorator for declaring an answer migration, e.g. when raising
     a minimum version or changing an answer's type.
@@ -142,25 +149,68 @@ def var_migration(trigger, varname):
     """
 
     def wrapper(func):
-        return migration(trigger, "before")(VarMigration(func, varname))
+        return migration(trigger, "before")(VarMigration(func, varname, after=after))
 
     return wrapper
 
 
+def raise_minimum_version(trigger, varname, minimum):
+    """
+    Register a migration to increase the value of an answer representing
+    a version to a minimum value.
+
+    Examples:
+
+        raise_minimum_version("1.0.0", "python", 3.8)
+        raise_minimum_version("1.0.0", "python", "3.8")
+    """
+
+    def _raise_minimum(var):
+        if Version(str(var)) < Version(str(minimum)):
+            return type(var)(minimum)
+
+    return var_migration(trigger, varname)(_raise_minimum)
+
+
+def sync_minimum_version(trigger, varname):
+    """
+    Register a migration to increase the value of an answer representing
+    a version to a minimum value, determined by its default answer.
+    """
+    default = COPIER_CONF[varname]["default"]
+    return raise_minimum_version(trigger, varname, default)
+
+
 class Migration:
-    def __init__(self, func, desc=None):
+    def __init__(self, func, desc=None, after=None):
         self.func = func
         self.desc = desc
+        after = after or []
+        if not isinstance(after, list):
+            after = [after]
+        self.after = after
 
     def __call__(self, answers):
         if self.desc is not None:
             status(f"Running migration: {self.desc}")
         return self.func(answers)
 
+    def __lt__(self, other):
+        """
+        Ensure we can sort the list of migrations, even if there
+        are multiple migrations for a single version.
+
+        This also allows explicit ordering of migrations of the
+        same version (or those without one).
+        """
+        if not isinstance(other, Migration):
+            raise TypeError(f"Cannot compare Migration to {other!r}")
+        return any(migration is self for migration in other.after)
+
 
 class VarMigration(Migration):
-    def __init__(self, func, varname):
-        super().__init__(func)
+    def __init__(self, func, varname, after=None):
+        super().__init__(func, after=after)
         self.varname = varname
 
     def __call__(self, answers):

@@ -209,6 +209,9 @@ max_salt_version:
     {%-     endif -%}
     {%-   endif -%}
     {%- endif -%}
+    {%- if (max_salt_version | float) < (salt_version | float) -%}
+      Maximum version needs to be at least {{ salt_version }}
+    {%- endif -%}
 
 no_saltext_namespace:
   type: bool
