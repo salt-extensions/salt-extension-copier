@@ -4,6 +4,27 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.5.0 (2024-10-07)
+
+
+### Removed
+
+- Dropped `workflows` question and `basic` and `org` workflow variants. All projects use the `enhanced` workflows from now on.
+- Removed redundant changed-files-debug job
+
+
+### Changed
+
+- Ensured minimum and maximum supported Salt versions always at least follow their default values (supported versions at the time of the template release) when updating the template.
+- Excluded default fixtures from coverage calculations
+- Pinned pre-commit hooks and actions to digests
+
+
+### Added
+
+- Added `no cover: start [...] no cover: stop` pragma to exclude statements from coverage
+- Added default `.codecov.yml`
+
 ## 0.4.8 (2024-10-05)
 
 
