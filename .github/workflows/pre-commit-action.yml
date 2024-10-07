@@ -12,7 +12,7 @@ on:
 jobs:
   Pre-Commit:
     name: Pre-Commit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: docker.io/library/python:3.10.15-slim-bookworm@sha256:1eb5d76bf3e9e612176ebf5eadf8f27ec300b7b4b9a99f5856f8232fd33aa16e
 

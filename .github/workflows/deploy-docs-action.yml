@@ -34,7 +34,7 @@ jobs:
       pages: write
       id-token: write
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Download built docs
