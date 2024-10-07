@@ -88,7 +88,7 @@ repos:
         args: [--skip-errors]
         files: ^(docs/.*\.rst|src/{{ namespaced_package_path }}/.*\.py)$
         additional_dependencies:
-          - black=={{ versions["black"] }}
+          - black=={{ versions["black"].split("#")[1].strip() }}
   # <---- Formatting -----------------------------------------------------------------------------
 
   # ----- Security ------------------------------------------------------------------------------>
