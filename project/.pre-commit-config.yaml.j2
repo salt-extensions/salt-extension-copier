@@ -88,7 +88,7 @@ repos:
         args: [--skip-errors]
         files: ^(docs/.*\.rst|src/{{ namespaced_package_path }}/.*\.py)$
         additional_dependencies:
-          - black==24.2.0
+          - black=={{ versions["black"] }}
   # <---- Formatting -----------------------------------------------------------------------------
 
   # ----- Security ------------------------------------------------------------------------------>
