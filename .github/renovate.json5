@@ -40,48 +40,33 @@
             matchUpdateTypes: ["patch"],
             automerge: true,
         },
-        // Groups for salt-extension-copier itself
         {
             matchDepTypes: ["github-runner"],
-            groupName: "github-runners",
+            groupName: "github runners",
             branchNameStrict: true,
         },
         {
             matchDepTypes: ["devDependencies"],
             matchUpdateTypes: ["patch", "minor"],
-            groupName: "dev (non-major)",
+            groupName: "dev dependencies (non-major)",
             automerge: true,
             branchNameStrict: true,
         },
         {
             matchDepTypes: ["action", "actionMisc"],
             matchUpdateTypes: ["patch", "minor"],
-            groupName: "action (non-major)",
-            automerge: true,
-            branchNameStrict: true,
-        },
-        // Groups for generated project dependencies
-        {
-            matchFileNames: ["data/versions.yaml"],
-            matchDepTypes: ["github-runner"],
-            groupName: "[project] github-runners",
-            branchNameStrict: true,
-        },
-        {
-            matchFileNames: ["data/versions.yaml"],
-            matchDepTypes: ["devDependencies"],
-            matchUpdateTypes: ["patch", "minor"],
-            groupName: "[project] dev (non-major)",
+            groupName: "actions (non-major)",
             automerge: true,
             branchNameStrict: true,
         },
         {
             matchFileNames: ["data/versions.yaml"],
-            matchDepTypes: ["action", "actionMisc"],
-            matchUpdateTypes: ["patch", "minor"],
-            groupName: "[project] action (non-major)",
-            automerge: true,
-            branchNameStrict: true,
+            // Ensure major updates are in separate PRs for salt-extension-copier and the project
+            // Also ensure the groups are separate since their slugs are equal
+            additionalBranchPrefix: "project/",
+
+            // Separate the PRs visually (this ends up in the PR title as well).
+            commitMessagePrefix: "project: ",
         },
     ],
 }
