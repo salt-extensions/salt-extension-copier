@@ -59,14 +59,5 @@
             automerge: true,
             branchNameStrict: true,
         },
-        {
-            matchFileNames: ["data/versions.yaml"],
-            // Ensure major updates are in separate PRs for salt-extension-copier and the project
-            // Also ensure the groups are separate since their slugs are equal
-            additionalBranchPrefix: "project/",
-
-            // Separate the PRs visually (this ends up in the PR title as well).
-            commitMessagePrefix: "project: ",
-        },
     ],
 }
