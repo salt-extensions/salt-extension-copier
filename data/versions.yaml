@@ -72,6 +72,12 @@ dorny/paths-filter: 'de90cc6fb38fc0963ad72b210f1f284cd68cea36  # v3.0.2'
 # renovate: datasource=git-tags depName=https://github.com/geekyeggo/delete-artifact depType=action
 geekyeggo/delete-artifact: '7ee91e82b4a7f3339cd8b14beace3d826a2aac39  # v5.1.0'
 
+# renovate: datasource=git-tags depName=https://github.com/mathieudutour/github-tag-action depType=action
+mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6.2'
+
+# renovate: datasource=git-tags depName=https://github.com/peter-evans/create-pull-request depType=action
+peter-evans/create-pull-request: '5e914681df9dc83aa4e4905692ca88beb2f9e91f  # v7.0.5'
+
 # renovate: datasource=git-tags depName=https://github.com/pypa/gh-action-pypi-publish depType=action
 pypa/gh-action-pypi-publish: 'c44d2f0e52f028349e3ecafbf7f32561da677277  # v1.10.3'
 
