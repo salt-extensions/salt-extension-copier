@@ -44,7 +44,7 @@ repos:
 
   - repo: https://github.com/psf/black
     # renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
-    rev: b965c2a5026f8ba399283ba3e01898b012853c79  # 24.8.0
+    rev: 1b2427a2b785cc4aac97c19bb4b9a0de063f9547  # 24.10.0
     hooks:
       - id: black
         name: Autoformat Python code
