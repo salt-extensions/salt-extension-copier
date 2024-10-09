@@ -20,6 +20,7 @@ For every user-facing change, ensure your patch includes a corresponding news fr
     * `changed`
     * `removed`
     * `deprecated`
+    * `breaking`
     * `security`
 
 4. The file contents should be written in Markdown.
