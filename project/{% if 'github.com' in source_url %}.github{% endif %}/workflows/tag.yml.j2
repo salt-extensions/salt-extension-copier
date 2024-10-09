@@ -33,7 +33,40 @@ jobs:
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
       - name: Ensure changelog was rendered
-        run: test "${{ steps.get_version_tag.outputs.version }}" = "$(python tools/version.py)"
+        run: |
+          test "${{ steps.get_version_tag.outputs.version }}" = "$(python tools/version.py)" && \
+          test -z "$(find changelog -type f -not -name '.*' -print -quit)"
+
+  close_autopr_on_tag:
+    name: Close release PR on manual tag
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
+    if: github.event_name == 'push'
+    needs:
+      - get_version_tag
+
+    steps:
+      - name: Find Pull Request
+{%- endraw %}
+        uses: juliangruber/find-pull-request-action@{{ versions["juliangruber/find-pull-request-action"] }}
+{%- raw %}
+        id: find-pull-request
+        with:
+          branch: release/auto
+          base: ${{ github.event.repository.default_branch }}
+          state: open
+
+      - name: Close release PR
+        if: steps.find-pull-request.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr close \
+            --comment "This release was triggered manually as v${{ needs.get_version_tag.outputs.version }}" \
+            --delete-branch \
+            --repo "$GITHUB_REPOSITORY" \
+            "${{ steps.find-pull-request.outputs.number }}"
 
   get_version_pr:
     name: Extract version from merged release PR
