@@ -1,3 +1,4 @@
+(changelog-target)=
 # Keeping a changelog
 
 Your Saltext project uses [towncrier](https://towncrier.readthedocs.io/en/stable/) to manage and render its {path}`CHANGELOG.md` file, which is included in the rendered documentation as well.
@@ -25,6 +26,10 @@ For every user-facing change, ensure your patch includes a corresponding news fr
 
 4. The file contents should be written in Markdown.
 
+:::{hint}
+It's possible to create a news fragment that does not reference an issue by prefixing the file name with a `+`, e.g. `+foo.changed.md`.
+:::
+
 ## Example
 
 Suppose a PR fixes a crash when the `foo.bar` configuration value is missing. The news fragment can be created as follows:
@@ -37,4 +42,4 @@ Include this file in the PR.
 
 ## Building the changelog
 
-Before tagging a release, the individual `changelog/*.md` files need to be compiled into the actual changelog. Refer to [Building the changelog](changelog-build-target) for instructions on how to do this.
+Before tagging a release, the individual `changelog/*.md` files need to be compiled into the actual changelog. This is taken care of by the [release automation](release-automated-target). For [manual releases](release-manual-target), refer to [Building the changelog](changelog-build-target) for instructions on how to do this.
