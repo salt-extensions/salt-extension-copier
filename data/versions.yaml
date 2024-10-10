@@ -57,7 +57,7 @@ actions/download-artifact: 'fa0a91b85d4f404e444e00e005971372dc801d16  # v4.1.8'
 actions/setup-python: 'f677139bbe7f9c59b41e40162b753c062f5d49a3  # v5.2.0'
 
 # renovate: datasource=git-tags depName=https://github.com/actions/upload-artifact depType=action
-actions/upload-artifact: '84480863f228bb9747b473957fcc9e309aa96097  # v4.4.2'
+actions/upload-artifact: 'b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882  # v4.4.3'
 
 # renovate: datasource=git-tags depName=https://github.com/actions/upload-pages-artifact depType=action
 actions/upload-pages-artifact: '56afc609e74202658d3ffba0e8f6dda462b719fa  # v3.0.1'
