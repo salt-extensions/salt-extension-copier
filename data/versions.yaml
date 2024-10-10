@@ -18,7 +18,7 @@ blacken_docs: 'd4e2940d27621c7f20215459be05703947618b7b  # 1.19.0'
 isort: 'c235f5e450b4b84e58d114ed4c589cbf454175a3  # 5.13.2'
 
 # renovate: datasource=pypi depName=nox depType=devDependencies
-nox: '2024.4.15'
+nox: '2024.10.9'
 
 # renovate: datasource=git-tags depName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
 remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
@@ -104,4 +104,4 @@ python_container: '3.10.15-slim-bookworm@sha256:1eb5d76bf3e9e612176ebf5eadf8f27e
 codecov_cli: 'v0.7.5'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.6.1'
+coverage: '7.6.2'
