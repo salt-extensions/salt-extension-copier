@@ -114,3 +114,6 @@ codecov_cli: 'v9.1.1'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
 coverage: '7.6.12'
+
+# renovate: datasource=pypi depName=towncrier depType=devDependencies
+towncrier: '24.8.0'
