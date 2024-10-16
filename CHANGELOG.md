@@ -4,6 +4,14 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.5.1 (2024-10-16)
+
+
+### Fixed
+
+- Fixed updates with salt_version containing a minor version
+- Updated dev/CI dependencies
+
 ## 0.5.0 (2024-10-07)
 
 
