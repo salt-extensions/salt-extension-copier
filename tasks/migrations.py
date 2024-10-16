@@ -31,8 +31,8 @@ def ensure_minimum_python_requires(answers):
         return
 
     salt_python_support = load_data_yaml("salt_python_support")
-    selected_salt_version = float(
-        int(answers.get("salt_version", COPIER_CONF["salt_version"]["default"]))
+    selected_salt_version = int(
+        float(answers.get("salt_version", COPIER_CONF["salt_version"]["default"]))
     )
     default = ".".join(str(x) for x in salt_python_support[selected_salt_version]["min"])
     current = answers["python_requires"]
