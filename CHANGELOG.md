@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.5.2 (2024-10-16)
+
+
+### Removed
+
+- Dropped Python 3.8 support
+
 ## 0.5.1 (2024-10-16)
 
 
