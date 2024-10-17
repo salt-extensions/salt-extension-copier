@@ -21,7 +21,7 @@ import re
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.parent.resolve()
+PROJECT_ROOT = Path(".").resolve()
 CHANGELOG_DIR = PROJECT_ROOT / "changelog"
 CHANGELOG_FILE = PROJECT_ROOT / "CHANGELOG.md"
 
