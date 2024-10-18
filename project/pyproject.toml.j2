@@ -133,6 +133,11 @@ issue_format = "[#{issue}]({{ tracker_url }}/{issue})"
 {%- endif %}
 
 [[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking changes"
+showcontent = true
+
+[[tool.towncrier.type]]
 directory = "removed"
 name = "Removed"
 showcontent = true
