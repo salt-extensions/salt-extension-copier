@@ -101,7 +101,7 @@ python_container: '3.10.15-slim-bookworm@sha256:1eb5d76bf3e9e612176ebf5eadf8f27e
 ###########################################################
 
 # renovate: datasource=git-tags depName=https://github.com/codecov/codecov-cli depType=actionMisc
-codecov_cli: 'v0.7.6'
+codecov_cli: 'v0.8.0'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
 coverage: '7.6.3'
