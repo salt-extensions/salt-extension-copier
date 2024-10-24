@@ -12,7 +12,7 @@ bandit: '36fd65054fc8864b4037d0918904f9331512feb5  # 1.7.10'
 black: '1b2427a2b785cc4aac97c19bb4b9a0de063f9547  # 24.10.0'
 
 # renovate: datasource=git-tags depName=https://github.com/adamchainz/blacken-docs depType=devDependencies
-blacken_docs: 'd4e2940d27621c7f20215459be05703947618b7b  # 1.19.0'
+blacken_docs: '78a9dcbecf4f755f65d1f3dec556bc249d723600  # 1.19.1'
 
 # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
 isort: 'c235f5e450b4b84e58d114ed4c589cbf454175a3  # 5.13.2'
@@ -37,7 +37,7 @@ salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
 shellcheck: '0.10.0.1'
 
 # renovate: datasource=pypi depName=uv depType=devDependencies
-uv: '0.4.25'
+uv: '0.4.26'
 
 
 ###########################################################
