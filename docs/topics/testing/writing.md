@@ -103,6 +103,34 @@ Unit tests usually rely on a subset of the following classes/functions:
 
 Please see the {py:mod}`unittest.mock docs <unittest.mock>` for details.
 
+##### Patching
+When patching, avoid using the `@patch` decorator [because it can lead to unexpected issues](https://engblog.nextdoor.com/what-your-mocks-do-when-you-aren-t-looking-b278e0d9e201).
+
+Instead, patch inside the test function or a fixture:
+
+```py
+from unittest.mock import patch
+
+import pytest
+from saltext.foo.modules import bar
+
+
+@pytest.fixture
+def patched_baz():
+    with patch("saltext.foo.modules.bar._baz", autospec=True, return_value=True) as baz:
+        yield baz
+
+
+@pytest.mark.usefixtures("patched_baz")
+def test_bar_stuff():
+    assert bar.stuff() is True
+
+
+def test_bar_other(patched_baz):
+    assert bar.other() == {}
+    patched_baz.assert_called_once_with("other")
+```
+
 #### Important fixtures
 
 ##### `minion_opts`
@@ -344,7 +372,7 @@ def test_foobar_in_state_apply(salt_call_cli, master):
 :   module
 
 *Description*
-:   Runs `salt-ssh` commands, usually for `wrapper` module tests. Available when the extension has enabled for `wrapper` {question}`loaders` or {question}`ssh_fixtures`.
+:   Runs `salt-ssh` commands, usually for `wrapper` module tests. Available when the extension has enabled `wrapper` {question}`loaders` or {question}`ssh_fixtures`.
 
 *Example*
 :   ```python
