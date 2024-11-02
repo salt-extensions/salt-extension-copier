@@ -6,37 +6,141 @@ on:
   push:
     tags:
       - "v*"  # Only tags starting with "v" for "v1.0.0", etc.
+  pull_request:
+    types:
+      - closed
+    paths:
+      - CHANGELOG.md
 
 jobs:
-  get_tag_version:
-{%-   endraw %}
+  get_version_tag:
+    name: Extract version from tag
+{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%-   raw %}
+{%- raw %}
+    if: github.event_name == 'push'
     outputs:
-      version: ${{ steps.get_version.outputs.version }}
+      version: ${{ steps.get_version_tag.outputs.version }}
+
     steps:
       - name: Checkout code
-{%-   endraw %}
+{%- endraw %}
         uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%-   raw %}
+{%- raw %}
 
       - name: Extract tag name
-        id: get_version
+        id: get_version_tag
         run: echo "version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
 
-  call_central_workflow:
-    needs: get_tag_version
+      - name: Ensure changelog was rendered
+        run: |
+          test "${{ steps.get_version_tag.outputs.version }}" = "$(python tools/version.py)" && \
+          test -z "$(find changelog -type f -not -name '.*' -print -quit)"
+
+  close_autopr_on_tag:
+    name: Close release PR on manual tag
 {%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
+    if: github.event_name == 'push'
+    needs:
+      - get_version_tag
+
+    steps:
+      - name: Find Pull Request
+{%- endraw %}
+        uses: juliangruber/find-pull-request-action@{{ versions["juliangruber/find-pull-request-action"] }}
+{%- raw %}
+        id: find-pull-request
+        with:
+          branch: release/auto
+          base: ${{ github.event.repository.default_branch }}
+          state: open
+
+      - name: Close release PR
+        if: steps.find-pull-request.outputs.number != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr close \
+            --comment "This release was triggered manually as v${{ needs.get_version_tag.outputs.version }}" \
+            --delete-branch \
+            --repo "$GITHUB_REPOSITORY" \
+            "${{ steps.find-pull-request.outputs.number }}"
+
+  get_version_pr:
+    name: Extract version from merged release PR
+{%- endraw %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%- raw %}
+    permissions:
+      contents: write  # To push the new tag. This does not cause a tag event.
+
+    # Only trigger this on closed pull requests if:
+    #   - The originating branch is from the same repository as the one running this workflow.
+    #   - The originating branch is called `release/auto`
+    #   - The PR was merged, not just closed.
+    #   - The PR targeted the default branch of the repository this workflow is running from.
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.repository == github.event.pull_request.head.repo.full_name &&
+      github.head_ref == 'release/auto' &&
+      github.event.pull_request.merged == true &&
+      github.base_ref == github.event.repository.default_branch
+
+    outputs:
+      version: ${{ steps.get_version_pr.outputs.version }}
+
+    steps:
+      - name: Checkout code
+{%- endraw %}
+        uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%- raw %}
+
+      - name: Extract version of merged release PR
+        id: get_version_pr
+        run: echo "version=$(python tools/version.py)" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure no news fragments are left
+        run: test -z "$(find changelog -type f -not -path '*/.*' -print -quit)"
+
+      - name: Check extracted version matches PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: >-
+          [[ "$TITLE" == "Release v${{ steps.get_version_pr.outputs.version }}" ]] || exit 1
+
+      - name: Create tag for release
+{%- endraw %}
+        uses: mathieudutour/github-tag-action@{{ versions["mathieudutour/github-tag-action"] }}
+{%- raw %}
+        with:
+          github_token: ${{ github.token }}
+          custom_tag: ${{ steps.get_version_pr.outputs.version }}
+          create_annotated_tag: true
+
+  call_central_workflow:
+    # Only call the central workflow if either of the above jobs report success.
+    if: >-
+      always() &&
+      (
+        needs.get_version_tag.result == 'success' ||
+        needs.get_version_pr.result == 'success'
+      )
+    needs:
+      - get_version_tag
+      - get_version_pr
     uses: ./.github/workflows/ci.yml
+{%- endraw %}
     with:
       deploy-docs: {{ (deploy_docs in ["rolling", "release"]) | lower }}
 {%- raw %}
       release: true
-      version: ${{ needs.get_tag_version.outputs.version }}
+      version: ${{ github.event_name == 'push' && needs.get_version_tag.outputs.version || needs.get_version_pr.outputs.version }}
     permissions:
       contents: write
       id-token: write
       pages: write
-      pull-requests: read
+      pull-requests: write
     secrets: inherit
 {%- endraw %}

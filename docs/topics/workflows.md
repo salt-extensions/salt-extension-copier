@@ -10,6 +10,7 @@ The workflows currently:
 * Ensure `pre-commit` checks pass
 * Run the test suite and upload code coverage reports
 * Build the documentation
+* Build the changelog and submit a PR that triggers a release when merged
 * Optionally deploy built documentation to GitHub Pages
 * Optionally build and release your project to PyPI
 
