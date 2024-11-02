@@ -181,18 +181,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Download libeay32.dll
-        run: |
-          PY_LOC="$(which python.exe)"
-          export PY_LOC
-          echo "${PY_LOC}"
-          PY_DIR="$(dirname "${PY_LOC}")"
-          export PY_DIR
-          echo "${PY_DIR}"
-          curl https://repo.saltproject.io/windows/dependencies/64/libeay32.dll --output "${PY_DIR}/libeay32.dll"
-          ls -l "${PY_DIR}"
-        shell: bash
-
       - name: Install Nox
         run: |
           python -m pip install --upgrade pip
