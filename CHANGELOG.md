@@ -4,6 +4,20 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.6.0 (2024-11-03)
+
+
+### Fixed
+
+- Fixed Windows test runs after repo.saltproject.io decommission
+- Updated dev/CI dependencies
+
+
+### Added
+
+- Improved release automation: Added workflow that builds the changelog and creates/updates a PR on pushes to the default branch. Added trigger for release workflow when this PR is merged. [#18](https://github.com/salt-extensions/salt-extension-copier/issues/18)
+- Added `breaking` news fragment type to towncrier
+
 ## 0.5.2 (2024-10-16)
 
 
