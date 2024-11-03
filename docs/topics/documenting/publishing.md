@@ -11,8 +11,14 @@ To enable documentation publishing, follow these steps:
 1. On GitHub, navigate to your repository and click on `Settings`.
 2. Select `Pages`.
 3. Under `Build and deployment source`, ensure `GitHub Actions` is selected.
+4. Select `Environments`.
+5. Click on `github-pages`.
+6. Under `Deployment branches and tags`, click on `Add deployment branch or tag rule`
+7. Ensure `Ref type` is `Branch` (the default).
+8. As the `Name pattern`, enter `release/auto` (the branch name used by the [automated release PR](release-automated-target)).
+9. Click on `Add rule`.
 
-Once configured, your documentation will be automatically published to your GitHub Pages site after a `tag` event or a `push` event (if {question}`deploy_docs` == `rolling`).
+Once configured, your documentation is automatically published to your GitHub Pages site when [publishing a release](publishing-target) or after pushes to the default branch (if {question}`deploy_docs` == `rolling`).
 
 ## Further steps
 
