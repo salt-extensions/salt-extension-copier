@@ -40,6 +40,7 @@ jobs:
 {%- raw %}
         if: ${{ inputs.test }}
         with:
+          attestations: false
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
 
@@ -60,5 +61,10 @@ jobs:
 {%- raw %}
         if: ${{ !inputs.test }}
         with:
+          # Attestations are only submitted when using Trusted Publishing,
+          # which is triggered by secrets.PYPI_API_TOKEN not being set.
+          # They don't work with reusable workflows at the moment.
+          # It's related to https://github.com/pypi/warehouse/issues/11096
+          attestations: false
           password: ${{ secrets.PYPI_API_TOKEN }}
 {%- endraw %}
