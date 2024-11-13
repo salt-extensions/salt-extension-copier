@@ -23,13 +23,12 @@ repos:
 
   - repo: https://github.com/asottile/pyupgrade
     # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
-    # skip this for now, 3.17 requires Python 3.9+
     rev: 32151ac97cbfd7f9dcd22e49516fb32266db45b4  # v3.16.0
     hooks:
       - id: pyupgrade
-        name: Rewrite code for Py3.8+
+        name: Rewrite code for Py3.9+
         args:
-          - --py38-plus
+          - --py39-plus
 
   - repo: https://github.com/PyCQA/isort
     # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
@@ -37,7 +36,7 @@ repos:
     hooks:
       - id: isort
         args:
-          - --py=38
+          - --py=39
           - --profile=black
           - --force-single-line
         exclude: project/src/\{\{ namespaced_package_path \}\}/__init__.py
@@ -50,7 +49,7 @@ repos:
         name: Autoformat Python code
         args:
           - --line-length=100
-          - --target-version=py38
+          - --target-version=py39
 
   - repo: local
     hooks:

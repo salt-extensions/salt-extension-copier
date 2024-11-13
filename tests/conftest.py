@@ -1,5 +1,5 @@
+from collections.abc import Generator
 from dataclasses import asdict
-from typing import Generator
 
 import pytest
 from plumbum import local
