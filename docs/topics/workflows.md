@@ -17,8 +17,17 @@ The workflows currently:
 ## Repository setup
 
 ### Required settings (all)
+#### GitHub Pages
 If publishing documentation to GitHub Pages, ensure you have
 [set up your repository to allow deployments from GitHub Actions](docs-publish-setup-target).
+
+(actions-pr-permission-target)=
+#### Release automation
+Also, ensure GitHub Actions are allowed to create PRs to take advantage of
+the release automation. In the organization, this should be enabled by default.
+
+In your repository settings, click on `Actions` > `General`, scroll down
+and ensure `Allow GitHub Actions to create and approve pull requests` is checked.
 
 (required-secrets-target)=
 ### Required secrets (non-org)

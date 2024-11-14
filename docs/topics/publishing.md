@@ -12,7 +12,7 @@ Once your Salt extension is ready, you can submit it to PyPI.
 Ensure you meet the following prerequisites:
 
 * Your project is hosted on GitHub.
-* It is either in the `salt-extensions` organization or you have set up the [required secrets](required-secrets-target).
+* It is either in the `salt-extensions` organization or you have set up the [required secrets](required-secrets-target) and [permissions](actions-pr-permission-target).
 * You have commit rights to the repository.
 
 (release-automated-target)=
