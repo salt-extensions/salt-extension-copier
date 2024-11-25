@@ -39,7 +39,7 @@ This drastic change is driven by several key goals:
 The migration splits modules into three categories:
 
 1. **Core modules**: These will remain within the Salt codebase and follow the Salt release cycle.
-2. **Supported modules (extended core)**: These modules will move to their own repositories within the `saltstack` GitHub organization, where they can be maintained separately.
+2. **Supported modules (extended core)**: These modules will move to their own repositories within the `salt-extensions` GitHub organization, where they can be maintained separately by core maintainers.
 (community-modules-target)=
 3. **Community Modules**: These will be removed from the Salt Core codebase. Community members can take over their maintenance, either in the community-run Salt Extensions GitHub organization or in their own repositories.
 

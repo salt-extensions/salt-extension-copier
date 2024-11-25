@@ -4,9 +4,17 @@ To render the template, you only need a functional [Copier][copier-docs] install
 
 ## Copier
 
-:::{tab} pipx
+It’s recommended to install Copier globally using either [uv][uv-docs] or [pipx][pipx-docs]:
 
-It’s recommended to install Copier globally using [pipx][pipx-docs]:
+:::{tab} uv
+
+
+```bash
+uv tool install --python 3.10 --with copier-templates-extensions 'copier>=9.3'
+```
+:::
+
+:::{tab} pipx
 
 ```bash
 pipx install 'copier>=9.3' && \
@@ -23,6 +31,10 @@ python -m pip install 'copier>=9.3' copier-templates-extensions
 ```
 :::
 
+:::{note}
+The `copier` virtual environment should be based on the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.10. Other versions - especially higher ones - should work, but the template's CI tests only verify the mentioned version.
+:::
+
 :::{important}
 This template includes custom Jinja extensions, so ensure that [copier-templates-extensions][copier-templates-extensions] is installed in the same environment as `copier`. The example commands above handle this.
 :::
@@ -31,3 +43,4 @@ This template includes custom Jinja extensions, so ensure that [copier-templates
 [copier-multiselect-pr]: https://github.com/copier-org/copier/pull/1386
 [copier-templates-extensions]: https://github.com/copier-org/copier-templates-extensions
 [pipx-docs]: https://pipx.pypa.io/stable/
+[uv-docs]: https://docs.astral.sh/uv/

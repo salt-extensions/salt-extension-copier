@@ -248,6 +248,37 @@ def test_state_module_test(states):
     assert ret.changes
 ```
 
+##### Testing modules in the state compiler context
+
+You can create test `sls` files, {py:func}`state.apply <salt.modules.state.apply_>` (or {py:func}`state.show_sls <salt.modules.state.show_sls>`) them and assert against the {py:class}`return <saltfactories.utils.functional.MultiStateResult>`:
+
+```{code-block} python
+import pytest
+from textwrap import dedent
+
+@pytest.fixture
+def foo_sls(state_tree):
+    sls = "test_foo"
+    contents = dedent(
+        """
+        {%- set name = salt["foo.bar"]() %}
+
+        Test foo state:
+          foo.bard:
+            - name: {{ name }}
+        """
+    ).strip()
+
+    with pytest.helpers.temp_file(f"{sls}.sls", contents, state_tree):
+        yield sls
+
+
+def test_foo_in_state_compiler(foo_sls, loaders):
+    ret = loaders.modules.state.apply(foo_sls)
+    assert not ret.failed
+    assert "foo" in ret.raw["foo_|-Test foo state_|-foo_|-bard"]["comment"]
+```
+
 #### Important fixtures
 
 ##### `loaders`
@@ -275,6 +306,12 @@ def test_state_module_test(states):
 *Description*
 :   Shortcut for `loaders.states`.
 
+##### `state_tree`
+*Scope*
+:   module
+
+*Description*
+:   The {py:class}`Path <pathlib.Path>` to the functional test minion's state directory.
 
 ### Integration tests
 

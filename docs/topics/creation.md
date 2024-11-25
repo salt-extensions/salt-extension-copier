@@ -76,7 +76,7 @@ To create the virtualenv, it is recommended to use the same Python version (MAJO
 
 ```bash
 python3.10 -m venv .venv
-source venv/bin/activate
+source .venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```
 

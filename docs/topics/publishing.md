@@ -81,11 +81,16 @@ git switch main && git fetch upstream && git rebase upstream/main
 Create a new tag named after the version:
 
 ```bash
-git tag v1.0.0
+git tag -s v1.0.0
 ```
 
 :::{important}
 The tag must start with `v` for the default publishing workflows to work correctly.
+:::
+
+:::{note}
+It's recommended to create annotated (`git tag -a`) or signed (`git tag -s`) tags
+since they create an immutable git object. Regular tags are just pointers to a specific commit.
 :::
 
 ### 4: Push the tag

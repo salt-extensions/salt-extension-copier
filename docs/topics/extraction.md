@@ -12,6 +12,12 @@ Ensure you always use the latest HEAD of `saltext-migrate` to avoid incompatibil
 When encountering a bug, first try to update the tool.
 :::
 
+:::{tab} uv
+```bash
+uv tool install git-filter-repo
+uv tool install git+https://github.com/salt-extensions/salt-extension-migrate
+```
+:::
 :::{tab} pipx
 ```bash
 pipx install git-filter-repo
@@ -47,7 +53,28 @@ The tool will:
 6. [Create a virtual environment](migration-venv-target) for your project
 7. [Apply rewrites](migration-clean-up-target) (with fixes and improvements versus `salt-rewrite`)
 8. Install and run pre-commit
-9. Provide an overview of issues to fix and next steps
+9. Provide an overview of [issues to fix](migrate-manual-fixes-target) and next steps.
+
+### Common issues
+#### Missing files
+If the default path filter does not pick up all related modules, you can override the names it searches for:
+
+```bash
+saltext-migrate zfs -m zfs -m zpool
+```
+
+If there are still missing paths, you can add them explicitly:
+
+```bash
+saltext-migrate zfs -m zfs -m zpool -i docs/foo/bar.rst
+```
+
+#### File renaming caused colliding pathnames!
+By default, `saltext-migrate` tries to keep file names the same. Since it needs to rewrite e.g. both `tests/pytests/unit/modules/test_foo.py` and `tests/unit/modules/test_foo.py` into `tests/unit/modules/test_foo.py`, some specific git histories can cause conflicts. You can workaround this by specifying `--avoid-collisions`:
+
+```bash
+saltext-migrate postgresql -m postgres --avoid-collisions
+```
 
 (manual-extraction-example)=
 ## A manual module extraction example
@@ -56,6 +83,11 @@ Below are some rough steps to extract an existing set of modules into an extensi
 
 ### 1. Install the Git history filtering tool
 
+:::{tab} uv
+```bash
+uv tool install git-filter-repo
+```
+:::
 :::{tab} pipx
 ```shell
 pipx install git-filter-repo
@@ -156,7 +188,7 @@ To create the virtualenv, it is recommended to use the same Python version (MAJO
 
 ```shell
 python3.10 -m venv .venv --prompt saltext-stalekey
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 Please ensure you're inside your virtual environment from here on.
@@ -233,6 +265,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 The generated Salt extension project does not account for a `tests/pytests` subdirectory. Its contents need to be moved to the top-level `tests` directory.
 
+(migrate-manual-fixes-target)=
 ## Issues needing manual fixing
 (utils-dunder-into-saltext-utils)=
 ### `__utils__` into Salt extension utils
