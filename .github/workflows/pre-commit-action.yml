@@ -14,7 +14,7 @@ jobs:
     name: Pre-Commit
     runs-on: ubuntu-24.04
     container:
-      image: docker.io/library/python:3.10.15-slim-bookworm@sha256:af6f1b19eae3400ea3a569ba92d4819a527be4662971d51bb798c923bba30a81
+      image: docker.io/library/python:3.10.15-slim-bookworm@sha256:97ff6fda70178dee6c144d41030fb88b6ec86d75e1c517fe96b8f62094ea7ac2
 
     steps:
       - name: Install System Deps
