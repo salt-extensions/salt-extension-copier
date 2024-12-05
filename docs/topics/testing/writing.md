@@ -227,7 +227,7 @@ When calling state modules in a functional test, the return value is a wrapper a
 ```{code-block} python
 :emphasize-lines: 3-5
 
-def test_state_module(states):
+def test_present_no_changes(states):
     ret = states.my_state.present("foo")
     assert ret.result is True
     assert "as specified" in ret.comment
@@ -241,10 +241,31 @@ State modules can also be called with `test=True` during functional tests:
 ```{code-block} python
 :emphasize-lines: 2
 
-def test_state_module_test(states):
+def test_present_create_testmode(states):
     ret = states.my_state.present("foo", test=True)
     assert ret.result is None
-    assert "would have" in ret.comment
+    assert "would have created" in ret.comment
+    assert ret.changes
+```
+
+###### Test mode (parametrized)
+
+A neat pattern to ensure you're testing states with and without test mode is to define a parametrized `testmode` fixture:
+
+```{code-block} python
+:emphasize-lines: 1-3,6,7
+
+@pytest.fixture(params=(False, True))
+def testmode(request):
+    return request.param
+
+
+def test_present_create(states, testmode):
+    ret = states.my_state.present("foo", test=testmode)
+    assert ret.result is not False
+    assert (ret.result is None) is testmode
+    assert ("would have" in ret.comment) is testmode
+    assert "created" in ret.comment
     assert ret.changes
 ```
 
@@ -256,12 +277,13 @@ You can create test `sls` files, {py:func}`state.apply <salt.modules.state.apply
 import pytest
 from textwrap import dedent
 
+
 @pytest.fixture
 def foo_sls(state_tree):
     sls = "test_foo"
     contents = dedent(
         """
-        {%- set name = salt["foo.bar"]() %}
+        {%- set name = salt["foo.echo"]("wat") %}
 
         Test foo state:
           foo.bard:
@@ -276,7 +298,7 @@ def foo_sls(state_tree):
 def test_foo_in_state_compiler(foo_sls, loaders):
     ret = loaders.modules.state.apply(foo_sls)
     assert not ret.failed
-    assert "foo" in ret.raw["foo_|-Test foo state_|-foo_|-bard"]["comment"]
+    assert "wat" in ret.raw["foo_|-Test foo state_|-wat_|-bard"]["comment"]
 ```
 
 #### Important fixtures

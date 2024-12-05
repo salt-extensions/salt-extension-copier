@@ -170,7 +170,6 @@ salt_version:
     {%-   endif -%}
     {%- endif -%}
 
-
 python_requires:
   type: str
   help: Minimum Python version to support
