@@ -23,7 +23,7 @@ repos:
 
   - repo: https://github.com/asottile/pyupgrade
     # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
-    rev: 19364aa1b2ac289ce75e6bbe93994f7b4b9425f6  # v3.19.0
+    rev: ce40a160603ab0e7d9c627ae33d7ef3906e2d2b2  # v3.19.1
     hooks:
       - id: pyupgrade
         name: Rewrite code for Py3.9+
