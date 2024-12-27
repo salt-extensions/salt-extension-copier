@@ -37,7 +37,7 @@ salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
 shellcheck: '0.10.0.1'
 
 # renovate: datasource=pypi depName=uv depType=devDependencies
-uv: '0.5.11'
+uv: '0.5.12'
 
 
 ###########################################################
@@ -113,4 +113,4 @@ python_container: '3.10.16-slim-bookworm@sha256:61912260e578182d00b5e163eb4cfb13
 codecov_cli: 'v9.1.1'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.6.9'
+coverage: '7.6.10'
