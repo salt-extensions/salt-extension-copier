@@ -47,13 +47,12 @@ def create_venv(project_root=".", directory=None):
         prompt.status("Found `uv`. Creating venv")
         uv(
             "venv",
+            # Install pip/setuptools/wheel for compatibility
+            "--seed",
             "--python",
             RECOMMENDED_PYVER,
             f"--prompt=saltext-{discover_project_name()}",
         )
-        prompt.status("Installing pip into venv")
-        # Ensure there's still a `pip` (+ setuptools/wheel) inside the venv for compatibility
-        uv("venv", "--seed")
     else:
         prompt.status("Did not find `uv`. Falling back to `venv`")
         try:
