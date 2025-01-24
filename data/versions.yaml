@@ -82,7 +82,7 @@ mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6
 peter-evans/create-pull-request: '67ccf781d68cd99b580ae25a5c18a1cc84ffff1f  # v7.0.6'
 
 # renovate: datasource=git-tags depName=https://github.com/pypa/gh-action-pypi-publish depType=action
-pypa/gh-action-pypi-publish: 'c03e7fc4fb68e760409a4eb05a41050da01d8412  # v1.12.3'
+pypa/gh-action-pypi-publish: '7f25271a4aa483500f742f9492b2ab5648d61011  # v1.12.4'
 
 ###########################################################
 #  GitHub Runners
