@@ -15,7 +15,7 @@ black: '1b2427a2b785cc4aac97c19bb4b9a0de063f9547  # 24.10.0'
 blacken_docs: '78a9dcbecf4f755f65d1f3dec556bc249d723600  # 1.19.1'
 
 # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
-isort: 'c235f5e450b4b84e58d114ed4c589cbf454175a3  # 5.13.2'
+isort: '0a0b7a830386ba6a31c2ec8316849ae4d1b8240d  # 6.0.0'
 
 # renovate: datasource=pypi depName=nox depType=devDependencies
 nox: '2024.10.9'
