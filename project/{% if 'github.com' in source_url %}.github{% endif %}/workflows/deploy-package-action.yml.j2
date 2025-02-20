@@ -20,7 +20,7 @@ on:
 
 jobs:
   build:
-    name: Publish Python Package to ${{ fromJSON('["PyPI", "Test PyPI"]')[inputs.test] }}
+    name: Publish Python Package to ${{ ! inputs.test && 'PyPI' || 'Test PyPI' }}
 {%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
 {%- raw %}
