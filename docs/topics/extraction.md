@@ -15,7 +15,7 @@ When encountering a bug, first try to update the tool.
 :::{tab} uv
 ```bash
 uv tool install git-filter-repo
-uv tool install git+https://github.com/salt-extensions/salt-extension-migrate
+uv tool install --python 3.10 git+https://github.com/salt-extensions/salt-extension-migrate
 ```
 :::
 :::{tab} pipx

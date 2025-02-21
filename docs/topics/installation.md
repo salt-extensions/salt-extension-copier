@@ -10,14 +10,14 @@ It’s recommended to install Copier globally using either [uv][uv-docs] or [pip
 
 
 ```bash
-uv tool install --python 3.10 --with copier-templates-extensions 'copier>=9.3'
+uv tool install --python 3.10 --with copier-templates-extensions 'copier>=9.3,<9.5'
 ```
 :::
 
 :::{tab} pipx
 
 ```bash
-pipx install 'copier>=9.3' && \
+pipx install 'copier>=9.3,<9.5' && \
  pipx inject copier copier-templates-extensions
 ```
 :::
@@ -27,7 +27,7 @@ pipx install 'copier>=9.3' && \
 Alternatively, you can install Copier with `pip`, preferably inside a virtual environment:
 
 ```bash
-python -m pip install 'copier>=9.3' copier-templates-extensions
+python -m pip install 'copier>=9.3,<9.5' copier-templates-extensions
 ```
 :::
 
