@@ -79,7 +79,7 @@ juliangruber/find-pull-request-action: '2f36c5fe1abfda4745dfab4f38217ebad8ded4eb
 mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6.2'
 
 # renovate: datasource=git-tags depName=https://github.com/peter-evans/create-pull-request depType=action
-peter-evans/create-pull-request: 'dd2324fc52d5d43c699a5636bcf19fceaa70c284  # v7.0.7'
+peter-evans/create-pull-request: '271a8d0340265f705b14b6d32b9829c1cb33d45e  # v7.0.8'
 
 # renovate: datasource=git-tags depName=https://github.com/pypa/gh-action-pypi-publish depType=action
 pypa/gh-action-pypi-publish: '7f25271a4aa483500f742f9492b2ab5648d61011  # v1.12.4'
