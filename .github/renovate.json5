@@ -13,7 +13,7 @@
         },
         {
             customType: "regex",
-            fileMatch: ["^\\.pre-commit-config\\.yaml$"],
+            fileMatch: ["^\\.pre-commit-config\\.yaml$", "^\\noxfile\\.py$"],
             matchStrings: [
                 "# renovate: datasource=(?<datasource>pypi) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+-\\s*[\"']?[A-Za-z0-9_\\-\\.]+?==(?<currentValue>.+?)[\"']?\\s",
             ],
