@@ -392,20 +392,16 @@ _tasks:
   # This breaks when recopying.
   # We should be able to simplify this check in the future to:
   # if _copier_conf.operation == "copy".
-  - >-
-    {%- if
-      not _copier_conf.answers.last
-      and '.new_copy.' not in _copier_conf.dst_path.name
-      and '.old_copy.' not in _copier_conf.dst_path.name -%}
-        "{{ _copier_python }}" "{{ "{src}{sep}tasks{sep}initialize.py".format(src=_copier_conf.src_path, sep=_copier_conf.sep) }}" init
-    {%- endif -%}
+  - command: >-
+      "{{ _copier_python }}" "{{ "{src}{sep}tasks{sep}initialize.py".format(src=_copier_conf.src_path, sep=_copier_conf.sep) }}" init
+    when: '{{ _copier_operation == "copy" }}'
 
 # =====================================
 # | Copier settings for this template |
 # =====================================
 
-# We need the new migration syntax
-_min_copier_version: "9.3.0"
+# We need the _copier_operation variable
+_min_copier_version: "9.6.0"
 
 # The template root is found here
 _subdirectory: project
