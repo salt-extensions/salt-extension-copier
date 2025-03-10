@@ -42,7 +42,7 @@ Contributors to existing Salt extension projects need to do the latter after clo
 This process is automated completely in the following cases:
 
 * For maintainers: When creating/updating a project via Copier, unless `SKIP_INIT_MIGRATE=1` was set in the environment ([repo initialization](repo-init-target) + [dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target) + running pre-commit).
-* For all developers: When `direnv` is installed and the project's `.envrc` is allowed to run ([dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target)).
+* For all developers: If you have `direnv` installed and configured, you can copy the included `.envrc.example` to `.envrc` and allow it to run. This takes care of the [dev env setup](dev-setup-target) and [pre-commit hook installation](hook-install-target).
 
 :::{important}
 The automation either requires [`uv`](https://github.com/astral-sh/uv) or the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml) to be available on your system, at the time of writing Python 3.10.
