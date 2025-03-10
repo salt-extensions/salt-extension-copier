@@ -175,3 +175,31 @@ showcontent = true
 directory = "security"
 name = "Security"
 showcontent = true
+
+# While we currently don't use ruff for linting, it's helpful to include
+# these settings in case a user has setup ruff in their editor environment.
+[tool.ruff]
+builtins = [
+    "__opts__",
+    "__salt__",
+    "__pillar__",
+    "__grains__",
+    "__context__",
+    "__runner__",
+    "__ret__",
+    "__env__",
+    "__low__",
+    "__states__",
+    "__lowstate__",
+    "__running__",
+    "__active_provider_name__",
+    "__master_opts__",
+    "__jid_event__",
+    "__instance_id__",
+    "__salt_system_encoding__",
+    "__proxy__",
+    "__serializers__",
+    "__reg__",
+    "__executors__",
+    "__events__",
+]
