@@ -24,7 +24,8 @@ PIP_INSTALL_SILENT = CI_RUN is False
 SKIP_REQUIREMENTS_INSTALL = os.environ.get("SKIP_REQUIREMENTS_INSTALL", "0") == "1"
 EXTRA_REQUIREMENTS_INSTALL = os.environ.get("EXTRA_REQUIREMENTS_INSTALL")
 
-COVERAGE_REQUIREMENT = os.environ.get("COVERAGE_REQUIREMENT") or "coverage==7.5.1"
+# renovate: datasource=pypi depName=coverage depType=devDependencies
+COVERAGE_REQUIREMENT = os.environ.get("COVERAGE_REQUIREMENT") or "coverage==7.6.12"
 
 # Prevent Python from writing bytecode
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -52,7 +53,8 @@ DOCS_REQUIREMENTS = (
     "myst_parser",
     "furo",
     "sphinx-inline-tabs",
-    "towncrier==22.12.0",
+    # renovate: datasource=pypi depName=towncrier depType=devDependencies
+    "towncrier==24.8.0",
     "sphinxcontrib-towncrier",
     "sphinx_tippy",
 )
