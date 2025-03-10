@@ -11,6 +11,7 @@ To run all tests:
 
 ```bash
 nox -e tests-3
+# or: make tests
 ```
 
 ## With parameters
