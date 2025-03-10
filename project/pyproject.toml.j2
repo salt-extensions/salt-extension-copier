@@ -62,6 +62,15 @@ dev = [
     "nox[uv]>=2024.3",
     "pre-commit>=2.21.0",
 ]
+# These dependencies are used in automations. It can be helpful
+# to have them installed in the dev venv, e.g. for editor integration.
+# When initializing the dev env using the included automation, pass
+# `--extras` to install them automatically.
+dev_extra = [
+    "black=={{ versions["black"].split("#")[-1].strip() }}",
+    "isort=={{ versions["isort"].split("#")[-1].strip() }}",
+    "coverage=={{ versions["coverage"] }}",
+]
 docs = [
   "sphinx",
   "sphinx-prompt",
