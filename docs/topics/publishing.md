@@ -58,6 +58,7 @@ You have been [keeping a changelog](documenting/changelog) with `towncrier`, now
 
 ```bash
 towncrier build --yes --version v1.0.0
+# or: make changelog VERSION=v1.0.0
 ```
 
 This command combines all news fragments into {path}`CHANGELOG.md` and clears them. Commit the change.

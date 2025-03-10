@@ -33,6 +33,7 @@ To build your documentation once:
 
 ```bash
 nox -e docs
+# or: make docs
 ```
 
 The rendered documentation will be located in `docs/_build/html`.
@@ -42,6 +43,7 @@ For continuous development, you can start a live preview that automatically relo
 
 ```bash
 nox -e docs-dev
+# or: make docs-dev
 ```
 
 This command builds the documentation, starts an HTTP server, opens your default browser, and watches for changes.
