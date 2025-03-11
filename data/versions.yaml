@@ -27,8 +27,7 @@ remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
 pre_commit_hooks: 'cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b  # v5.0.0'
 
 # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
-# skip this for now, 3.17 requires Python 3.9+
-pyupgrade: '32151ac97cbfd7f9dcd22e49516fb32266db45b4  # v3.16.0'
+pyupgrade: 'ce40a160603ab0e7d9c627ae33d7ef3906e2d2b2  # v3.19.1'
 
 # renovate: datasource=git-tags depName=https://github.com/saltstack/salt-rewrite depType=devDependencies
 salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
