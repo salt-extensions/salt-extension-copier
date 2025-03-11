@@ -37,13 +37,13 @@ cd {{ project_name_full }}
 ```
 
 #### Automatic
-If you have installed [direnv][direnv], allowing the project's `.envrc` ensures
-a proper development environment is present and the virtual environment is active.
+If you have installed [direnv][direnv], copying the included `.envrc.example` to `.envrc` and
+allowing it to run ensures a proper development environment is present and the virtual environment is active.
 
 Without `direnv`, you can still run the automation explicitly:
 
 ```bash
-python3 tools/initialize.py
+make dev  # or python3 tools/initialize.py
 source .venv/bin/activate
 ```
 

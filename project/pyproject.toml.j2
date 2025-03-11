@@ -62,6 +62,15 @@ dev = [
     "nox[uv]>=2024.3",
     "pre-commit>=2.21.0",
 ]
+# These dependencies are used in automations. It can be helpful
+# to have them installed in the dev venv, e.g. for editor integration.
+# When initializing the dev env using the included automation, pass
+# `--extras` to install them automatically.
+dev_extra = [
+    "black=={{ versions["black"].split("#")[-1].strip() }}",
+    "isort=={{ versions["isort"].split("#")[-1].strip() }}",
+    "coverage=={{ versions["coverage"] }}",
+]
 docs = [
   "sphinx",
   "sphinx-prompt",
@@ -85,6 +94,7 @@ tests = [
 {%- else %}
     "pytest-salt-factories>=1.0.0",
 {%- endif %}
+    "pytest-instafail",
 ]
 
 [project.entry-points."salt.loader"]
@@ -166,3 +176,31 @@ showcontent = true
 directory = "security"
 name = "Security"
 showcontent = true
+
+# While we currently don't use ruff for linting, it's helpful to include
+# these settings in case a user has setup ruff in their editor environment.
+[tool.ruff]
+builtins = [
+    "__opts__",
+    "__salt__",
+    "__pillar__",
+    "__grains__",
+    "__context__",
+    "__runner__",
+    "__ret__",
+    "__env__",
+    "__low__",
+    "__states__",
+    "__lowstate__",
+    "__running__",
+    "__active_provider_name__",
+    "__master_opts__",
+    "__jid_event__",
+    "__instance_id__",
+    "__salt_system_encoding__",
+    "__proxy__",
+    "__serializers__",
+    "__reg__",
+    "__executors__",
+    "__events__",
+]

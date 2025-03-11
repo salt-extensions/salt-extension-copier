@@ -75,7 +75,7 @@ jobs:
           SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
           SKIP_REQUIREMENTS_INSTALL: true
         run: |
-          nox --force-color -e tests-3 -- -vv tests/
+          nox --force-color -e tests-3 -- -vv --instafail tests/
 
       - name: Create CodeCov Flags
         if: always()
@@ -202,7 +202,7 @@ jobs:
           SKIP_REQUIREMENTS_INSTALL: true
         run: |
           export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
-          nox --force-color -e tests-3 -- -vv tests/
+          nox --force-color -e tests-3 -- -vv --instafail tests/
 
       - name: Create CodeCov Flags
         if: always()
@@ -337,7 +337,7 @@ jobs:
           SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
           SKIP_REQUIREMENTS_INSTALL: true
         run: |
-          nox --force-color -e tests-3 -- -vv tests/
+          nox --force-color -e tests-3 -- -vv --instafail tests/
 
       - name: Create CodeCov Flags
         if: always()

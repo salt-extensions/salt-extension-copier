@@ -1,3 +1,5 @@
+import platform
+
 import pytest
 from plumbum import ProcessExecutionError
 from plumbum import local
@@ -64,6 +66,14 @@ def test_project_init_works(copie, answers, capfd):
     assert (proj / ".venv" / "pyvenv.cfg").exists()
     # ensure pre-commit ran
     assert (proj / "docs" / "ref" / "beacons" / "index.rst").exists()
+    # ensure extra dev tools can be installed by passing --extras
+    black_path = proj / ".venv/bin/black"
+    if platform.system() == "Windows":
+        black_path = proj / ".venv/Scripts/black.exe"
+    assert not black_path.exists()
+    with local.cwd(proj):
+        local["python"]("tools/initialize.py", "--extras")
+    assert black_path.exists()
 
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)

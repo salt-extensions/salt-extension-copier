@@ -67,6 +67,7 @@ TESTS_REQUIREMENTS = (
     "plumbum",
     "pytest",
     "pytest-copie",
+    "pytest-instafail",
     "pyyaml",
     "virtualenv",
 )
