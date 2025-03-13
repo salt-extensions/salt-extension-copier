@@ -4,6 +4,29 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.7.0 (2025-03-13)
+
+
+### Removed
+
+- Removed included `.envrc` file, provided an example envrc instead
+
+
+### Fixed
+
+- Fixed development environment compatibility with Python 3.9 [#112](https://github.com/salt-extensions/salt-extension-copier/issues/112)
+- Added support for Copier 9.6+, raised minimum Copier version to 9.6.0 [#148](https://github.com/salt-extensions/salt-extension-copier/issues/148)
+- Added libenchant autodiscovery for docs build on Apple Silicon macOS with Homebrew
+- Fixed release workflow with trusted publishing
+- Fixed venv Python version selection with uv
+- Updated dev/CI dependencies
+
+
+### Added
+
+- Added makefile to automate common operations
+- Enabled instant feedback on test failures in CI
+
 ## 0.6.0 (2024-11-03)
 
 
