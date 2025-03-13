@@ -24,7 +24,7 @@ For every user-facing change, ensure your patch includes a corresponding news fr
     * `breaking`
     * `security`
 
-4. The file contents should be written in Markdown.
+4. The file contents should be written in Markdown and need to render to a list item in the changelog, so keep it short and avoid newlines.
 
 :::{hint}
 It's possible to create a news fragment that does not reference an issue by prefixing the file name with a `+`, e.g. `+foo.changed.md`.

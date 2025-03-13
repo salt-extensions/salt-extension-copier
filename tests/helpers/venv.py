@@ -178,11 +178,6 @@ class ProjectVenv(VirtualEnv):
                 "PYTEST_CURRENT_TEST": "",
             }
         )
-        # Ensure docs build works on Apple Silicon.
-        # Needs `brew install enchant`.
-        # TODO maybe don't hardcode this
-        if sys.platform == "darwin" and platform.processor() == "arm":
-            self.env["PYENCHANT_LIBRARY_PATH"] = "/opt/homebrew/lib/libenchant-2.2.dylib"
         self.venv_dir = self.project_dir / ".venv"
         super().__post_init__()
 
