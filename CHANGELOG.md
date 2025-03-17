@@ -4,6 +4,13 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.7.1 (2025-03-17)
+
+
+### Fixed
+
+- Fixed broken release workflow by downgrading action
+
 ## 0.7.0 (2025-03-13)
 
 
