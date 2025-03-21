@@ -102,7 +102,7 @@ windows: '2022'
 ###########################################################
 
 # renovate: datasource=docker depName=docker.io/library/python depType=container
-python_container: '3.10.16-slim-bookworm@sha256:f680fc3f447366d9be2ae53dc7a6447fe9b33311af209225783932704f0cb4e7'
+python_container: '3.10.16-slim-bookworm@sha256:06f6d69d229bb55fab83dded514e54eede977e33e92d855ba3f97ce0e3234abc'
 
 
 ###########################################################
