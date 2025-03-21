@@ -62,7 +62,12 @@ jobs:
       - name: Install Nox
         run: |
           python -m pip install --upgrade pip
-          pip install nox
+          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
+        env:
+{%- endraw %}
+          NOX_VERSION: '{{ versions["nox"] }}'
+          UV_VERSION: '{{ versions["uv"] }}'
+{%- raw %}
 
       - name: Install Test Requirements
         env:
@@ -184,7 +189,12 @@ jobs:
       - name: Install Nox
         run: |
           python -m pip install --upgrade pip
-          pip install nox
+          pip install "nox==$env:NOX_VERSION" "uv==$env:UV_VERSION"
+        env:
+{%- endraw %}
+          NOX_VERSION: '{{ versions["nox"] }}'
+          UV_VERSION: '{{ versions["uv"] }}'
+{%- raw %}
 
       - name: Install Test Requirements
         shell: bash
@@ -324,7 +334,12 @@ jobs:
       - name: Install Nox
         run: |
           python -m pip install --upgrade pip
-          pip install nox
+          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
+        env:
+{%- endraw %}
+          NOX_VERSION: '{{ versions["nox"] }}'
+          UV_VERSION: '{{ versions["uv"] }}'
+{%- raw %}
 
       - name: Install Test Requirements
         env:
