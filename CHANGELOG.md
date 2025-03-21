@@ -4,6 +4,18 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.7.2 (2025-03-21)
+
+
+### Changed
+
+- Updated dev/CI dependencies
+
+
+### Fixed
+
+- Fixed CI and dev environments with uv>=0.6.0 (Salt's dependencies were never installed, causing an ImportError for `looseversion`)
+
 ## 0.7.1 (2025-03-17)
 
 
