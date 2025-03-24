@@ -16,7 +16,7 @@ jobs:
 {%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
     container:
-      image: docker.io/library/python:{{ versions["python_container"] }}
+      image: 'docker.io/library/python:{{ versions["python_container"] }}'
 {%- raw %}
 
     steps:
