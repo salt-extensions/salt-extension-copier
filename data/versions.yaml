@@ -53,7 +53,7 @@ actions/deploy-pages: 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4.0.5'
 actions/download-artifact: '95815c38cf2ff2164869cbab79da8d1f422bc89e  # v4.2.1'
 
 # renovate: datasource=git-tags depName=https://github.com/actions/setup-python depType=action
-actions/setup-python: '42375524e23c412d93fb67b49958b491fce71c38  # v5.4.0'
+actions/setup-python: '8d9ed9ac5c53483de85588cdf95a591a75ab9f55  # v5.5.0'
 
 # renovate: datasource=git-tags depName=https://github.com/actions/upload-artifact depType=action
 actions/upload-artifact: 'ea165f8d65b6e75b540449e92b4886f43607fa02  # v4.6.2'
@@ -110,7 +110,7 @@ python_container: '3.10.16-slim-bookworm@sha256:06f6d69d229bb55fab83dded514e54ee
 ###########################################################
 
 # renovate: datasource=git-tags depName=https://github.com/codecov/codecov-cli depType=actionMisc
-codecov_cli: 'v10.2.1'
+codecov_cli: 'v10.3.0'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
 coverage: '7.7.1'
