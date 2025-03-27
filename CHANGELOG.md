@@ -4,6 +4,19 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.7.3 (2025-03-27)
+
+
+### Changed
+
+- Updated dev/CI dependencies
+
+
+### Fixed
+
+- Added Salt 3006.10, which fixes the missing `cryptography` (`rsa`) dependency in integration tests
+- Fixed release workflow after the release of setuptools 77
+
 ## 0.7.2 (2025-03-21)
 
 
