@@ -83,11 +83,11 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
         curr = project_venv.run_module("pre_commit", "--version").stdout.split()[-1]
         assert (curr == "2.13.0") is expected
 
-    assert not (new_file := project / "CODE-OF-CONDUCT.md").exists()
+    assert not (new_file := project.project_dir / "CODE-OF-CONDUCT.md").exists()
     # delete boilerplate, should not be regenerated after update
     # also, all of this makes pylint fail
     boilerplate = [
-        next(project.glob(ptrn))
+        next(project.project_dir.glob(ptrn))
         for ptrn in (
             "src/**/sdb/*_mod.py",
             "tests/unit/sdb/test_*.py",
@@ -119,7 +119,7 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
 @pytest.mark.parametrize("project", ("0.0.2",), indirect=True)
 @pytest.mark.parametrize("source_url", ("org", "non_org", "non_github"), indirect=True)
 def test_update_from_002_works(copie, project):
-    assert not (new_file := project / "CODE-OF-CONDUCT.md").exists()
+    assert not (new_file := project.project_dir / "CODE-OF-CONDUCT.md").exists()
     res = copie.update(project)
     _assert_worked(res)
     assert new_file.exists()
@@ -154,7 +154,7 @@ def test_first_commit_works(project):
     with pre-commit hooks active.
     It should take at most three tries.
     """
-    with ProjectVenv(project) as venv, local.cwd(project):
+    with ProjectVenv(project.project_dir) as venv, local.cwd(project.project_dir):
         _commit_with_pre_commit(venv, max_retry=3)
 
 
@@ -169,18 +169,18 @@ def test_first_commit_works(project):
     indirect=True,
 )
 def test_testsuite_works(project, project_venv):
-    with local.cwd(project):
+    with local.cwd(project.project_dir):
         res = project_venv.run_module("nox", "-e", "tests-3", check=False)
     assert res.returncode == 0
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 def test_docs_build_works(project, project_venv):
-    with ProjectVenv(project) as venv, local.cwd(project):
+    with ProjectVenv(project.project_dir) as venv, local.cwd(project.project_dir):
         for check in (False, True):
             venv.run(
                 venv.venv_python,
-                str(project / ".pre-commit-hooks" / "make-autodocs.py"),
+                str(project.project_dir / ".pre-commit-hooks" / "make-autodocs.py"),
                 check=check,
             )
         res = project_venv.run_module("nox", "-e", "docs", check=False)

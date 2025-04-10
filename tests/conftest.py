@@ -1,18 +1,8 @@
-from collections.abc import Generator
-from dataclasses import asdict
-
 import pytest
 from plumbum import local
 
-from tests.helpers.copier_hlp import UpgradedCopie
 from tests.helpers.copier_hlp import load_copier_yaml
 from tests.helpers.venv import ProjectVenv
-
-
-@pytest.fixture
-def copie(copie) -> Generator:
-    final_copie = UpgradedCopie(**asdict(copie))
-    yield final_copie
 
 
 @pytest.fixture(scope="session")
@@ -118,12 +108,12 @@ def project(answers, request, copie, skip_init_migrate):  # pylint: disable=unus
     assert res.exception is None
     assert res.project_dir.is_dir()
 
-    yield res.project_dir
+    yield res
 
 
 @pytest.fixture
 def project_committed(project):
-    with local.cwd(project):
+    with local.cwd(project.project_dir):
         git = local["git"][
             "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
         ]
@@ -135,7 +125,7 @@ def project_committed(project):
 
 @pytest.fixture
 def project_venv(project):
-    with ProjectVenv(project) as venv:
+    with ProjectVenv(project.project_dir) as venv:
         yield venv
 
 
