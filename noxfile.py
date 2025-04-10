@@ -66,7 +66,7 @@ TESTS_REQUIREMENTS = (
     "copier-templates-extensions",
     "plumbum",
     "pytest",
-    "pytest-copie",
+    "pytest-copie>=0.2.2",
     "pytest-instafail",
     "pyyaml",
     "virtualenv",
