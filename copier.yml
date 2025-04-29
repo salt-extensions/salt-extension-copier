@@ -152,20 +152,24 @@ salt_version:
   help: Minimum Salt version to support
   default: '3006'
   validator: >-
-    {%- import "data/salt_python_support.yaml" as sps -%}
-    {%- set sup = sps | string | from_yaml -%}
-    {%- if salt_version | float | int not in sup -%}
-      Unknown Salt version. Known major: {{ sup | join(", ") }}
+    {%- if salt_python_support is not defined -%}
+    {%-   import "data/salt_python_support.yaml" as sps -%}
+    {%-   set salt_python_support = sps | string | from_yaml -%}
+    {%- endif -%}
+    {%- if salt_version | float | int not in salt_python_support -%}
+      Unknown Salt version. Known major: {{ salt_python_support | join(", ") }}
     {%- endif -%}
     {%- if "." in salt_version -%}
     {%-   if salt_version.count(".") > 1 -%}
       Unknown Salt version format. Allowed: MAJOR, MAJOR.MINOR
     {%-   else -%}
-    {%-     import "data/salt_latest_point.yaml" as spr -%}
-    {%-     set slp = spr | string | from_yaml -%}
+    {%-     if salt_latest_point is not defined -%}
+    {%-       import "data/salt_latest_point.yaml" as slp -%}
+    {%-       set salt_latest_point = slp | string | from_yaml -%}
+    {%-     endif -%}
     {%-     set major, minor = salt_version.split(".") | map("int") -%}
-    {%-     if slp[major] < minor -%}
-      Unknown minor release. Latest known: {{ major }}.{{ slp[major] }}
+    {%-     if salt_latest_point[major] < minor -%}
+      Unknown minor release. Latest known: {{ major }}.{{ salt_latest_point[major] }}
     {%-     endif -%}
     {%-   endif -%}
     {%- endif -%}
@@ -174,13 +178,17 @@ python_requires:
   type: str
   help: Minimum Python version to support
   default: >-
-    {%- import "data/salt_python_support.yaml" as sps -%}
-    {%- set sup = sps | string | from_yaml -%}
-    {{- sup[salt_version | float | int]["min"] | join(".") -}}
+    {%- if salt_python_support is not defined -%}
+    {%-   import "data/salt_python_support.yaml" as sps -%}
+    {%-   set salt_python_support = sps | string | from_yaml -%}
+    {%- endif -%}
+    {{- salt_python_support[salt_version | float | int]["min"] | join(".") -}}
   validator: >-
-    {%- import "data/salt_python_support.yaml" as sps -%}
-    {%- set sup = sps | string | from_yaml -%}
-    {%- set minsup = sup[salt_version | float | int]["min"] -%}
+    {%- if salt_python_support is not defined -%}
+    {%-   import "data/salt_python_support.yaml" as sps -%}
+    {%-   set salt_python_support = sps | string | from_yaml -%}
+    {%- endif -%}
+    {%- set minsup = salt_python_support[salt_version | float | int]["min"] -%}
     {%- set selected = python_requires -%}
     {%- if selected is string -%}
     {#-   Copier 9.6 does not run context hooks here (transforms this into a tuple).
@@ -198,20 +206,24 @@ max_salt_version:
   help: The maximum Salt major version to support
   default: '3007'
   validator: >-
-    {%- import "data/salt_python_support.yaml" as sps -%}
-    {%- set sup = sps | string | from_yaml -%}
-    {%- if max_salt_version | float | int not in sup -%}
-      Unknown Salt version. Known major: {{ sup | join(", ") }}
+    {%- if salt_python_support is not defined -%}
+    {%-   import "data/salt_python_support.yaml" as sps -%}
+    {%-   set salt_python_support = sps | string | from_yaml -%}
+    {%- endif -%}
+    {%- if max_salt_version | float | int not in salt_python_support -%}
+      Unknown Salt version. Known major: {{ salt_python_support | join(", ") }}
     {%- endif -%}
     {%- if "." in max_salt_version -%}
     {%-   if max_salt_version.count(".") > 1 -%}
       Unknown Salt version format. Allowed: MAJOR, MAJOR.MINOR
     {%-   else -%}
-    {%-     import "data/salt_latest_point.yaml" as spr -%}
-    {%-     set slp = spr | string | from_yaml -%}
+    {%-     if salt_latest_point is not defined -%}
+    {%-       import "data/salt_latest_point.yaml" as slp -%}
+    {%-       set salt_latest_point = slp | string | from_yaml -%}
+    {%-     endif -%}
     {%-     set major, minor = max_salt_version.split(".") | map("int") -%}
-    {%-     if slp[major] < minor -%}
-      Unknown minor release. Latest known: {{ major }}.{{ slp[major] }}
+    {%-     if salt_latest_point[major] < minor -%}
+      Unknown minor release. Latest known: {{ major }}.{{ salt_latest_point[major] }}
     {%-     endif -%}
     {%-   endif -%}
     {%- endif -%}
@@ -346,11 +358,13 @@ salt_version_minor:
   when: false
   default: >-
     {%- if "." in salt_version -%}
-      {{- salt_version.split(".") | last -}}
+     {{- salt_version.split(".") | last -}}
     {%- else -%}
-      {%- import "data/salt_latest_point.yaml" as spr -%}
-      {%- set slp = spr | string | from_yaml -%}
-      {{- slp[salt_version_major] -}}
+    {%-   if salt_latest_point is not defined -%}
+    {%-     import "data/salt_latest_point.yaml" as slp -%}
+    {%-     set salt_latest_point = slp | string | from_yaml -%}
+    {%-   endif -%}
+      {{- salt_latest_point[salt_version_major] -}}
     {%- endif -%}
 
 max_salt_version_major:
@@ -365,18 +379,22 @@ max_salt_version_minor:
     {%- if "." in max_salt_version -%}
       {{- max_salt_version.split(".") | last -}}
     {%- else -%}
-      {%- import "data/salt_latest_point.yaml" as spr -%}
-      {%- set slp = spr | string | from_yaml -%}
-      {{- slp[max_salt_version_major] -}}
+    {%-   if salt_latest_point is not defined -%}
+    {%-     import "data/salt_latest_point.yaml" as slp -%}
+    {%-     set salt_latest_point = slp | string | from_yaml -%}
+    {%-   endif -%}
+      {{- salt_latest_point[max_salt_version_major] -}}
     {%- endif -%}
 
 max_python_minor:
   type: int
   when: false
   default: >-
-    {%- import "data/salt_python_support.yaml" as sps -%}
-    {%- set sup = sps | string | from_yaml -%}
-    {{- sup[max_salt_version_major]["max"][1] -}}
+    {%- if salt_python_support is not defined -%}
+    {%-   import "data/salt_python_support.yaml" as sps -%}
+    {%-   set salt_python_support = sps | string | from_yaml -%}
+    {%- endif -%}
+    {{- salt_python_support[max_salt_version_major]["max"][1] -}}
 
 # ========================================
 # | Migrations between template versions |
