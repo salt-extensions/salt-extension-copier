@@ -181,7 +181,14 @@ python_requires:
     {%- import "data/salt_python_support.yaml" as sps -%}
     {%- set sup = sps | string | from_yaml -%}
     {%- set minsup = sup[salt_version | float | int]["min"] -%}
-    {%- set selected = python_requires.split(".") | map("int") | list -%}
+    {%- set selected = python_requires -%}
+    {%- if selected is string -%}
+    {#-   Copier 9.6 does not run context hooks here (transforms this into a tuple).
+          We don't need to adjust minsup to a list since it's loaded directly from YAML
+          when context hooks are not run.
+    -#}
+    {%-   set selected = selected.split(".") | map("int") | list -%}
+    {%- endif -%}
     {%- if selected < minsup -%}
     Minimum supported Python version of Salt {{ salt_version }} is {{ minsup | join(".") }}
     {%- endif -%}
