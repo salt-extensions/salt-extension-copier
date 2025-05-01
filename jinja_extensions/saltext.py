@@ -50,6 +50,10 @@ class SaltExt(ContextHook):
         )
 
     def hook(self, context):
+        if context.get("_copier_phase", "render") != "render":
+            # Older templates do not account for Copier 9.7+ behavior of always
+            # running context hooks. This patch ensures we can still update from them.
+            return {}
         if "python_requires" not in context:
             # This happens during pre-copy message rendering
             return {}
