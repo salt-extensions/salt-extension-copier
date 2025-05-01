@@ -432,9 +432,9 @@ _min_copier_version: "9.6.0"
 _subdirectory: project
 
 # Don't offer updates to implementation-specific files
-_skip_if_exists:
-  - tests/**/test_*.py
-  - src/**/*_mod.py
+_exclude:
+  - '{%- if _copier_operation != "copy" %}tests/**/test_*.py{%- endif %}'
+  - '{%- if _copier_operation != "copy" %}src/**/*_mod.py{%- endif %}'
 
 # Ensure we're compatible with the official tool
 _templates_suffix: j2
