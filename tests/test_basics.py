@@ -114,11 +114,7 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     project_venv.install("nox==2023.4.22")
     _check_version(True)
     request.getfixturevalue("project_committed")
-    # TODO: When there is 0.7.4 or similar, remove vcs_ref again.
-    # This is needed because 0.7.3 and 0.7.2 point to different branches
-    # because of a hotfix, so Copier thinks we're upgrading to 0.7.1-postsomething
-    # when not specifying a specific tag.
-    res = copie.update(project, vcs_ref="0.7.3")
+    res = copie.update(project)
     _assert_worked(res)
     # ensure the environment migration did not fail
     # (it does not cause an exit code > 0 since it's optional)
