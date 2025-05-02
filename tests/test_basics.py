@@ -188,6 +188,8 @@ def test_first_commit_works(project):
 )
 def test_testsuite_works(project, project_venv):
     with local.cwd(project.project_dir):
+        # Force re-build of Salt in case pip cache includes corrupt wheel
+        project_venv.run_module("pip", "cache", "remove", "salt")
         res = project_venv.run_module("nox", "-e", "tests-3", check=False)
     assert res.returncode == 0
 
