@@ -1,7 +1,5 @@
-import fnmatch
 import os
 import sys
-from pathlib import Path
 
 from task_helpers.pythonpath import project_tools
 
@@ -9,7 +7,6 @@ with project_tools():
     from helpers import prompt
     from helpers.copier import finish_task
     from helpers.git import ensure_git
-    from helpers.git import list_untracked
     from helpers.pre_commit import run_pre_commit
     from helpers.venv import ensure_project_venv
 
@@ -19,16 +16,6 @@ SKIP_IF_EXISTS_BOILERPLATE = (
     "src/**/*_mod.py",
     "tests/**/test_*.py",
 )
-
-
-def remove_untracked_unwanted():
-    """
-    Fix Copier regenerating paths listed in skip_if_exists on updates until
-    _copier_conf.operation is merged.
-    """
-    for path in list_untracked():
-        if any(fnmatch.fnmatch(path, ptrn) for ptrn in SKIP_IF_EXISTS_BOILERPLATE):
-            Path(path).unlink()
 
 
 if __name__ == "__main__":
@@ -51,8 +38,6 @@ if __name__ == "__main__":
     try:
         prompt.ensure_utf8()
         ensure_git()
-        if not init:
-            remove_untracked_unwanted()
         venv = ensure_project_venv()
         if not run_pre_commit(venv):
             finish_task(

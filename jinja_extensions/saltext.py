@@ -50,16 +50,18 @@ class SaltExt(ContextHook):
         )
 
     def hook(self, context):
-        if "python_requires" not in context:
-            # This happens during pre-copy message rendering
-            return {}
-        return {
-            "python_requires": tuple(int(x) for x in context["python_requires"].split(".")),
-            "salt_python_support": copy.deepcopy(self.sps),
-            "singular_loader_dirs": SINGULAR_LOADER_DIRS,
-            "salt_latest_point": copy.deepcopy(self.slp),
-            "versions": copy.deepcopy(self.versions),
-        }
+        if "python_requires" in context:
+            context["python_requires"] = tuple(
+                int(x) for x in context["python_requires"].split(".")
+            )
+        context.update(
+            {
+                "salt_python_support": copy.deepcopy(self.sps),
+                "singular_loader_dirs": SINGULAR_LOADER_DIRS,
+                "salt_latest_point": copy.deepcopy(self.slp),
+                "versions": copy.deepcopy(self.versions),
+            }
+        )
 
 
 def represent_str(dumper, data):

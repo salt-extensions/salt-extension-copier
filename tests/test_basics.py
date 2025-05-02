@@ -77,13 +77,27 @@ def test_project_init_works(copie, answers, capfd):
 
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
-@pytest.mark.parametrize("project", ("0.2.0",), indirect=True)
+@pytest.mark.parametrize("project", ("0.7.2",), indirect=True)
 def test_project_migration_works(copie, project, project_venv, request, capfd):
-    def _check_version(expected):
-        curr = project_venv.run_module("pre_commit", "--version").stdout.split()[-1]
-        assert (curr == "2.13.0") is expected
+    """
+    Ensure the generated project can be updated as expected
+    and the virtualenv is reinstalled after with new requirements.
 
-    assert not (new_file := project.project_dir / "CODE-OF-CONDUCT.md").exists()
+    Because of several breaking changes in Copier and a bug in
+    version 0.6.0 venv Python selection, we cannot test this
+    reliably with versions below 0.7.2, which has been hotfixed
+    to work with Copier 9.7+.
+    """
+
+    def _check_version(expected):
+        out = project_venv.run_module("nox", "--version")
+        curr = out.stderr.strip()
+        assert (curr == "2023.4.22") is expected
+
+    # This is the tagged version of actions/setup-python in version 0.7.2
+    indicator = "42375524e23c412d93fb67b49958b491fce71c38"
+    docs_action = project.project_dir / ".github" / "workflows" / "docs-action.yml"
+    assert indicator in docs_action.read_text()
     # delete boilerplate, should not be regenerated after update
     # also, all of this makes pylint fail
     boilerplate = [
@@ -96,17 +110,21 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     ]
     for bpl in boilerplate:
         bpl.unlink()
-    # downgrade pre-commit below required version
-    project_venv.install("pre-commit==2.13.0")
+    # downgrade nox below minimum version
+    project_venv.install("nox==2023.4.22")
     _check_version(True)
     request.getfixturevalue("project_committed")
-    res = copie.update(project)
+    # TODO: When there is 0.7.4 or similar, remove vcs_ref again.
+    # This is needed because 0.7.3 and 0.7.2 point to different branches
+    # because of a hotfix, so Copier thinks we're upgrading to 0.7.1-postsomething
+    # when not specifying a specific tag.
+    res = copie.update(project, vcs_ref="0.7.3")
     _assert_worked(res)
     # ensure the environment migration did not fail
     # (it does not cause an exit code > 0 since it's optional)
     assert "Failed migrating environment" not in capfd.readouterr().err
     # ensure the upgrade worked
-    assert new_file.exists()
+    assert indicator not in docs_action.read_text()
     # ensure boilerplate was not recreated
     for bpl in boilerplate:
         assert not bpl.exists()
@@ -170,6 +188,8 @@ def test_first_commit_works(project):
 )
 def test_testsuite_works(project, project_venv):
     with local.cwd(project.project_dir):
+        # Force re-build of Salt in case pip cache includes corrupt wheel
+        project_venv.run_module("pip", "cache", "remove", "salt")
         res = project_venv.run_module("nox", "-e", "tests-3", check=False)
     assert res.returncode == 0
 

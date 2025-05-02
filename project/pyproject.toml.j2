@@ -59,7 +59,7 @@ Tracker = "{{ tracker_url }}"
 [project.optional-dependencies]
 changelog = ["towncrier=={{ versions["towncrier"] }}"]
 dev = [
-    "nox[uv]>=2024.3",
+    "nox[uv]>=2024.3,!=2025.05.01",
     "pre-commit>=2.21.0",
 ]
 # These dependencies are used in automations. It can be helpful
