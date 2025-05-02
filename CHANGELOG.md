@@ -4,6 +4,15 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.7.4 (2025-05-02)
+
+
+### Fixed
+
+- Fixed rendering with Copier 9.7+ [#196](https://github.com/salt-extensions/salt-extension-copier/issues/196)
+- Fixed nox test session when uv is unavailable
+- Updated dev/CI dependencies
+
 ## 0.7.3 (2025-03-27)
 
 
