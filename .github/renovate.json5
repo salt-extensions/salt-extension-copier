@@ -22,7 +22,7 @@
             customType: "regex",
             fileMatch: ["^data/salt_latest_point.yaml$"],
             matchStrings: [
-                "(?<major>\\d+): (?<minor>\\d+)$",
+                "(?<major>\\d+): (?<minor>\\d+)\\s",
             ],
             currentValueTemplate: "{{major}}.{{minor}}",
             datasourceTemplate: "pypi",
