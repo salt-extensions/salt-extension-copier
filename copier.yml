@@ -346,7 +346,7 @@ project_name_full:
     {%- endif %}
 
 # In theory, both Salt version bounds can be specified with a minor qualifier.
-# We might need major and minor separately in the template, so pre-comute them.
+# We might need major and minor separately in the template, so pre-compute them.
 # If no minor was specified, default to the latest known minor release.
 salt_version_major:
   type: int

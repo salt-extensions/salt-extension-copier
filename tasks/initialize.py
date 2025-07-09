@@ -10,13 +10,6 @@ with project_tools():
     from helpers.pre_commit import run_pre_commit
     from helpers.venv import ensure_project_venv
 
-# Globs for files that should not be regenerated during updates if deleted.
-# This functionality can be removed once _copier_conf.operation is available.
-SKIP_IF_EXISTS_BOILERPLATE = (
-    "src/**/*_mod.py",
-    "tests/**/test_*.py",
-)
-
 
 if __name__ == "__main__":
     try:

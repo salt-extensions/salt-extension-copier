@@ -18,6 +18,17 @@
                 "# renovate: datasource=(?<datasource>pypi) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+-\\s*[\"']?[A-Za-z0-9_\\-\\.]+?==(?<currentValue>.+?)[\"']?\\s",
             ],
         },
+        {
+            customType: "regex",
+            fileMatch: ["^data/salt_latest_point.yaml$"],
+            matchStrings: [
+                "(?<major>\\d+): (?<minor>\\d+)$",
+            ],
+            currentValueTemplate: "{{major}}.{{minor}}",
+            datasourceTemplate: "pypi",
+            depTypeTemplate: "salt",
+            packageNameTemplate: "salt",
+        },
     ],
     packageRules: [
         {
@@ -33,6 +44,13 @@
         {
             matchPackageNames: ["docker.io/library/python"],
             matchUpdateTypes: ["major", "minor"],
+            enabled: false,
+        },
+        {
+            // The salt dependency type is only for keeping the known point release up to date (used for generating the test workflow).
+            // Major versions need to be added manually to the list in data/salt_latest_point.yaml.
+            matchDepTypes: ["salt"],
+            matchUpdateTypes: ["major"],
             enabled: false,
         },
         {
