@@ -25,7 +25,7 @@
                 "(?<major>\\d+): (?<minor>\\d+)\\s",
             ],
             currentValueTemplate: "{{{major}}}.{{{minor}}}",
-            autoReplaceStringTemplate: "{{{newMajor}}}: {{{newMinor}}}\\s",
+            autoReplaceStringTemplate: "{{{newMajor}}}: {{{newMinor}}}\\n",
             datasourceTemplate: "pypi",
             depTypeTemplate: "salt",
             packageNameTemplate: "salt",
