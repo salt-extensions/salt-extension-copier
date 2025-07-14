@@ -104,7 +104,7 @@ Unit tests usually rely on a subset of the following classes/functions:
 Please see the {py:mod}`unittest.mock docs <unittest.mock>` for details.
 
 ##### Patching
-When patching, avoid using the `@patch` decorator [because it can lead to unexpected issues](https://engblog.nextdoor.com/what-your-mocks-do-when-you-aren-t-looking-b278e0d9e201).
+When patching, avoid using the `@patch` decorator [because it can lead to unexpected issues](https://web.archive.org/web/20201104170437/https://engblog.nextdoor.com/what-your-mocks-do-when-you-aren-t-looking-b278e0d9e201?gi=8a4292a7ac04).
 
 Instead, patch inside the test function or a fixture:
 
