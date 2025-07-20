@@ -71,7 +71,7 @@ dorny/paths-filter: 'de90cc6fb38fc0963ad72b210f1f284cd68cea36  # v3.0.2'
 geekyeggo/delete-artifact: '7ee91e82b4a7f3339cd8b14beace3d826a2aac39  # v5.1.0'
 
 # renovate: datasource=git-tags depName=https://github.com/juliangruber/find-pull-request-action depType=action
-juliangruber/find-pull-request-action: '2f36c5fe1abfda4745dfab4f38217ebad8ded4eb  # v1.9.0'
+juliangruber/find-pull-request-action: '20b962e58a4abbc0dc63bcc0fde0c997de8782b5  # v1.10.0'
 
 # renovate: datasource=git-tags depName=https://github.com/mathieudutour/github-tag-action depType=action
 mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6.2'
