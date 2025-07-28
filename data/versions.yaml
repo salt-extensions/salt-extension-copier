@@ -113,7 +113,7 @@ python_container: '3.10.18-slim-bookworm@sha256:9dd6774a1276178f94b0cc1fb1f0edd9
 codecov_cli: 'v10.4.0'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.10.0'
+coverage: '7.10.1'
 
 # renovate: datasource=pypi depName=towncrier depType=devDependencies
 towncrier: '24.8.0'
