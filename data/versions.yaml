@@ -33,7 +33,7 @@ pyupgrade: '37bfa06d791fd38fb4e54910b36a2ff57641b074  # v3.20.0'
 salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
 
 # renovate: datasource=pypi depName=shellcheck-py depType=devDependencies
-shellcheck: '0.10.0.1'
+shellcheck: '0.11.0.1'
 
 # renovate: datasource=pypi depName=uv depType=devDependencies
 uv: '0.8.8'
