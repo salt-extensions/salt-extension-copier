@@ -24,7 +24,7 @@ nox: '2025.5.1'
 remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
 
 # renovate: datasource=git-tags depName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
-pre_commit_hooks: 'cef0300fd0fc4d2a87a85fa2093c6b283ea36f4b  # v5.0.0'
+pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
 
 # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
 pyupgrade: '37bfa06d791fd38fb4e54910b36a2ff57641b074  # v3.20.0'
