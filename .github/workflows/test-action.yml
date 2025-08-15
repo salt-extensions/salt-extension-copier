@@ -33,7 +33,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           NOX_VERSION: '2025.5.1'
           # renovate: datasource=pypi depName=uv depType=devDependencies
-          UV_VERSION: '0.8.10'
+          UV_VERSION: '0.8.11'
 
       - name: Install Test Requirements
         run: |
@@ -94,7 +94,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           NOX_VERSION: '2025.5.1'
           # renovate: datasource=pypi depName=uv depType=devDependencies
-          UV_VERSION: '0.8.10'
+          UV_VERSION: '0.8.11'
 
       - name: Install Test Requirements
         shell: bash
@@ -159,7 +159,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           NOX_VERSION: '2025.5.1'
           # renovate: datasource=pypi depName=uv depType=devDependencies
-          UV_VERSION: '0.8.10'
+          UV_VERSION: '0.8.11'
 
       - name: Install Test Requirements
         run: |
