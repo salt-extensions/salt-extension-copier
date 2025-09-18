@@ -25,7 +25,7 @@ SKIP_REQUIREMENTS_INSTALL = os.environ.get("SKIP_REQUIREMENTS_INSTALL", "0") == 
 EXTRA_REQUIREMENTS_INSTALL = os.environ.get("EXTRA_REQUIREMENTS_INSTALL")
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-COVERAGE_REQUIREMENT = os.environ.get("COVERAGE_REQUIREMENT") or "coverage==7.6.12"
+COVERAGE_REQUIREMENT = os.environ.get("COVERAGE_REQUIREMENT") or "coverage==7.10.6"
 
 # Prevent Python from writing bytecode
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -54,7 +54,7 @@ DOCS_REQUIREMENTS = (
     "furo",
     "sphinx-inline-tabs",
     # renovate: datasource=pypi depName=towncrier depType=devDependencies
-    "towncrier==24.8.0",
+    "towncrier==25.8.0",
     "sphinxcontrib-towncrier",
     "sphinx_tippy",
 )
