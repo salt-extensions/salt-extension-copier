@@ -4,6 +4,18 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.7.5 (2025-09-18)
+
+
+### Changed
+
+- Updated dev/CI dependencies
+
+
+### Fixed
+
+- Fixed Codecov upload in PR from fork [#199](https://github.com/salt-extensions/salt-extension-copier/issues/199)
+
 ## 0.7.4 (2025-05-02)
 
 
