@@ -9,7 +9,7 @@ actionlint: '2773c7d04be5d0ceb075f215b6d0a4eacd4a432b  # v1.7.8.24'
 bandit: '2d0b675b04c80ae42277e10500db06a0a37bae17  # 1.8.6'
 
 # renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
-black: 'af0ba72a73598c76189d6dd1b21d8532255d5942  # 25.9.0'
+black: '05f0a8ce1f71fbb36e1e032d3b518c7b945089a2  # 25.11.0'
 
 # renovate: datasource=git-tags depName=https://github.com/adamchainz/blacken-docs depType=devDependencies
 blacken_docs: 'dda8db18cfc68df532abf33b185ecd12d5b7b326  # 1.20.0'
@@ -113,7 +113,7 @@ python_container: '3.10.19-slim-bookworm@sha256:cda0e2fa3894f9ada2c652534e6de6b2
 codecov_cli: 'v10.4.0'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.11.2'
+coverage: '7.11.3'
 
 # renovate: datasource=pypi depName=towncrier depType=devDependencies
 towncrier: '25.8.0'
