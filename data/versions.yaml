@@ -18,7 +18,7 @@ blacken_docs: 'dda8db18cfc68df532abf33b185ecd12d5b7b326  # 1.20.0'
 isort: 'ec0efaee4acfce198521e43caa3029b06cedd64a  # 6.1.0'
 
 # renovate: datasource=pypi depName=nox depType=devDependencies
-nox: '2025.10.16'
+nox: '2025.11.12'
 
 # renovate: datasource=git-tags depName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
 remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
@@ -36,7 +36,7 @@ salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
 shellcheck: '0.11.0.1'
 
 # renovate: datasource=pypi depName=uv depType=devDependencies
-uv: '0.9.8'
+uv: '0.9.9'
 
 
 ###########################################################
