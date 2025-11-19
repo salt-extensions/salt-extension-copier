@@ -27,7 +27,7 @@ remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
 pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
 
 # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
-pyupgrade: '46c3d526905780be88d227f46e19f24f2593fbbe  # v3.21.1'
+pyupgrade: '75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2'
 
 # renovate: datasource=git-tags depName=https://github.com/saltstack/salt-rewrite depType=devDependencies
 salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
@@ -113,7 +113,7 @@ python_container: '3.10.19-slim-bookworm@sha256:cda0e2fa3894f9ada2c652534e6de6b2
 codecov_cli: 'v10.4.0'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.11.3'
+coverage: '7.12.0'
 
 # renovate: datasource=pypi depName=towncrier depType=devDependencies
 towncrier: '25.8.0'
