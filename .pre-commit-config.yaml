@@ -66,7 +66,7 @@ repos:
 
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
     # renovate: datasource=git-tags depName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
-    rev: 2773c7d04be5d0ceb075f215b6d0a4eacd4a432b  # v1.7.8.24
+    rev: 381d5e68de9fe958938da811f2e094a8f90e8195  # v1.7.9.24
     hooks:
       - id: actionlint
         additional_dependencies:
