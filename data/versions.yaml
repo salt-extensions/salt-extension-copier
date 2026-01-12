@@ -89,7 +89,7 @@ pypa/gh-action-pypi-publish: '1bb664cc2ddedbbfdde43d4ac135d5836b7bf40f # v1.11.0
 ###########################################################
 
 # renovate: datasource=github-runners depName=macos depType=github-runner
-macos: '14'
+macos: '15'
 
 # renovate: datasource=github-runners depName=ubuntu depType=github-runner
 ubuntu: '24.04'
