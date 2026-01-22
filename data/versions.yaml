@@ -53,7 +53,7 @@ actions/deploy-pages: 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4.0.5'
 actions/download-artifact: '37930b1c2abaa49bbe596cd826c3c89aef350131  # v7.0.0'
 
 # renovate: datasource=git-tags depName=https://github.com/actions/setup-python depType=action
-actions/setup-python: '83679a892e2d95755f2dac6acb0bfd1e9ac5d548  # v6.1.0'
+actions/setup-python: 'a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0'
 
 # renovate: datasource=git-tags depName=https://github.com/actions/upload-artifact depType=action
 actions/upload-artifact: 'b7c566a772e6b6bfb58ed0dc250532a479d7789f  # v6.0.0'
@@ -77,7 +77,7 @@ juliangruber/find-pull-request-action: '20b962e58a4abbc0dc63bcc0fde0c997de8782b5
 mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6.2'
 
 # renovate: datasource=git-tags depName=https://github.com/peter-evans/create-pull-request depType=action
-peter-evans/create-pull-request: '98357b18bf14b5342f975ff684046ec3b2a07725  # v8.0.0'
+peter-evans/create-pull-request: 'c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0'
 
 # renovate: datasource=git-tags depName=https://github.com/pypa/gh-action-pypi-publish depType=action
 # skip this until migration to separate release workflow
