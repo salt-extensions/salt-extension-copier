@@ -9,7 +9,7 @@ actionlint: '85c37735ea69e5baf0681530e57e63deee0ce733  # v1.7.10.24'
 bandit: '765f00d3f202f83f61d03f882f80a2d5142d81f8  # 1.9.3'
 
 # renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
-black: '782e5605c86aab56be6f905da10dcd3e463fd9c2  # 25.12.0'
+black: '6305bf1ae645ab7541be4f5028a86239316178eb  # 26.1.0'
 
 # renovate: datasource=git-tags depName=https://github.com/adamchainz/blacken-docs depType=devDependencies
 blacken_docs: 'dda8db18cfc68df532abf33b185ecd12d5b7b326  # 1.20.0'
