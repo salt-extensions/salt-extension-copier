@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 write_to = "src/{{ namespaced_package_path }}/version.py"
-write_to_template = "__version__ = \"{version}\""
+write_to_template = "__version__ = \"{version}\"\n"
 
 [project]
 name = "{{ package_namespace_pkg }}{{ project_name }}"
