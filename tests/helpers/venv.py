@@ -12,7 +12,6 @@ import textwrap
 from dataclasses import dataclass
 from dataclasses import field
 from pathlib import Path
-from typing import Union
 
 import pytest
 from plumbum import ProcessExecutionError
@@ -28,8 +27,8 @@ def _default_venv_dir():
 @dataclass(frozen=True)
 class ProcessResult:
     returncode: int
-    stdout: Union[str, bytes]
-    stderr: Union[str, bytes]
+    stdout: str | bytes
+    stderr: str | bytes
     cmdline: list
 
 

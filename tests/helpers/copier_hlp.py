@@ -1,12 +1,11 @@
 from collections import ChainMap
 from pathlib import Path
-from typing import Optional
 
 import yaml
 from pytest_copie.plugin import _add_yaml_include_constructor
 
 
-def load_copier_yaml(template_dir: Optional[Path] = None) -> ChainMap:
+def load_copier_yaml(template_dir: Path | None = None) -> ChainMap:
     template_dir = template_dir or Path(".")
     files = template_dir.glob("copier.*")
     try:

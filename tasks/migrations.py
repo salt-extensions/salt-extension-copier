@@ -16,7 +16,6 @@ from task_helpers.migrate import var_migration
 # The default values always represent the extremes, so sync them
 # during all updates from now on. This avoids having to create
 # separate migrations for future updates.
-sync_minimum_version(None, "max_salt_version")
 sync_salt_version = sync_minimum_version(None, "salt_version")
 
 
