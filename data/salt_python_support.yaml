@@ -1,22 +1,15 @@
 ---
-3003:
-  min:
-    - 3
-    - 9
-  max:
-    - 3
-    - 9
 3004:
   min:
     - 3
-    - 9
+    - 10
   max:
     - 3
     - 10
 3005:
   min:
     - 3
-    - 9
+    - 10
   max:
     - 3
     - 10
@@ -24,7 +17,7 @@
   lts: true
   min:
     - 3
-    - 9
+    - 10
   max:
     - 3
     - 10
@@ -34,7 +27,7 @@
 3007:
   min:
     - 3
-    - 9
+    - 10
   max:
     - 3
     - 10  # 3.11/3.12 have pinned requirements, but they are not stable yet
