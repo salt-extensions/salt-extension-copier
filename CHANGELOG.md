@@ -4,6 +4,18 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.8.0 (2026-01-27)
+
+
+### Removed
+
+- Dropped support for Python 3.9 (EOL) and therefore Salt 3003.x
+
+
+### Changed
+
+- Updated dev/CI dependencies
+
 ## 0.7.5 (2025-09-18)
 
 
