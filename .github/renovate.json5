@@ -63,7 +63,7 @@
         },
         {
             matchPackageNames: ["docker.io/library/python"],
-            matchUpdateTypes: ["patch"],
+            matchUpdateTypes: ["patch", "digest"],
             automerge: true,
         },
         {
