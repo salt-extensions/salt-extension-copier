@@ -298,7 +298,10 @@ jobs:
 {%-       set sver_minor = salt_latest_point[sver] %}
 {%-     endif %}
 
-{%-     set pyver = (python_requires[1], salt_python_support[sver]["min"][1]) | max + 1 %}
+{%-     set pyver = (
+                      (python_requires[1], salt_python_support[sver]["min"][1]) | max + 1,
+                      salt_python_support[sver]["max"][1]
+                    ) | min %}
 {%-     if pyver in macos_pyver %}
 {%-       set pyver = (pyver + (sver - salt_version_major), salt_python_support[sver]["max"][1]) | min %}
 {%-     endif %}
