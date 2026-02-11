@@ -22,7 +22,7 @@ jobs:
           pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
         env:
           # renovate: datasource=pypi depName=nox depType=devDependencies
-          NOX_VERSION: '2025.11.12'
+          NOX_VERSION: '2026.2.9'
           # renovate: datasource=pypi depName=uv depType=devDependencies
           UV_VERSION: '0.10.0'
 
