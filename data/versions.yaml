@@ -3,7 +3,7 @@
 ###########################################################
 
 # renovate: datasource=git-tags depName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
-actionlint: '85c37735ea69e5baf0681530e57e63deee0ce733  # v1.7.10.24'
+actionlint: '694e2c0dfb4253d51f3c6c54b8f9fec0a16764dc  # v1.7.11.24'
 
 # renovate: datasource=git-tags depName=https://github.com/PyCQA/bandit depType=devDependencies
 bandit: '765f00d3f202f83f61d03f882f80a2d5142d81f8  # 1.9.3'
