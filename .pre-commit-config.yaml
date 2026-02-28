@@ -32,7 +32,7 @@ repos:
 
   - repo: https://github.com/PyCQA/isort
     # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
-    rev: 3459bdee0962449aad91235273c3fd1306dfebe5  # 8.0.0
+    rev: a333737ed43df02b18e6c95477ea1b285b3de15a  # 8.0.1
     hooks:
       - id: isort
         args:
