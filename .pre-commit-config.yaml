@@ -32,7 +32,7 @@ repos:
 
   - repo: https://github.com/PyCQA/isort
     # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
-    rev: 3459bdee0962449aad91235273c3fd1306dfebe5  # 8.0.0
+    rev: a333737ed43df02b18e6c95477ea1b285b3de15a  # 8.0.1
     hooks:
       - id: isort
         args:
@@ -43,7 +43,7 @@ repos:
 
   - repo: https://github.com/psf/black
     # renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
-    rev: 6305bf1ae645ab7541be4f5028a86239316178eb  # 26.1.0
+    rev: 35ea67920b7f6ac8e09be1c47278752b1e827f76  # 26.3.0
     hooks:
       - id: black
         name: Autoformat Python code
