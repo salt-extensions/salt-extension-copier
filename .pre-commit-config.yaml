@@ -2,7 +2,7 @@
 minimum_pre_commit_version: 3.2.0
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    # renovate: datasource=git-tags depName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
+    # renovate: datasource=git-tags depName=pre-commit-hooks packageName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
     rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0
     hooks:
       - id: trailing-whitespace
@@ -22,7 +22,7 @@ repos:
         language_version: python3
 
   - repo: https://github.com/asottile/pyupgrade
-    # renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
+    # renovate: datasource=git-tags depName=pyupgrade packageName=https://github.com/asottile/pyupgrade depType=devDependencies
     rev: 75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2
     hooks:
       - id: pyupgrade
@@ -31,7 +31,7 @@ repos:
           - --py310-plus
 
   - repo: https://github.com/PyCQA/isort
-    # renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
+    # renovate: datasource=git-tags depName=isort packageName=https://github.com/PyCQA/isort depType=devDependencies
     rev: a333737ed43df02b18e6c95477ea1b285b3de15a  # 8.0.1
     hooks:
       - id: isort
@@ -42,7 +42,7 @@ repos:
         exclude: project/src/\{\{ namespaced_package_path \}\}/__init__.py
 
   - repo: https://github.com/psf/black
-    # renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
+    # renovate: datasource=git-tags depName=black packageName=https://github.com/psf/black depType=devDependencies
     rev: c6755bb741b6481d6b3d3bb563c83fa060db96c9  # 26.3.1
     hooks:
       - id: black
@@ -65,7 +65,7 @@ repos:
           - nox==2026.2.9
 
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
-    # renovate: datasource=git-tags depName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
+    # renovate: datasource=git-tags depName=actionlint-py packageName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
     rev: 694e2c0dfb4253d51f3c6c54b8f9fec0a16764dc  # v1.7.11.24
     hooks:
       - id: actionlint

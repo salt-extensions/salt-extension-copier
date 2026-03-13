@@ -2,34 +2,34 @@
 #  pre-commit
 ###########################################################
 
-# renovate: datasource=git-tags depName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
+# renovate: datasource=git-tags depName=actionlint-py packageName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
 actionlint: '694e2c0dfb4253d51f3c6c54b8f9fec0a16764dc  # v1.7.11.24'
 
-# renovate: datasource=git-tags depName=https://github.com/PyCQA/bandit depType=devDependencies
+# renovate: datasource=git-tags depName=bandit packageName=https://github.com/PyCQA/bandit depType=devDependencies
 bandit: '92ae8b82fb422a639f0ed8d99e96cea769594e08  # 1.9.4'
 
-# renovate: datasource=git-tags depName=https://github.com/psf/black depType=devDependencies
+# renovate: datasource=git-tags depName=black packageName=https://github.com/psf/black depType=devDependencies
 black: 'c6755bb741b6481d6b3d3bb563c83fa060db96c9  # 26.3.1'
 
-# renovate: datasource=git-tags depName=https://github.com/adamchainz/blacken-docs depType=devDependencies
+# renovate: datasource=git-tags depName=blacken-docs packageName=https://github.com/adamchainz/blacken-docs depType=devDependencies
 blacken_docs: 'dda8db18cfc68df532abf33b185ecd12d5b7b326  # 1.20.0'
 
-# renovate: datasource=git-tags depName=https://github.com/PyCQA/isort depType=devDependencies
+# renovate: datasource=git-tags depName=isort packageName=https://github.com/PyCQA/isort depType=devDependencies
 isort: 'a333737ed43df02b18e6c95477ea1b285b3de15a  # 8.0.1'
 
 # renovate: datasource=pypi depName=nox depType=devDependencies
 nox: '2026.2.9'
 
-# renovate: datasource=git-tags depName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
+# renovate: datasource=git-tags depName=pre-commit-remove-import-headers packageName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
 remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
 
-# renovate: datasource=git-tags depName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
+# renovate: datasource=git-tags depName=pre-commit-hooks packageName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
 pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
 
-# renovate: datasource=git-tags depName=https://github.com/asottile/pyupgrade depType=devDependencies
+# renovate: datasource=git-tags depName=pyupgrade packageName=https://github.com/asottile/pyupgrade depType=devDependencies
 pyupgrade: '75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2'
 
-# renovate: datasource=git-tags depName=https://github.com/saltstack/salt-rewrite depType=devDependencies
+# renovate: datasource=git-tags depName=salt-rewrite packageName=https://github.com/saltstack/salt-rewrite depType=devDependencies
 salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
 
 # renovate: datasource=pypi depName=shellcheck-py depType=devDependencies
@@ -43,43 +43,43 @@ uv: '0.10.9'
 #  GitHub Actions
 ###########################################################
 
-# renovate: datasource=git-tags depName=https://github.com/actions/checkout depType=action
+# renovate: datasource=git-tags depName=checkout packageName=https://github.com/actions/checkout depType=action
 actions/checkout: 'de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2'
 
-# renovate: datasource=git-tags depName=https://github.com/actions/deploy-pages depType=action
+# renovate: datasource=git-tags depName=deploy-pages packageName=https://github.com/actions/deploy-pages depType=action
 actions/deploy-pages: 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4.0.5'
 
-# renovate: datasource=git-tags depName=https://github.com/actions/download-artifact depType=action
+# renovate: datasource=git-tags depName=download-artifact packageName=https://github.com/actions/download-artifact depType=action
 actions/download-artifact: '70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3  # v8.0.0'
 
-# renovate: datasource=git-tags depName=https://github.com/actions/setup-python depType=action
+# renovate: datasource=git-tags depName=setup-python packageName=https://github.com/actions/setup-python depType=action
 actions/setup-python: 'a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6.2.0'
 
-# renovate: datasource=git-tags depName=https://github.com/actions/upload-artifact depType=action
+# renovate: datasource=git-tags depName=upload-artifact packageName=https://github.com/actions/upload-artifact depType=action
 actions/upload-artifact: 'bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0'
 
-# renovate: datasource=git-tags depName=https://github.com/actions/upload-pages-artifact depType=action
+# renovate: datasource=git-tags depName=upload-pages-artifact packageName=https://github.com/actions/upload-pages-artifact depType=action
 actions/upload-pages-artifact: '7b1f4a764d45c48632c6b24a0339c27f5614fb0b  # v4.0.0'
 
-# renovate: datasource=git-tags depName=https://github.com/codecov/codecov-action depType=action
+# renovate: datasource=git-tags depName=codecov/codecov-action packageName=https://github.com/codecov/codecov-action depType=action
 codecov/codecov-action: '0561704f0f02c16a585d4c7555e57fa2e44cf909  # v5.5.2'
 
-# renovate: datasource=git-tags depName=https://github.com/dorny/paths-filter depType=action
+# renovate: datasource=git-tags depName=dorny/paths-filter packageName=https://github.com/dorny/paths-filter depType=action
 dorny/paths-filter: 'de90cc6fb38fc0963ad72b210f1f284cd68cea36  # v3.0.2'
 
-# renovate: datasource=git-tags depName=https://github.com/geekyeggo/delete-artifact depType=action
+# renovate: datasource=git-tags depName=geekyeggo/delete-artifact packageName=https://github.com/geekyeggo/delete-artifact depType=action
 geekyeggo/delete-artifact: '7ee91e82b4a7f3339cd8b14beace3d826a2aac39  # v5.1.0'
 
-# renovate: datasource=git-tags depName=https://github.com/juliangruber/find-pull-request-action depType=action
+# renovate: datasource=git-tags depName=juliangruber/find-pull-request-action packageName=https://github.com/juliangruber/find-pull-request-action depType=action
 juliangruber/find-pull-request-action: '2956f830b67a9c78c392f00c69404edc4e497d30  # v1.11.0'
 
-# renovate: datasource=git-tags depName=https://github.com/mathieudutour/github-tag-action depType=action
+# renovate: datasource=git-tags depName=mathieudutour/github-tag-action packageName=https://github.com/mathieudutour/github-tag-action depType=action
 mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6.2'
 
-# renovate: datasource=git-tags depName=https://github.com/peter-evans/create-pull-request depType=action
+# renovate: datasource=git-tags depName=peter-evans/create-pull-request packageName=https://github.com/peter-evans/create-pull-request depType=action
 peter-evans/create-pull-request: 'c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0'
 
-# renovate: datasource=git-tags depName=https://github.com/pypa/gh-action-pypi-publish depType=action
+# renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
 # skip this until migration to separate release workflow
 # related: https://github.com/pypa/gh-action-pypi-publish/issues/290
 pypa/gh-action-pypi-publish: '1bb664cc2ddedbbfdde43d4ac135d5836b7bf40f # v1.11.0'
@@ -101,7 +101,7 @@ windows: '2025'
 #  GitHub Actions containers
 ###########################################################
 
-# renovate: datasource=docker depName=docker.io/library/python depType=container
+# renovate: datasource=docker depName=python-pre-commit-action packageName=docker.io/library/python depType=container
 python_container: '3.10.20-slim-bookworm@sha256:b1f549b1c3da651d93802122ebcb0c3177702a6d549676236c859ad19e79e9da'
 
 
@@ -109,7 +109,7 @@ python_container: '3.10.20-slim-bookworm@sha256:b1f549b1c3da651d93802122ebcb0c31
 #  Misc
 ###########################################################
 
-# renovate: datasource=git-tags depName=https://github.com/codecov/codecov-cli depType=actionMisc
+# renovate: datasource=pypi depName=codecov-cli depType=actionMisc
 codecov_cli: 'v10.4.0'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
