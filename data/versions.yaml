@@ -110,7 +110,7 @@ python_container: '3.10.20-slim-bookworm@sha256:b1f549b1c3da651d93802122ebcb0c31
 ###########################################################
 
 # renovate: datasource=pypi depName=codecov-cli depType=actionMisc
-codecov_cli: 'v10.4.0'
+codecov_cli: 'v11.2.6'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
 coverage: '7.13.4'
