@@ -6,6 +6,9 @@ name: Build Documentation
 on:
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   Docs:
 {%- endraw %}
@@ -55,19 +58,7 @@ jobs:
           name: html-docs
           path: docs/_build/html
 
-      - name: Set Exit Status
-        if: always()
-        run: |
-          mkdir exitstatus
-          echo "${{ job.status }}" > exitstatus/${{ github.job }}
-
       - name: Upload Exit Status
         if: always()
-{%- endraw %}
-        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%- raw %}
-        with:
-          name: exitstatus-${{ github.job }}
-          path: exitstatus
-          if-no-files-found: error
+        uses: ./.github/actions/upload-exitstatus
 {%- endraw %}

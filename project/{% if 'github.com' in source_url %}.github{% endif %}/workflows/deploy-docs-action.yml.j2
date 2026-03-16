@@ -12,6 +12,12 @@ on:
         required: false
         default: html-docs
 
+
+permissions:
+  actions: read  # For downloading artifacts of other runs when called via workflow_run trigger
+  pages: write
+  id-token: write
+
 jobs:
 
   # The released docs are not versioned currently, only the latest ones are deployed.
@@ -31,21 +37,20 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
-    permissions:
-      pages: write
-      id-token: write
 {%- endraw %}
 
     runs-on: ubuntu-{{ versions["ubuntu"] }}
 
     steps:
+
       - name: Download built docs
         uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
 {%- raw %}
         with:
           name: ${{ inputs.artifact-name }}
           path: html-docs
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || github.run_id }}
 
       - name: Upload GitHub Pages artifact
 {%- endraw %}
@@ -71,20 +76,12 @@ jobs:
         with:
           name: html-docs-pages
           failOnError: false
+{%- endraw %}
 
-      - name: Set Exit Status
-        if: always()
-        run: |
-          mkdir exitstatus
-          echo "${{ job.status }}" > exitstatus/${{ github.job }}
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%- raw %}
 
       - name: Upload Exit Status
         if: always()
-{%- endraw %}
-        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%- raw %}
-        with:
-          name: exitstatus-${{ github.job }}
-          path: exitstatus
-          if-no-files-found: error
+        uses: ./.github/actions/upload-exitstatus
 {%- endraw %}
