@@ -1,5 +1,5 @@
 {%- set pyver = salt_python_support[salt_version_major]["max"][1] -%}
-{%- raw %}
+{%- raw -%}
 ---
 name: Prepare Release PR
 
@@ -58,7 +58,7 @@ jobs:
       - name: Set up Python 3.{{ pyver }}
         uses: actions/setup-python@{{ versions["actions/setup-python"] }}
         with:
-          python-version: "3.{{ pyver }}"
+          python-version: '3.{{ pyver }}'
 {%- raw %}
 
       - name: Install project

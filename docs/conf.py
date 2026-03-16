@@ -56,7 +56,11 @@ extensions = [
     "sphinxcontrib.towncrier.ext",
     "myst_parser",
     "sphinx_inline_tabs",
-    "sphinx_tippy",
+    # Disabled temporarily because it tends to break the docs build
+    # (probably bot protection by readthedocs). Consider enabling
+    # later on, especially in case https://github.com/sphinx-extensions2/sphinx-tippy/pull/30
+    # is merged.
+    # "sphinx_tippy",
 ]
 
 myst_enable_extensions = [
