@@ -1,0 +1,36 @@
+{%- raw -%}
+---
+name: upload-exitstatus
+description: Upload a job's status as an artifact
+inputs:
+  artifact_prefix:
+    required: false
+    default: exitstatus-
+  name:
+    required: false
+    default: ''
+
+runs:
+  using: composite
+
+  steps:
+
+      - name: Set Exit Status
+        if: always()
+        env:
+          OUTFILE: exitstatus/${{ inputs.name == '' && github.job || inputs.name }}
+        shell: bash
+        run: |
+          mkdir exitstatus
+          echo "${{ job.status }}" > "$OUTFILE"
+
+      - name: Upload Exit Status
+        if: always()
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
+        with:
+          name: ${{ inputs.artifact_prefix }}${{ inputs.name == '' && github.job || inputs.name }}
+          path: exitstatus
+          if-no-files-found: error
+{%-   endraw %}

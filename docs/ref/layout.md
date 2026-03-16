@@ -41,17 +41,32 @@ Houses GitHub Actions [workflows](workflows-target).
 :::{path} .github/workflows/ci.yml
 :::
 #### `.github/workflows/ci.yml`
-A meta-workflow that triggers other workflows based on inputs.
+A meta-workflow that triggers other workflows related to testing and building.
+
+:::{path} .github/workflows/deploy-package-action.yml
+:::
+#### `.github/workflows/deploy-package-action.yml`
+A standalone workflow for publishing releases. Triggered when either {path}`tag.yml <.github/workflows/tag.yml` or {path}`tag-auto.yml <.github/workflows/tag-auto.yml` have been triggered and concluded. Needs to be entered as the workflow when configuring [Trusted Publishers](trusted-publisher-target).
 
 :::{path} .github/workflows/pr.yml
 :::
 #### `.github/workflows/pr.yml`
-Handles workflows for Pull Requests and pushes to the `main` branch. Delegates to workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
+Handles Pull Requests. Delegates to workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
+
+:::{path} .github/workflows/push.yml
+:::
+#### `.github/workflows/push.yml`
+Handles pushes to the `main` branch. Includes workflows from {path}`ci.yml <.github/workflows/ci.yml>`, creates the [autorelease PR](release-automated-target) and can publish documentation.
+
+:::{path} .github/workflows/tag-auto.yml
+:::
+#### `.github/workflows/tag-auto.yml`
+Triggered by merging the [autorelease PR](release-automated-target). Creates a new tag and includes workflows from {path}`ci.yml <.github/workflows/ci.yml>`. A {path}`separate workflow <.github/workflows/deploy-package-action.yml` deploys the built packages and documentation.
 
 :::{path} .github/workflows/tag.yml
 :::
 #### `.github/workflows/tag.yml`
-Triggered by [tag pushes](publishing-target) for tags beginning with `v`. Similar to {path}`pr.yml <.github/workflows/pr.yml>`, it delegates to workflows in {path}`ci.yml <.github/workflows/ci.yml>`.
+Triggered by [tag pushes](publishing-target) for tags beginning with `v`. Includes workflows from {path}`ci.yml <.github/workflows/ci.yml>`. A {path}`separate workflow <.github/workflows/deploy-package-action.yml` deploys the built packages and documentation.
 
 :::{path} changelog
 :::

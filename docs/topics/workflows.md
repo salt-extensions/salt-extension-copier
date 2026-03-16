@@ -21,6 +21,19 @@ The workflows currently:
 If publishing documentation to GitHub Pages, ensure you have
 [set up your repository to allow deployments from GitHub Actions](docs-publish-setup-target).
 
+(actions-release-environment-target)=
+#### Release environment
+
+The {path}`package release workflow <.github/workflows/deploy-package-action.yml>` requires a dedicated
+environment for package releases to PyPI.
+
+In your repository settings, click on `Environments` > `New environment`, enter `release`
+as its name and click `Configure environment`. Under `Deployment branches and tags`,
+select `Selected branches and tags`, click `Add deployment branch or tag rule`, select
+`Ref type: Branch`, enter `main` and click `Add rule`.
+
+You can configure other restrictions as desired.
+
 (actions-pr-permission-target)=
 #### Release automation
 Also, ensure GitHub Actions are allowed to create PRs to take advantage of
@@ -33,8 +46,9 @@ and ensure `Allow GitHub Actions to create and approve pull requests` is checked
 ### Required secrets (non-org)
 If your repository is not hosted within the `salt-extensions` organization, you need
 to ensure the project can be published to PyPI. You can either setup legacy API tokens
-or configure a [Trusted Publisher][trusted-publishers] on PyPI.
+or configure a [Trusted Publishers](trusted-publisher-target) on PyPI.
 
+(trusted-publisher-target)=
 #### Trusted Publisher
 To configure a Trusted Publisher, head over to PyPI and login. Click on your user name
 in the top right corner, then `Your projects`. In the left menu, select `Publishing`.
@@ -57,6 +71,14 @@ Alternatively, you can add the following secrets:
 
 `TEST_PYPI_API_TOKEN`
 :   An [API token for TestPyPI](https://test.pypi.org/help/#apitoken) for testing the [release of your Saltext](publishing-target).
+
+(optional-secrets-target)=
+### Optional secrets (non-org)
+#### Release automation
+Without a dedicated GitHub App for autorelease PR creation,
+CI does not run on the autorelease PR because it is created by the default `GITHUB_TOKEN`.
+To allow CI to run, follow the steps described [here](https://github.com/peter-evans/create-pull-request#user-content-token) and add the following two secrets:
+The app's client ID as `AUTORELEASE_CLID` and the generated private key as `AUTORELEASE_PRIV`.
 
 ## Important artifacts
 

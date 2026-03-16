@@ -46,6 +46,9 @@ uv: '0.10.9'
 # renovate: datasource=git-tags depName=checkout packageName=https://github.com/actions/checkout depType=action
 actions/checkout: 'de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2'
 
+# renovate: datasource=git-tags depName=create-github-app-token packageName=https://github.com/actions/create-github-app-token depType=action
+actions/create-github-app-token: 'f8d387b68d61c58ab83c6c016672934102569859  # v3.0.0'
+
 # renovate: datasource=git-tags depName=deploy-pages packageName=https://github.com/actions/deploy-pages depType=action
 actions/deploy-pages: 'd6db90164ac5ed86f2b6aed7e0febac5b3c0c03e  # v4.0.5'
 
@@ -80,9 +83,7 @@ mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6
 peter-evans/create-pull-request: 'c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0'
 
 # renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
-# skip this until migration to separate release workflow
-# related: https://github.com/pypa/gh-action-pypi-publish/issues/290
-pypa/gh-action-pypi-publish: '1bb664cc2ddedbbfdde43d4ac135d5836b7bf40f # v1.11.0'
+pypa/gh-action-pypi-publish: '106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0'
 
 ###########################################################
 #  GitHub Runners
