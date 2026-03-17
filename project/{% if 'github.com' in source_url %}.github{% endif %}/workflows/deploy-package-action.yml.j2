@@ -86,7 +86,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@{{ versions["pypa/gh-action-pypi-publish"] }}
 {%- raw %}
         with:
-          attestations: ${{ secrets.TEST_PYPI_API_TOKEN != '' }}
+          attestations: ${{ secrets.TEST_PYPI_API_TOKEN == '' }}
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
           repository-url: https://test.pypi.org/legacy/
           verbose: ${{ runner.debug == '1' }}
@@ -123,7 +123,7 @@ jobs:
         uses: pypa/gh-action-pypi-publish@{{ versions["pypa/gh-action-pypi-publish"] }}
 {%- raw %}
         with:
-          attestations: ${{ secrets.PYPI_API_TOKEN != '' }}
+          attestations: ${{ secrets.PYPI_API_TOKEN == '' }}
           password: ${{ secrets.PYPI_API_TOKEN }}
           verbose: ${{ runner.debug == '1' }}
 {%- endraw %}
