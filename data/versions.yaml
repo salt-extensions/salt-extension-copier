@@ -117,7 +117,7 @@ python_container: '3.10.20-slim-bookworm@sha256:b1f549b1c3da651d93802122ebcb0c31
 codecov_cli: 'v11.2.6'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.13.4'
+coverage: '7.13.5'
 
 # renovate: datasource=pypi depName=towncrier depType=devDependencies
 towncrier: '25.8.0'
