@@ -83,7 +83,10 @@ mathieudutour/github-tag-action: 'd28fa2ccfbd16e871a4bdf35e11b3ad1bd56c0c1  # v6
 peter-evans/create-pull-request: 'c0f553fe549906ede9cf27b5156039d195d2ece0  # v8.1.0'
 
 # renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
-pypa/gh-action-pypi-publish: '106e0b0b7c337fa67ed433972f777c6357f78598 # v1.13.0'
+# Still can't use Renovate to update this since it pins the release tag object SHA, but
+# the action pulls a container named after its reference. The containers are
+# only tagged with the release commit SHA, not the one of the tag object pointing to it.
+pypa/gh-action-pypi-publish: 'ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0'
 
 ###########################################################
 #  GitHub Runners
