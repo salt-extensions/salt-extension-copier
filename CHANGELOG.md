@@ -4,6 +4,24 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.9.0 (2026-03-17)
+
+
+### Changed
+
+- Refactored release workflow into separate toplevel one, which allowed to upgrade PyPI release action and publish attestations with Trusted Publishing [#167](https://github.com/salt-extensions/salt-extension-copier/issues/167)
+- BREAKING: Added required environment for PyPI package releases in GHA workflow named `release`
+
+
+### Fixed
+
+- Fixed docs publishing failure in release workflow when the autorelease PR method was used [#378](https://github.com/salt-extensions/salt-extension-copier/issues/378)
+
+
+### Added
+
+- Allowed to make use of a GitHub App for the autorelease bot, which allows CI to run on the autorelease PR
+
 ## 0.8.0 (2026-01-27)
 
 
