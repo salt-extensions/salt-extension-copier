@@ -58,11 +58,6 @@ and the repository name. As `Workflow name`, fill in `deploy-package-action.yml`
 
 Repeat the above steps for `test.pypi.org`.
 
-:::{note}
-Reusable workflows, as employed in generated projects, are [not fully supported][trusted-publishing-issue]
-as a Trusted Publisher at the moment. Specifically, [attestations] cannot be uploaded.
-:::
-
 #### Legacy API token
 Alternatively, you can add the following secrets:
 
@@ -90,11 +85,6 @@ Contains logs generated during a specific test run, useful for debugging test fa
 
 ### `html-docs`
 The built HTML documentation, also available for preview when triggered by a Pull Request.
-
-## Workflows call stack
-1. {path}`.github/workflows/pr.yml` or {path}`.github/workflows/tag.yml` is triggered
-2. {path}`.github/workflows/ci.yml` is called as the main entry point to CI
-3. Depending on the event and inputs, select additional workflows perform the necessary tasks.
 
 
 [trusted-publishing-issue]: https://github.com/pypi/warehouse/issues/11096
