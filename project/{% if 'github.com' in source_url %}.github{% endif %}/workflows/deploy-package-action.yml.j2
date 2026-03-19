@@ -170,7 +170,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VERSION: ${{ needs.get_version.outputs.version }}
         run: |
-          gh release create "v${{ needs.get_version.outputs.version }}" \
+          gh release create "v$VERSION" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} $VERSION" \
               --generate-notes \
