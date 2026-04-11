@@ -62,7 +62,7 @@ repos:
         require_serial: true
         additional_dependencies:
           # renovate: datasource=pypi depName=nox depType=devDependencies
-          - nox==2026.2.9
+          - nox==2026.4.10
 
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
     # renovate: datasource=git-tags depName=actionlint-py packageName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440

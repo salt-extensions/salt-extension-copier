@@ -31,7 +31,7 @@ jobs:
           pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
         env:
           # renovate: datasource=pypi depName=nox depType=devDependencies
-          NOX_VERSION: '2026.2.9'
+          NOX_VERSION: '2026.4.10'
           # renovate: datasource=pypi depName=uv depType=devDependencies
           UV_VERSION: '0.11.6'
 
@@ -92,7 +92,7 @@ jobs:
           pip install "nox==$env:NOX_VERSION" "uv==$env:UV_VERSION"
         env:
           # renovate: datasource=pypi depName=nox depType=devDependencies
-          NOX_VERSION: '2026.2.9'
+          NOX_VERSION: '2026.4.10'
           # renovate: datasource=pypi depName=uv depType=devDependencies
           UV_VERSION: '0.11.6'
 
@@ -157,7 +157,7 @@ jobs:
           pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
         env:
           # renovate: datasource=pypi depName=nox depType=devDependencies
-          NOX_VERSION: '2026.2.9'
+          NOX_VERSION: '2026.4.10'
           # renovate: datasource=pypi depName=uv depType=devDependencies
           UV_VERSION: '0.11.6'
 
