@@ -1,3 +1,4 @@
+(extraction-target)=
 # Extraction of Salt core modules
 
 ## Scripted example

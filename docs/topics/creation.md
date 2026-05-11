@@ -1,6 +1,10 @@
 (creation-target)=
 # Creation
 
+:::{note}
+If you are migrating existing modules out of Salt core, follow the [extraction guide](extraction-target) instead. The automation takes care of project creation.
+:::
+
 With Copier, creating a Salt extension project is easy:
 
 ```bash
