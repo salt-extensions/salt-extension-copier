@@ -44,6 +44,7 @@ rst_prolog = """
 linkcheck_ignore = [
     r"http://localhost:\d+",
     r"https://web\.archive\.org/.*",
+    r"https://pytest-salt-factories\.readthedocs\.io/.*",
 ]
 
 # Add any Sphinx extension module names here, as strings. They can be
