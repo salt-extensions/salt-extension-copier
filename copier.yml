@@ -204,7 +204,7 @@ python_requires:
 max_salt_version:
   type: str
   help: The maximum Salt major version to support
-  default: '3007'
+  default: '3008'
   validator: >-
     {%- if salt_python_support is not defined -%}
     {%-   import "data/salt_python_support.yaml" as sps -%}
