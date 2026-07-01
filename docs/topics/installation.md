@@ -10,7 +10,7 @@ It’s recommended to install Copier globally using either [uv][uv-docs] or [pip
 
 
 ```bash
-uv tool install --python 3.10 --with copier-templates-extensions 'copier>=9.6'
+uv tool install --python 3.10 --with copier-template-extensions 'copier>=9.6'
 ```
 :::
 
@@ -18,7 +18,7 @@ uv tool install --python 3.10 --with copier-templates-extensions 'copier>=9.6'
 
 ```bash
 pipx install 'copier>=9.6' && \
- pipx inject copier copier-templates-extensions
+ pipx inject copier copier-template-extensions
 ```
 :::
 
@@ -27,7 +27,7 @@ pipx install 'copier>=9.6' && \
 Alternatively, you can install Copier with `pip`, preferably inside a virtual environment:
 
 ```bash
-python -m pip install 'copier>=9.6' copier-templates-extensions
+python -m pip install 'copier>=9.6' copier-template-extensions
 ```
 :::
 
@@ -36,11 +36,11 @@ The `copier` virtual environment should be based on the Python version (MAJOR.MI
 :::
 
 :::{important}
-This template includes custom Jinja extensions, so ensure that [copier-templates-extensions][copier-templates-extensions] is installed in the same environment as `copier`. The example commands above handle this.
+This template includes custom Jinja extensions, so ensure that [copier-template-extensions][copier-template-extensions] is installed in the same environment as `copier`. The example commands above handle this.
 :::
 
 [copier-docs]: https://copier.readthedocs.io/en/stable/
 [copier-multiselect-pr]: https://github.com/copier-org/copier/pull/1386
-[copier-templates-extensions]: https://github.com/copier-org/copier-templates-extensions
+[copier-template-extensions]: https://github.com/copier-org/copier-template-extensions
 [pipx-docs]: https://pipx.pypa.io/stable/
 [uv-docs]: https://docs.astral.sh/uv/
