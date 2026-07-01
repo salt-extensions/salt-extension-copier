@@ -78,6 +78,7 @@ def test_project_init_works(copie, answers, capfd):
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.7.2",), indirect=True)
+@pytest.mark.parametrize("max_salt_version", ("3007",), indirect=True)
 def test_project_migration_works(copie, project, project_venv, request, capfd):
     """
     Ensure the generated project can be updated as expected
