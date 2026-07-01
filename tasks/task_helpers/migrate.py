@@ -115,7 +115,7 @@ def migration(trigger, stage="after", desc=None, after=None):
                 desc = func.__name__.replace("_", " ")
             elif not desc:
                 desc = None
-            func = Migration(func, desc=desc)
+            func = Migration(func, desc=desc, after=after)
         global MIGRATIONS
         MIGRATIONS.append((trigger_version, func))
         return func

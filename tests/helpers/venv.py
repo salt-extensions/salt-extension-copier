@@ -64,6 +64,11 @@ class VirtualEnv:
     def __exit__(self, *args):
         shutil.rmtree(str(self.venv_dir), ignore_errors=True)
 
+    @property
+    def pyver(self):
+        ver = self.run(str(self.venv_python), "--version").stdout.split(" ")[1].split(".")
+        return f"{ver[0]}.{ver[1]}"
+
     def install(self, *args, **kwargs):
         return self.run_module("pip", "install", *args, **kwargs)
 
