@@ -15,16 +15,18 @@
     - 10
 3006:
   lts: true
+  supported: true
   min:
     - 3
     - 10
   max:
     - 3
-    - 10
+    - 14
   onedir:
     - 3
     - 10
 3007:
+  supported: false
   min:
     - 3
     - 10
@@ -36,6 +38,7 @@
     - 10
 3008:
   lts: true
+  supported: true
   min:
     - 3
     - 10
