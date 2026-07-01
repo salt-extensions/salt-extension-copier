@@ -6,7 +6,6 @@ from plumbum import local
 
 from tests.helpers.pre_commit import check_pre_commit_rerun
 from tests.helpers.pre_commit import parse_pre_commit
-from tests.helpers.venv import ProjectVenv
 
 pytestmark = [
     pytest.mark.usefixtures(
@@ -115,6 +114,8 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     project_venv.install("nox==2023.4.22")
     _check_version(True)
     assert project_venv.pyver == "3.10"
+    # Windows has issues here. For some reason, pre-commit runs make-autodocs.py
+    # with the wrong Python version there. This fixture skips pre-commit.
     request.getfixturevalue("project_committed")
     res = copie.update(project)
     _assert_worked(res)
@@ -166,14 +167,14 @@ def _commit_with_pre_commit(venv, max_retry=3, message="initial commit"):
         raise AssertionError(msg)
 
 
-def test_first_commit_works(project):
+def test_first_commit_works(project, project_venv):
     """
     Ensure the generated project can be committed after generation
     with pre-commit hooks active.
     It should take at most three tries.
     """
-    with ProjectVenv(project.project_dir) as venv, local.cwd(project.project_dir):
-        _commit_with_pre_commit(venv, max_retry=3)
+    with local.cwd(project.project_dir):
+        _commit_with_pre_commit(project_venv, max_retry=3)
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
@@ -196,10 +197,10 @@ def test_testsuite_works(project, project_venv):
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 def test_docs_build_works(project, project_venv):
-    with ProjectVenv(project.project_dir) as venv, local.cwd(project.project_dir):
+    with local.cwd(project.project_dir):
         for check in (False, True):
-            venv.run(
-                venv.venv_python,
+            project_venv.run(
+                project_venv.venv_python,
                 str(project.project_dir / ".pre-commit-hooks" / "make-autodocs.py"),
                 check=check,
             )

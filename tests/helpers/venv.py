@@ -115,26 +115,30 @@ class VirtualEnv:
         virtualenv because it will fail otherwise
         """
         try:
-            if sys.platform.startswith("win"):
-                return os.path.join(sys.real_prefix, os.path.basename(sys.executable))
-            python_binary_names = [
-                "python{}.{}".format(*sys.version_info),
-                "python{}".format(*sys.version_info),
-                "python",
-            ]
-            for binary_name in python_binary_names:
-                python = os.path.join(sys.real_prefix, "bin", binary_name)
-                if os.path.exists(python):
-                    break
-            else:
-                raise AssertionError(
-                    "Couldn't find a python binary name under '{}' matching: {}".format(
-                        os.path.join(sys.real_prefix, "bin"), python_binary_names
-                    )
-                )
-            return python
+            base_prefix = sys.base_prefix
         except AttributeError:
-            return sys.executable
+            try:
+                base_prefix = sys.real_prefix
+            except AttributeError:
+                return sys.executable
+        if sys.platform.startswith("win"):
+            return os.path.join(base_prefix, os.path.basename(sys.executable))
+        python_binary_names = [
+            "python{}.{}".format(*sys.version_info),
+            "python{}".format(*sys.version_info),
+            "python",
+        ]
+        for binary_name in python_binary_names:
+            python = os.path.join(base_prefix, "bin", binary_name)
+            if os.path.exists(python):
+                break
+        else:
+            raise AssertionError(
+                "Couldn't find a python binary name under '{}' matching: {}".format(
+                    os.path.join(base_prefix, "bin"), python_binary_names
+                )
+            )
+        return python
 
     def run_code(self, code_string, python=None, **kwargs):
         if code_string.startswith("\n"):
@@ -194,4 +198,4 @@ class ProjectVenv(VirtualEnv):
                 local["git"]("init", "--initial-branch=main")
         if not (self.venv_dir / "pyvenv.cfg").exists():
             super()._create_virtualenv()
-        self.install(f"{self.project_dir}[dev,docs,tests]")
+            self.install(f"{self.project_dir}[dev,docs,tests]")
