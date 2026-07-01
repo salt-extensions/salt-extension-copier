@@ -21,10 +21,10 @@
     - 10
   max:
     - 3
-    - 14
+    - 11  # 3.12+ cause daemon communication/startup issues in integration tests
   onedir:
     - 3
-    - 10
+    - 11
 3007:
   supported: false
   min:
