@@ -18,7 +18,14 @@ jobs:
       fail-fast: false
 {%-   endraw %}
 {%-   set test_matrix = [] %}
+{%-   set supported_seen = [] %}
+{%-   set lowest_pyver_included = [] %}
 {%-   for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-     if supported_seen and not salt_python_support[sver]["supported"] %}
+{%-       continue %}
+{%-     elif salt_python_support[sver]["supported"] %}
+{%-       do supported_seen.append(true) %}
+{%-     endif %}
 
 {%-     if sver == max_salt_version_major %}
 {%-       set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
@@ -27,15 +34,19 @@ jobs:
 {%-     endif %}
 
 {%-     if salt_python_support[sver]["lts"] %}
-{%-       set min_pyver = (python_requires[1], salt_python_support[sver]["min"][1]) | max %}
+{%-       set test_py_versions = [
+            (python_requires[1], salt_python_support[sver]["onedir"][1]) | max,
+            salt_python_support[sver]["max"][1]
+          ] %}
 {%-     else %}
-{%-       set min_pyver = (python_requires[1], salt_python_support[sver]["onedir"][1]) | max %}
+{%-       set test_py_versions = [(python_requires[1], salt_python_support[sver]["onedir"][1]) | max] %}
+{%-     endif %}
+{%-     if not lowest_pyver_included %}
+{%-       do test_py_versions.append((python_requires[1], salt_python_support[sver]["min"][1]) | max) %}
+{%-       do lowest_pyver_included.append(true) %}
 {%-     endif %}
 
-{%-     for pyver in range(
-          min_pyver,
-          (max_python_minor, salt_python_support[sver]["max"][1]) | min + 1
-        ) %}
+{%-     for pyver in test_py_versions | unique | sort  %}
 {%-       do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
 {%-     endfor %}
 {%-   endfor %}
@@ -145,7 +156,13 @@ jobs:
       fail-fast: false
 {%-   endraw %}
 {%-   set test_matrix = [] %}
+{%-   set supported_seen = [] %}
 {%-   for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-     if supported_seen and not salt_python_support[sver]["supported"] %}
+{%-       continue %}
+{%-     elif salt_python_support[sver]["supported"] %}
+{%-       do supported_seen.append(true) %}
+{%-     endif %}
 
 {%-     if sver == max_salt_version_major %}
 {%-       set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
@@ -153,7 +170,7 @@ jobs:
 {%-       set sver_minor = salt_latest_point[sver] %}
 {%-     endif %}
 
-{%-     set pyver = (python_requires[1], salt_python_support[sver]["min"][1]) | max %}
+{%-     set pyver = (python_requires[1], salt_python_support[sver]["onedir"][1]) | max %}
 {%-     do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
 {%-   endfor %}
       max-parallel: {{ (test_matrix | length, 3) | min }}
@@ -270,7 +287,13 @@ jobs:
 
 {%-   set test_matrix = [] %}
 {%-   set macos_pyver = [] %}
+{%-   set supported_seen = [] %}
 {%-   for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-     if supported_seen and not salt_python_support[sver]["supported"] %}
+{%-       continue %}
+{%-     elif salt_python_support[sver]["supported"] %}
+{%-       do supported_seen.append(true) %}
+{%-     endif %}
 
 {%-     if sver == max_salt_version_major %}
 {%-       set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
@@ -278,14 +301,7 @@ jobs:
 {%-       set sver_minor = salt_latest_point[sver] %}
 {%-     endif %}
 
-{%-     set pyver = (
-                      (python_requires[1], salt_python_support[sver]["min"][1]) | max + 1,
-                      salt_python_support[sver]["max"][1]
-                    ) | min %}
-{%-     if pyver in macos_pyver %}
-{%-       set pyver = (pyver + (sver - salt_version_major), salt_python_support[sver]["max"][1]) | min %}
-{%-     endif %}
-{%-     do macos_pyver.append(pyver) %}
+{%-     set pyver = (python_requires[1], salt_python_support[sver]["onedir"][1]) | max %}
 {%-     do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
 {%-   endfor %}
       max-parallel: {{ (test_matrix | length, 3) | min }}

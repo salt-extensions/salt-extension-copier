@@ -39,6 +39,7 @@ class SaltExt(ContextHook):
                 "max": tuple(defs["max"]),
                 "onedir": tuple(defs.get("onedir", defs["max"])),
                 "lts": defs.get("lts", False),
+                "supported": defs.get("supported"),
             }
             for version, defs in sps.items()
         }
