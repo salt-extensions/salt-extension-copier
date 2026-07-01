@@ -43,6 +43,15 @@ def ensure_minimum_python_requires(answers):
     return answers
 
 
+@var_migration("0.9.1", "max_salt_version")
+def migrate_091_max_salt_version_3008(val):
+    """
+    Raise max_salt_version to 3008 if it was 3007 previously
+    """
+    if Version(str(val)).major == 3007:
+        return "3008"
+
+
 @var_migration("0.4.5", "max_salt_version")
 def migrate_045_max_salt_version(val):
     """
