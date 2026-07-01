@@ -63,7 +63,7 @@ DOCSAUTO_REQUIREMENTS = ("sphinx-autobuild",)
 
 TESTS_REQUIREMENTS = (
     "copier>=9.6",
-    "copier-templates-extensions",
+    "copier-template-extensions",
     "plumbum",
     "pytest",
     "pytest-copie>=0.2.2",
