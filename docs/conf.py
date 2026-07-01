@@ -126,8 +126,10 @@ intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "pytest": ("https://docs.pytest.org/en/stable", None),
     "salt": ("https://docs.saltproject.io/en/latest", None),
-    "saltfactories": ("https://pytest-salt-factories.readthedocs.io/en/latest", None),
+    # FIXME: Reenable once the docs are back online
+    # "saltfactories": ("https://pytest-salt-factories.readthedocs.io/en/latest", None),
 }
+intersphinx_disabled_reftypes = ["saltfactories:*"]
 # <---- Intersphinx Config -----------------------------------------------------------------------------------------
 
 # Towncrier draft config
