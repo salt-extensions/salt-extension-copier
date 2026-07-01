@@ -1,1 +1,0 @@
-Fixed pre-commit workflow Python version if `python_requires` is higher than 3.10. pre-commit should always run with the minimally supported Python of the project, while it was previously hardcoded to 3.10.
