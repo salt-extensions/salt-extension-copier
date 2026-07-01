@@ -4,7 +4,10 @@
     customManagers: [
         {
             customType: "regex",
-            fileMatch: ["^data/versions.yaml$", "^\\.pre-commit-config\\.yaml$"],
+            managerFilePatterns: [
+                "/^data/versions.yaml$/",
+                "/^\\.pre-commit-config\\.yaml$/"
+            ],
             matchStrings: [
                 "# renovate: datasource=(?<datasource>git.*-tags) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_/-]+?\\s*:\\s*[\"']?(?<currentDigest>[a-f0-9]+?)\\s+#\\s*(?<currentValue>v?[0-9.]+?)[\"']?\\s",
                 "# renovate: datasource=(?<datasource>docker) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[A-Za-z0-9_/-]+?\\s*:\\s*[\"']?([^:\\s]+:)?(?<currentValue>.+?)@(?<currentDigest>sha256:[a-f0-9]+?)[\"']?\\s",
@@ -13,21 +16,21 @@
         },
         {
             customType: "regex",
-            fileMatch: ["^\\.pre-commit-config\\.yaml$"],
+            managerFilePatterns: ["/^\\.pre-commit-config\\.yaml$/"],
             matchStrings: [
                 "# renovate: datasource=(?<datasource>pypi) depName=(?<depName>[^\\s]+?)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+-\\s*[\"']?[A-Za-z0-9_\\-\\.]+?==(?<currentValue>.+?)[\"']?\\s",
             ],
         },
         {
             customType: "regex",
-            fileMatch: ["^noxfile\\.py$"],
+            managerFilePatterns: ["/^noxfile\\.py$/"],
             matchStrings: [
                 "# renovate: datasource=(?<datasource>pypi)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[^\\n]*\"(?<depName>[A-Za-z0-9_\\-\\.]+?)==(?<currentValue>.+?)\",?\\s",
             ],
         },
         {
             customType: "regex",
-            fileMatch: ["^data/salt_latest_point.yaml$"],
+            managerFilePatterns: ["/^data/salt_latest_point.yaml$/"],
             matchStrings: [
                 "(?<major>\\d+): (?<minor>\\d+)\\s",
             ],
