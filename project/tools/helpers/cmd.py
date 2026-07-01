@@ -122,6 +122,15 @@ class Local:
         """
         return self._env.get("PATH", "").split(os.pathsep)
 
+    def which(self, cmd):
+        """
+        Find `cmd` in $PATH.
+        """
+        res = shutil.which(cmd)
+        if not res:
+            raise CommandNotFound(cmd)
+        return Path(res)
+
     @contextmanager
     def cwd(self, path):
         """

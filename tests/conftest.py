@@ -112,14 +112,18 @@ def project(answers, request, copie, skip_init_migrate):  # pylint: disable=unus
 
 
 @pytest.fixture
-def project_committed(project):
+def git():
+    return local["git"][
+        "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
+    ]
+
+
+@pytest.fixture
+def project_committed(project, git):
     with local.cwd(project.project_dir):
-        git = local["git"][
-            "-c", "commit.gpgsign=false", "-c", "user.name=foobar", "-c", "user.email=foo@b.ar"
-        ]
         git("init")
         git("add", ".")
-        git("commit", "-m", "initial commit")
+        git("commit", "-m", "initial commit", "--no-verify")
     return project
 
 
