@@ -114,6 +114,7 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     # downgrade nox below minimum version
     project_venv.install("nox==2023.4.22")
     _check_version(True)
+    assert project_venv.pyver == "3.10"
     request.getfixturevalue("project_committed")
     res = copie.update(project)
     _assert_worked(res)
@@ -127,6 +128,8 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
         assert not bpl.exists()
     # ensure the project was reinstalled
     _check_version(False)
+    # ensure the venv was recreated with the correct Python
+    assert project_venv.pyver == "3.14"
 
 
 @pytest.mark.usefixtures("project_committed")

@@ -10,7 +10,7 @@ It’s recommended to install Copier globally using either [uv][uv-docs] or [pip
 
 
 ```bash
-uv tool install --python 3.10 --with copier-template-extensions 'copier>=9.6'
+uv tool install --python 3.14 --with copier-template-extensions 'copier>=9.6'
 ```
 :::
 
@@ -32,7 +32,7 @@ python -m pip install 'copier>=9.6' copier-template-extensions
 :::
 
 :::{note}
-The `copier` virtual environment should be based on the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.10. Other versions - especially higher ones - should work, but the template's CI tests only verify the mentioned version.
+The `copier` virtual environment should be based on the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.14. Other versions - especially higher ones - should work, but the template's CI tests only verify the mentioned version.
 :::
 
 :::{important}

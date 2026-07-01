@@ -49,7 +49,7 @@ This process is automated completely in the following cases:
 * For all developers: If you have a working `direnv` installation, you can copy the included `.envrc.example` to `.envrc` and allow it to run. This takes care of the [dev env setup](dev-setup-target) and [pre-commit hook installation](hook-install-target) as well as activating the virtual environment. Without `direnv`, you can also run `make dev` to create/update the development environment. Remember to activate it via `source .venv/bin/activate` afterwards.
 
 :::{important}
-The automation either requires [`uv`](https://github.com/astral-sh/uv) or the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml) to be available on your system, at the time of writing Python 3.10.
+The automation either requires [`uv`](https://github.com/astral-sh/uv) or the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml) to be available on your system, at the time of writing Python 3.14.
 :::
 
 :::{hint}
@@ -75,11 +75,11 @@ Some automations assume your default branch is `main`. Ensure this is the case.
 (dev-setup-target)=
 ### Initialize the Python virtual environment
 :::{important}
-To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.10.
+To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.14.
 :::
 
 ```bash
-python3.10 -m venv .venv
+python3.14 -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```
