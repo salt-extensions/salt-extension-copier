@@ -88,5 +88,11 @@
             automerge: true,
             branchNameStrict: true,
         },
+        {
+            matchDepTypes: ["action", "actionMisc", "devDependencies"],
+            matchUpdateTypes: ["digest"],
+            groupName: "action/dev dependency digests",
+            branchNameStrict: true,
+        },
     ],
 }
