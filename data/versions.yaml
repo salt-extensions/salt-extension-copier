@@ -30,7 +30,7 @@ pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
 pyupgrade: '75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2'
 
 # renovate: datasource=git-tags depName=salt-rewrite packageName=https://github.com/saltstack/salt-rewrite depType=devDependencies
-salt_rewrite: '8079cfb7f601e5dbad58b8449d85bb24f1e52082  # 2.5.2'
+salt_rewrite: '2401c0faef69b6b846c719d611bcfe358234d5d1  # 2.5.2'
 
 # renovate: datasource=pypi depName=shellcheck-py depType=devDependencies
 shellcheck: '0.11.0.1'
