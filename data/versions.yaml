@@ -21,7 +21,7 @@ isort: 'a333737ed43df02b18e6c95477ea1b285b3de15a  # 8.0.1'
 nox: '2026.4.10'
 
 # renovate: datasource=git-tags depName=pre-commit-remove-import-headers packageName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
-remove_import_headers: '209beff8e11fed83f3f0863ccfd95aa663fffaf6  # 1.1.0'
+remove_import_headers: 'e79f595c0df31b8cb152c53993ce7c3c64f07cd4  # 1.1.0'
 
 # renovate: datasource=git-tags depName=pre-commit-hooks packageName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
 pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
