@@ -44,7 +44,7 @@ uv: '0.11.26'
 ###########################################################
 
 # renovate: datasource=git-tags depName=checkout packageName=https://github.com/actions/checkout depType=action
-actions/checkout: 'de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2'
+actions/checkout: '9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0  # v7.0.0'
 
 # renovate: datasource=git-tags depName=create-github-app-token packageName=https://github.com/actions/create-github-app-token depType=action
 actions/create-github-app-token: 'f8d387b68d61c58ab83c6c016672934102569859  # v3.0.0'
