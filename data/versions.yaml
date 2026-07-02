@@ -65,7 +65,7 @@ actions/upload-artifact: 'bbbca2ddaa5d8feaa63e36b76fdaad77386f024f  # v7.0.0'
 actions/upload-pages-artifact: 'fc324d3547104276b827a68afc52ff2a11cc49c9  # v5.0.0'
 
 # renovate: datasource=git-tags depName=codecov/codecov-action packageName=https://github.com/codecov/codecov-action depType=action
-codecov/codecov-action: '0561704f0f02c16a585d4c7555e57fa2e44cf909  # v5.5.2'
+codecov/codecov-action: 'fb8b3582c8e4def4969c97caa2f19720cb33a72f  # v7.0.0'
 
 # renovate: datasource=git-tags depName=dorny/paths-filter packageName=https://github.com/dorny/paths-filter depType=action
 dorny/paths-filter: 'fbd0ab8f3e69293af611ebaee6363fc25e6d187d  # v4.0.1'
