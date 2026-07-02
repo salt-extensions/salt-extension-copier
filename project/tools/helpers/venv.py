@@ -27,7 +27,7 @@ def discover_uv():
 
 
 def is_venv(path):
-    if (venv_path := Path(path)).is_dir and (venv_path / "pyvenv.cfg").exists():
+    if (venv_path := Path(path)).is_dir() and (venv_path / "pyvenv.cfg").exists():
         return venv_path
     return False
 
@@ -63,6 +63,7 @@ def create_venv(project_root=".", directory=None):
             "--python",
             RECOMMENDED_PYVER,
             f"--prompt=saltext-{discover_project_name()}",
+            directory or VENV_DIRS[0],
         )
     else:
         prompt.status("Did not find `uv`. Falling back to `venv`")
@@ -75,7 +76,9 @@ def create_venv(project_root=".", directory=None):
                 raise RuntimeError(
                     f"No `python{RECOMMENDED_PYVER}` executable found in $PATH, exiting"
                 )
-        python("-m", "venv", VENV_DIRS[0], f"--prompt=saltext-{discover_project_name()}")
+        python(
+            "-m", "venv", directory or VENV_DIRS[0], f"--prompt=saltext-{discover_project_name()}"
+        )
     return venv
 
 

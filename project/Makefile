@@ -37,7 +37,7 @@ changelog: dev ## Render changelog. Requires VERSION parameter.
 	@if [ -z "$(VERSION)" ]; then \
 		echo "Missing VERSION parameter. Example: make changelog VERSION=1.0.0" >&2; exit 1; \
 	fi; \
-    source .venv/bin/activate; \
+	source .venv/bin/activate; \
 	towncrier build --yes --version='$(VERSION)'
 
 .PHONY: docs
