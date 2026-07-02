@@ -4,6 +4,25 @@ This project uses [Semantic Versioning](https://semver.org/) - MAJOR.MINOR.PATCH
 
 # Changelog
 
+## 0.10.0 (2026-07-02)
+
+
+### Changed
+
+- Marked Salt 3007 as no longer supported, meaning it is no longer tested against if `min_salt_version` == 3006.
+- Switched recommended venv Python version from 3.10 to 3.14
+- Updated dev/CI dependencies
+
+
+### Fixed
+
+- Fixed pre-commit workflow Python version if `python_requires` is higher than 3.10. pre-commit should always run with the minimally supported Python of the project, while it was previously hardcoded to 3.10.
+
+
+### Added
+
+- Added Salt 3008
+
 ## 0.9.0 (2026-03-17)
 
 
