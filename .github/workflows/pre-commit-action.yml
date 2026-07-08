@@ -14,7 +14,7 @@ jobs:
     name: Pre-Commit
     runs-on: ubuntu-24.04
     container:
-      image: docker.io/library/python:3.10.20-slim-trixie@sha256:09abc8d5e531a79dcf6f465bec96304ecd9b3f98940d60525036908f7beb6533
+      image: docker.io/library/python:3.10.20-slim-trixie@sha256:e5300dc020a26a34a19337a57602955a2510e22abeb176edd6de6cd2cc927dd4
 
     steps:
       - name: Install System Deps
