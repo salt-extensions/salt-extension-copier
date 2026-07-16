@@ -21,7 +21,7 @@ There are several ways to connect with the community:
 Join the [Salt community Discord][discord-invite] and participate in the `salt-extensions` channel, where many members are active.
 
 #### Working group
-The Salt Extensions working group meets regularly on Microsoft Teams. Check the [Community Calendar](https://saltproject.io/calendar/) or the Discord calendar for upcoming meetings. Meeting notes are available on [GitHub](https://github.com/salt-extensions/community).
+The Salt Extensions working group meets regularly on Microsoft Teams. Check the [Community Calendar](https://saltproject.io/community/event-calendar/) or the Discord calendar for upcoming meetings. Meeting notes are available on [GitHub](https://github.com/salt-extensions/community).
 
 #### GitHub discussions
 You can also engage with the community on the organization’s [GitHub discussions](https://github.com/orgs/salt-extensions/discussions) forum.
