@@ -36,7 +36,7 @@ salt_rewrite: '2401c0faef69b6b846c719d611bcfe358234d5d1  # 2.5.2'
 shellcheck: '0.11.0.1'
 
 # renovate: datasource=pypi depName=uv depType=devDependencies
-uv: '0.11.29'
+uv: '0.11.30'
 
 
 ###########################################################
