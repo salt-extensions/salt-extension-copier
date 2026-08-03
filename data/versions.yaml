@@ -128,7 +128,7 @@ python_container_314: '3.14.6-slim-trixie@sha256:cea0e6040540fb2b965b6e7fb5ffa00
 codecov_cli: 'v11.3.1'
 
 # renovate: datasource=pypi depName=coverage depType=devDependencies
-coverage: '7.15.2'
+coverage: '7.15.3'
 
 # renovate: datasource=pypi depName=towncrier depType=devDependencies
 towncrier: '25.8.0'
