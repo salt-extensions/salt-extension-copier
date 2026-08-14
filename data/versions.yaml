@@ -112,7 +112,7 @@ python_container_310: '3.10.21-slim-trixie@sha256:6cbecaf6115972a75b995e6cf74205
 python_container_311: '3.11.16-slim-trixie@sha256:8203f8b7cc03e7a0b2da2a7bfebdb7e39d985983791e2aba5b01cc535bf36f53'
 
 # renovate: datasource=docker depName=python-pre-commit-action-312 packageName=docker.io/library/python depType=container
-python_container_312: '3.12.13-slim-trixie@sha256:229a2c5bfa27522db7815ea81f9bed70af17ccb9de9fc7ad142b1877b5830d36'
+python_container_312: '3.12.14-slim-trixie@sha256:0bdd92d1210a488ce24366c2e1d3b2390e923dcd70a0ce2f673b6f1ce090f556'
 
 # renovate: datasource=docker depName=python-pre-commit-action-313 packageName=docker.io/library/python depType=container
 python_container_313: '3.13.15-slim-trixie@sha256:ffb752e139c0a19692a43af8d8523b274222dd68eebad5d583b45c2201c6e30a'
