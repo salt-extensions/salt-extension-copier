@@ -54,7 +54,7 @@ DOCS_REQUIREMENTS = (
     "furo",
     "sphinx-inline-tabs",
     # renovate: datasource=pypi depType=devDependencies
-    "towncrier==25.8.0",
+    "towncrier==26.9.0",
     "sphinxcontrib-towncrier",
     "sphinx_tippy",
 )
