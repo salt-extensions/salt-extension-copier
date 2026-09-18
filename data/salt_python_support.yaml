@@ -18,7 +18,7 @@
   supported: true
   min:
     - 3
-    - 10
+    - 11
   max:
     - 3
     - 11  # 3.12+ cause daemon communication/startup issues in integration tests
@@ -41,7 +41,7 @@
   supported: true
   min:
     - 3
-    - 10
+    - 11
   max:
     - 3
     - 14
