@@ -1,5 +1,6 @@
 {
     prHourlyLimit: 10,
+    branchNameStrict: true,
     enabledManagers: ["custom.regex", "github-actions"],
     customManagers: [
         {
@@ -65,34 +66,31 @@
             enabled: false,
         },
         {
-            matchPackageNames: ["docker.io/library/python"],
-            matchUpdateTypes: ["patch", "digest"],
-            automerge: true,
-        },
-        {
             matchDepTypes: ["github-runner"],
             groupName: "github runners",
-            branchNameStrict: true,
         },
         {
             matchDepTypes: ["devDependencies"],
             matchUpdateTypes: ["patch", "minor"],
             groupName: "dev dependencies (non-major)",
             automerge: true,
-            branchNameStrict: true,
         },
         {
             matchDepTypes: ["action", "actionMisc"],
             matchUpdateTypes: ["patch", "minor"],
             groupName: "actions (non-major)",
             automerge: true,
-            branchNameStrict: true,
         },
         {
             matchDepTypes: ["action", "actionMisc", "devDependencies"],
             matchUpdateTypes: ["digest"],
             groupName: "action/dev dependency digests",
-            branchNameStrict: true,
+        },
+        {
+            matchDepTypes: ["container"],
+            matchUpdateTypes: ["patch", "digest"],
+            groupName: "python containers",
+            automerge: true,
         },
     ],
 }
