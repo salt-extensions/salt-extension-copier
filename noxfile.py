@@ -180,12 +180,12 @@ def _lint(session, rcfile, flags, paths, tee_output=True):
 
     python_path_env_var = os.environ.get("PYTHONPATH") or None
     if python_path_env_var is None:
-        python_path_env_var = REPO_ROOT
+        python_path_env_var = str(REPO_ROOT)
     else:
         python_path_entries = python_path_env_var.split(os.pathsep)
-        if REPO_ROOT in python_path_entries:
-            python_path_entries.remove(REPO_ROOT)
-        python_path_entries.insert(0, REPO_ROOT)
+        if str(REPO_ROOT) in python_path_entries:
+            python_path_entries.remove(str(REPO_ROOT))
+        python_path_entries.insert(0, str(REPO_ROOT))
         python_path_env_var = os.pathsep.join(python_path_entries)
 
     env = {
@@ -247,7 +247,7 @@ def _lint_pre_commit(session, rcfile, flags, paths):
             os.environ["VIRTUAL_ENV"],
             interpreter=session._runner.func.python,
             reuse_existing=True,
-            venv=True,
+            venv=True,  # type: ignore
         )
     session._runner.venv = venv
     _lint(session, rcfile, flags, paths, tee_output=False)
@@ -309,8 +309,7 @@ def docs(session):
 
 @nox.session(name="docs-html")
 @nox.parametrize("clean", [False, True])
-@nox.parametrize("include_api_docs", [False, True])
-def docs_html(session, clean, include_api_docs):
+def docs_html(session, clean):
     """
     Build Sphinx HTML Documentation
 
@@ -366,10 +365,7 @@ def docs_crosslink_info(session):
     """
     Report intersphinx cross links information
     """
-    _install_requirements(
-        session,
-        install_extras=["docs"],
-    )
+    _install_requirements(session, *DOCS_REQUIREMENTS)
     os.chdir("docs/")
     intersphinx_mapping = json.loads(
         session.run(
