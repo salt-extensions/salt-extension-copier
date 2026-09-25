@@ -1,0 +1,1 @@
+Fixed the autodocs pre-commit hook script: When multiple modules of the same kind shared the same virtualname, they would each receive a separate document with the same header. Now, they are collected into a single, shared document instead.
