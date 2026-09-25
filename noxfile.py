@@ -44,7 +44,7 @@ COVERAGE_REPORT_DB = REPO_ROOT / ".coverage"
 COVERAGE_REPORT_TESTS = ARTIFACTS_DIR.relative_to(REPO_ROOT) / "coverage-tests"
 
 
-DEV_REQUIREMENTS = ("pylint==4.0.4",)
+DEV_REQUIREMENTS = ("pylint==4.0.9",)
 
 DOCS_REQUIREMENTS = (
     "sphinx",
