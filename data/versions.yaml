@@ -105,9 +105,6 @@ windows: '2025'
 #  GitHub Actions containers
 ###########################################################
 
-# renovate: datasource=docker depName=python-pre-commit-action-310 packageName=docker.io/library/python depType=container
-python_container_310: '3.10.21-slim-trixie@sha256:31dd4d9529d02d7436659061cb7564cd4733fc90e5e152709a942d53382ec8d0'
-
 # renovate: datasource=docker depName=python-pre-commit-action-311 packageName=docker.io/library/python depType=container
 python_container_311: '3.11.16-slim-trixie@sha256:da047cb8f9d1d98e5c070f5300ba9f7274e33b8fc0e5be5ed88740aed1b95ba9'
 
