@@ -188,7 +188,7 @@ def tests(session):
         "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
     }
 
-{%- if container_tests %}
+{%- if test_containers %}
 
     # Support running functional/integration tests under Podman rootless.
     # The user must have enabled the listening socket via systemctl --user start podman.socket
