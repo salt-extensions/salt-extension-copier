@@ -466,7 +466,7 @@ _message_after_copy: |
   Your Salt extension project "{{ project_name_full }}" has been created successfully! 🎉
 
   At this point, your development environment should be ready to go.
-  If you have installed `direnv`, it can be activated automatically by coping the
+  If you have installed `direnv`, it can be activated automatically by copying the
   included `.envrc.example` to `.envrc` and running `direnv allow`,
   otherwise you need to source the Python virtual environment manually:
 

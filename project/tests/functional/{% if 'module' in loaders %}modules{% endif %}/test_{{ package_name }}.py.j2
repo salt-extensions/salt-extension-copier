@@ -10,7 +10,7 @@ def {{ package_name }}(modules):
     return modules.{{ package_name }}
 
 
-def test_replace_this_this_with_something_meaningful({{ package_name }}):
+def test_replace_this_with_something_meaningful({{ package_name }}):
     echo_str = "Echoed!"
     res = {{ package_name }}.example_function(echo_str)
     assert res == echo_str

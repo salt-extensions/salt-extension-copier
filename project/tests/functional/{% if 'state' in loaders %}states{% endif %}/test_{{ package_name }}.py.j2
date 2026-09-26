@@ -10,7 +10,7 @@ def {{ package_name }}(states):
     return states.{{ package_name }}
 
 
-def test_replace_this_this_with_something_meaningful({{ package_name }}):
+def test_replace_this_with_something_meaningful({{ package_name }}):
     echo_str = "Echoed!"
     ret = {{ package_name }}.exampled(echo_str)
     assert ret.result
