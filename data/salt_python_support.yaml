@@ -1,24 +1,10 @@
 ---
-3004:
-  min:
-    - 3
-    - 10
-  max:
-    - 3
-    - 10
-3005:
-  min:
-    - 3
-    - 10
-  max:
-    - 3
-    - 10
 3006:
   lts: true
   supported: true
   min:
     - 3
-    - 10
+    - 11
   max:
     - 3
     - 11  # 3.12+ cause daemon communication/startup issues in integration tests
@@ -29,10 +15,10 @@
   supported: false
   min:
     - 3
-    - 10
+    - 11  # Unsure if this works reliably though.
   max:
     - 3
-    - 10  # 3.11/3.12 have pinned requirements, but they are not stable yet
+    - 11  # 3.12 also has pinned requirements, unsure if that works reliably. But 3007 is EOL anyways.
   onedir:
     - 3
     - 10
@@ -41,7 +27,7 @@
   supported: true
   min:
     - 3
-    - 10
+    - 11
   max:
     - 3
     - 14
