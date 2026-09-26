@@ -1,0 +1,1 @@
+Fixed the isort pre-commit hook's `--py` argument, which was passed in a form isort silently ignored. isort now actually applies the project's minimum Python version syntax, which can result in new isort-induced changes when updating existing projects.
