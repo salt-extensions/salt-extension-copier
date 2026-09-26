@@ -33,11 +33,29 @@ def run_migrations():
     return _run_migrations_after(answers)
 
 
+def _sorted_migrations():
+    """
+    Return registered migrations in execution order: by trigger version
+    and registration order, but always running `after` dependencies first.
+    """
+    pending = sorted(MIGRATIONS, key=lambda entry: entry[0])
+    ordered = []
+    while pending:
+        for i, entry in enumerate(pending):
+            if not any(dep is mig for dep in entry[1].after for _, mig in pending):
+                ordered.append(entry)
+                del pending[i]
+                break
+        else:
+            raise RuntimeError("Cannot order migrations, `after` dependencies are circular")
+    return ordered
+
+
 def _run_migrations_before(answers):
     """
     Run `before` migrations and dump the new answers.
     """
-    for _, func in sorted(MIGRATIONS):
+    for _, func in _sorted_migrations():
         ret = func(answers)
         if ret is not None:
             answers = ret
@@ -49,7 +67,7 @@ def _run_migrations_after(answers):
     Run `after` migrations.
     Answers can only be updated in the `before` stage.
     """
-    for _, func in sorted(MIGRATIONS):
+    for _, func in _sorted_migrations():
         func(answers.copy())
 
 
@@ -116,7 +134,6 @@ def migration(trigger, stage="after", desc=None, after=None):
             elif not desc:
                 desc = None
             func = Migration(func, desc=desc, after=after)
-        global MIGRATIONS
         MIGRATIONS.append((trigger_version, func))
         return func
 
@@ -194,18 +211,6 @@ class Migration:
         if self.desc is not None:
             status(f"Running migration: {self.desc}")
         return self.func(answers)
-
-    def __lt__(self, other):
-        """
-        Ensure we can sort the list of migrations, even if there
-        are multiple migrations for a single version.
-
-        This also allows explicit ordering of migrations of the
-        same version (or those without one).
-        """
-        if not isinstance(other, Migration):
-            raise TypeError(f"Cannot compare Migration to {other!r}")
-        return any(migration is self for migration in other.after)
 
 
 class VarMigration(Migration):

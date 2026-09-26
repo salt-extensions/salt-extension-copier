@@ -54,6 +54,18 @@ repos:
   - repo: local
     hooks:
       - id: nox
+        alias: lint-tools
+        name: Lint Tools
+        pass_filenames: false
+        language: python
+        entry: nox -e lint-tools-pre-commit --
+        files: ^(project/tools|(?!(project/|tests/|docs/conf)))[^{]*\.py$
+        require_serial: true
+        additional_dependencies:
+          # renovate: datasource=pypi depName=nox depType=devDependencies
+          - nox==2026.8.17
+
+      - id: nox
         alias: lint-tests
         name: Lint Tests
         language: python

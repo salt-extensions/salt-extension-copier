@@ -291,6 +291,21 @@ def lint_tests_pre_commit(session):
     _lint_pre_commit(session, ".pylintrc", flags, paths)
 
 
+@nox.session(name="lint-tools-pre-commit")
+def lint_tools_pre_commit(session):
+    """
+    Run PyLint against all non-templated. Set PYLINT_REPORT to a path to capture output.
+    """
+    flags = [
+        "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring",
+    ]
+    if session.posargs:
+        paths = session.posargs
+    else:
+        paths = ["docs/_ext", "jinja_extensions/saltext.py", "noxfile.py", "project/tools", "tasks"]
+    _lint_pre_commit(session, ".pylintrc", flags, paths)
+
+
 @nox.session
 def docs(session):
     """
