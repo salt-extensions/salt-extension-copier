@@ -55,4 +55,4 @@ docs-dev: dev ## Build docs, serve them and refresh on changes
 .PHONY: tests
 tests: dev ## Run tests
 	@source .venv/bin/activate; \
-	  nox -e tests-3.10
+	  nox -e tests-{{ python_requires | join(".") }}
