@@ -2,7 +2,7 @@ import copy
 from pathlib import Path
 
 import yaml
-from copier_templates_extensions import ContextHook
+from copier_template_extensions import ContextHook
 from jinja2.ext import Extension
 
 SINGULAR_LOADER_DIRS = (
@@ -23,7 +23,7 @@ SINGULAR_LOADER_DIRS = (
 )
 
 
-class SaltExt(ContextHook):
+class SaltExt(ContextHook):  # pylint: disable=abstract-method
     """
     Renders some variables for easier templating
     """
@@ -86,7 +86,7 @@ class OpinionatedYamlDumper(yaml.SafeDumper):
 OpinionatedYamlDumper.add_representer(str, represent_str)
 
 
-class YamlDumper(Extension):
+class YamlDumper(Extension):  # pylint: disable=abstract-method
     def __init__(self, environment):
         super().__init__(environment)
         environment.filters["yaml"] = self.dump_yaml

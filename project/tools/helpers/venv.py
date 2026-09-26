@@ -69,13 +69,16 @@ def create_venv(project_root=".", directory=None):
         prompt.status("Did not find `uv`. Falling back to `venv`")
         try:
             python = local[f"python{RECOMMENDED_PYVER}"]
-        except CommandNotFound:
-            python = local["python3"]
+        except CommandNotFound as err:
+            try:
+                python = local["python3"]
+            except CommandNotFound:
+                python = local["python"]  # Windows needs this without uv
             version = python("--version").split(" ")[1]
             if not version.startswith(RECOMMENDED_PYVER):
                 raise RuntimeError(
                     f"No `python{RECOMMENDED_PYVER}` executable found in $PATH, exiting"
-                )
+                ) from err
         python(
             "-m", "venv", directory or VENV_DIRS[0], f"--prompt=saltext-{discover_project_name()}"
         )

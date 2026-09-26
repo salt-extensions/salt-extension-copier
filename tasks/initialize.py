@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     if os.environ.get("SKIP_INIT_MIGRATE", "0") == "1":
         finish_task(
-            f"Skipping post-copy {'initialization' if init else 'migration'}, SKIP_INIT_MIGRATE is set",
+            f"Skipping post-copy {'initialization' if init else 'migration'}, SKIP_INIT_MIGRATE is set",  # pylint: disable=possibly-used-before-assignment
             True,
         )
     try:

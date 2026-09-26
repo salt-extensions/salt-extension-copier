@@ -88,7 +88,7 @@ def discover_project_name():
     """
     Specifically discover project name. No dependency.
     """
-    for line in COPIER_ANSWERS.read_text().splitlines():
+    for line in COPIER_ANSWERS.read_text("utf8").splitlines():
         if line.startswith("project_name"):
             return line.split(":", maxsplit=1)[1].strip()
     raise RuntimeError("Failed discovering project name")

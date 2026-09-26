@@ -46,7 +46,7 @@ def ensure_minimum_python_requires(answers):
 @var_migration("0.9.1", "max_salt_version")
 def migrate_091_max_salt_version_3008(val):
     """
-    Raise max_salt_version to 3008 if it was 3007 previously
+    Raise max_salt_version to 3008 if it was 3007 previously (3007 is EOL, 3006 is not)
     """
     if Version(str(val)).major == 3007:
         return "3008"
