@@ -19,7 +19,7 @@ jobs:
 {%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
     container:
-      image: 'docker.io/library/python:{{ versions["python_container_" ~ (python_requires | join(""))] }}'
+      image: 'docker.io/library/python:{{ versions["python_container_" ~ (python_requires[:2] | join(""))] }}'
 {%- raw %}
 
     steps:
@@ -45,7 +45,8 @@ jobs:
           pre-commit run --show-diff-on-failure --color=always --all-files
 
       - name: Check Changed Files On PR
-        if: github.event_name == 'pull_request' && fromJSON(inputs.changed-files)['repo'] == 'true'
+        # Skip when the previous step already checked all files
+        if: github.event_name == 'pull_request' && fromJSON(inputs.changed-files)['repo'] == 'true' && fromJSON(inputs.changed-files)['pre-commit'] != 'true'
         run: |
           pre-commit run --show-diff-on-failure --color=always --files ${{ fromJSON(inputs.changed-files)['repo_files'] }}
 
