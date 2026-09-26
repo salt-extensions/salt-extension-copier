@@ -1,0 +1,1 @@
+Fixed release automation on repositories whose default workflow token permissions are read-only: the jobs creating/updating the release PR (when no autorelease app is configured) and closing it on manual tags now request the necessary `contents`/`pull-requests` write permissions explicitly.

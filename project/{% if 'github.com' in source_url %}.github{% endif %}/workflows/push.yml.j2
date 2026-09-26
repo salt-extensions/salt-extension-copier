@@ -93,6 +93,11 @@ jobs:
     needs:
       - check-prepare-release
     if: success() && needs.check-prepare-release.outputs.news-fragments-available == '1'
+    permissions:
+      # Allow pushing the release branch and creating/updating the release PR
+      # when falling back to the default token (no autorelease app configured)
+      contents: write
+      pull-requests: write
     uses: ./.github/workflows/prepare-release-action.yml
     secrets:
       AUTORELEASE_CLID: ${{ secrets.AUTORELEASE_CLID }}

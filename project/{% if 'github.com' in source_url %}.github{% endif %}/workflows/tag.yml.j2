@@ -56,6 +56,10 @@ jobs:
     name: Close release PR on manual tag
 {%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
+    permissions:
+      # Allow closing the release PR and deleting its branch
+      contents: write
+      pull-requests: write
 {%- raw %}
     needs:
       - get_version_tag
