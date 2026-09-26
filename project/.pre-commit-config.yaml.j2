@@ -43,7 +43,7 @@ repos:
         alias: rewrite-docstrings
         name: Salt extensions docstrings auto-fixes
         files: ^src/{{ namespaced_package_path }}/.*\.py$
-        args: [--silent]
+        args: [--silent, -E, fix_tornado_imports]
 
   - repo: https://github.com/saltstack/salt-rewrite
     # Automatically rewrite code with known rules
@@ -53,7 +53,7 @@ repos:
         alias: rewrite-tests
         name: Rewrite the test suite
         files: ^tests/.*\.py$
-        args: [--silent, -E, fix_docstrings]
+        args: [--silent, -E, fix_docstrings, -E, fix_tornado_imports]
 
   - repo: https://github.com/asottile/pyupgrade
     rev: {{ versions["pyupgrade"] }}
