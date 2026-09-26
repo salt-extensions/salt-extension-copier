@@ -110,7 +110,7 @@ def _group_by_virtualname(paths):
     # rst file is named after.
     for virtualname, group in grouped.items():
         for path in group:
-            if path.stem in (virtualname, virtualname + "mod"):
+            if path.stem in (virtualname, virtualname + "_mod"):
                 group.remove(path)
                 group.insert(0, path)
                 break
