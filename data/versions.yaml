@@ -15,7 +15,7 @@ black: '87928e6d6761a4a6d22250e1fee5601b3998086e  # 26.5.1'
 blacken_docs: 'fda77690955e9b63c6687d8806bafd56a526e45f  # 1.20.0'
 
 # renovate: datasource=git-tags depName=isort packageName=https://github.com/PyCQA/isort depType=devDependencies
-isort: '131f4adcd5582bfc53928ab0d740eceb8b506b6c  # 9.0.1'
+isort: '9f905615631c545f5aea2516508109350d1d2f7d  # 9.0.2'
 
 # renovate: datasource=pypi depName=nox depType=devDependencies
 nox: '2026.8.17'
@@ -36,7 +36,7 @@ salt_rewrite: '2401c0faef69b6b846c719d611bcfe358234d5d1  # 2.5.2'
 shellcheck: '0.11.0.1'
 
 # renovate: datasource=pypi depName=uv depType=devDependencies
-uv: '0.12.19'
+uv: '0.12.20'
 
 
 ###########################################################
