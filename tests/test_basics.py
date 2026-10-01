@@ -131,6 +131,15 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     _check_version(False)
     # ensure the venv was recreated with the correct Python
     assert project_venv.pyver == "3.14"
+    # need a clean workdir for the next check, another update would fail if we committed here (invalid ref)
+    with local.cwd(project.project_dir):
+        git("reset", "--hard", "HEAD")
+        git("clean", "-ffd")
+    # update venv_python answer at the same time
+    res = copie.update(project, {"venv_python": "3.12"})
+    _assert_worked(res)
+    assert "Failed migrating environment" not in capfd.readouterr().err
+    assert project_venv.pyver == "3.12"
 
 
 @pytest.mark.usefixtures("project_committed")

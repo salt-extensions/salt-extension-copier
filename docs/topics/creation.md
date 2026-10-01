@@ -75,7 +75,7 @@ Some automations assume your default branch is `main`. Ensure this is the case.
 (dev-setup-target)=
 ### Initialize the Python virtual environment
 :::{important}
-To create the virtualenv, it is recommended to use the same Python version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.14.
+To create the virtualenv, use the Python version you chose in the `venv_python` question. It defaults to the same version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.14.
 :::
 
 ```bash

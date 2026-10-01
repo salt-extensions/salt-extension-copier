@@ -6,7 +6,9 @@ from . import prompt
 from .cmd import CommandNotFound
 from .cmd import local
 from .copier import discover_project_name
+from .copier import discover_venv_python
 
+# Fallback when the `venv_python` answer is unavailable.
 # Should follow the version used for relenv packages, see
 # https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml
 RECOMMENDED_PYVER = "3.14"
@@ -47,7 +49,19 @@ def venv_pyver(venv):
             return f"{pyver[0]}.{pyver[1]}"
 
 
-def create_venv(project_root=".", directory=None):
+def get_venv_pyver():
+    """
+    Return the Python version the project venv should use,
+    as configured in the answers file (`venv_python`).
+    """
+    try:
+        return discover_venv_python() or RECOMMENDED_PYVER
+    except RuntimeError:
+        return RECOMMENDED_PYVER
+
+
+def create_venv(project_root=".", directory=None, pyver=None):
+    pyver = pyver or get_venv_pyver()
     base = Path(project_root).resolve()
     venv = (base / (directory or VENV_DIRS[0])).resolve()
     if is_venv(venv):
@@ -61,23 +75,23 @@ def create_venv(project_root=".", directory=None):
             # Install pip/setuptools/wheel for compatibility
             "--seed",
             "--python",
-            RECOMMENDED_PYVER,
+            pyver,
             f"--prompt=saltext-{discover_project_name()}",
             directory or VENV_DIRS[0],
         )
     else:
         prompt.status("Did not find `uv`. Falling back to `venv`")
         try:
-            python = local[f"python{RECOMMENDED_PYVER}"]
+            python = local[f"python{pyver}"]
         except CommandNotFound as err:
             try:
                 python = local["python3"]
             except CommandNotFound:
                 python = local["python"]  # Windows needs this without uv
             version = python("--version").split(" ")[1]
-            if not version.startswith(RECOMMENDED_PYVER):
+            if not version.startswith(pyver):
                 raise RuntimeError(
-                    f"No `python{RECOMMENDED_PYVER}` executable found in $PATH, exiting"
+                    f"No `python{pyver}` executable found in $PATH, exiting"
                 ) from err
         python(
             "-m", "venv", directory or VENV_DIRS[0], f"--prompt=saltext-{discover_project_name()}"
@@ -85,23 +99,24 @@ def create_venv(project_root=".", directory=None):
     return venv
 
 
-def ensure_project_venv(project_root=".", reinstall=True, install_extras=False):
+def ensure_project_venv(project_root=".", reinstall=True, install_extras=False, pyver=None):
     exists = False
+    pyver = pyver or get_venv_pyver()
     try:
         venv = discover_venv(project_root)
         prompt.status(f"Found existing virtual environment at {venv}")
 
-        pyver = venv_pyver(venv)
-        if pyver != RECOMMENDED_PYVER:
+        existing_pyver = venv_pyver(venv)
+        if existing_pyver != pyver:
             prompt.status(
-                f"Existing venv has Python {pyver}, but recommended is {RECOMMENDED_PYVER}. Recreating."
+                f"Existing venv has Python {existing_pyver}, but configured is {pyver}. Recreating."
             )
             rmtree(venv)
-            raise RuntimeError("Existing venv does not use recommended Python version")
+            raise RuntimeError("Existing venv does not use configured Python version")
 
         exists = True
     except RuntimeError:
-        venv = create_venv(project_root)
+        venv = create_venv(project_root, pyver=pyver)
     if not reinstall:
         return venv
     extras = ["dev", "tests", "docs"]

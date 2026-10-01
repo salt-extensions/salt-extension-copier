@@ -112,6 +112,14 @@ The minimum Python version to support. Also affects pre-commit autoformatting ho
 ## `max_salt_version`
 The maximum Salt version to support. Influences the Salt versions tests are run against.
 
+:::{question} venv_python
+:::
+## `venv_python`
+Python version (MAJOR.MINOR) for the local development virtual environment.
+The default follows the latest supported Salt onedir release, which is the
+least likely to cause installation issues. Choose a different one if it is
+hard to come by on your platform.
+
 :::{question} no_saltext_namespace
 :::
 ## `no_saltext_namespace`
