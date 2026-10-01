@@ -45,6 +45,11 @@ def max_salt_version(copier_yaml, request):
     return getattr(request, "param", copier_yaml["max_salt_version"]["default"])
 
 
+@pytest.fixture
+def venv_python(request):
+    return getattr(request, "param", None)
+
+
 @pytest.fixture(params=("org",))
 def source_url(project_name, request):
     if not request.param:
@@ -74,6 +79,7 @@ def answers(
     no_saltext_namespace,
     salt_version,
     project_name,
+    venv_python,
     workflows,
     request,
 ):
@@ -87,6 +93,8 @@ def answers(
         "max_salt_version": max_salt_version,
         "workflows": workflows,
     }
+    if venv_python is not None:
+        defaults["venv_python"] = venv_python
     defaults.update(request.param)
     return {k: v for k, v in defaults.items() if v is not None}
 

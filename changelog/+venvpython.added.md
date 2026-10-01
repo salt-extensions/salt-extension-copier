@@ -1,0 +1,1 @@
+Added the `venv_python` question for choosing the Python version of the development virtual environment instead of hardcoding a recommendation. This eases development on platforms where the recommended version is hard to come by. It also stops template updates from recreating the virtual environment when the recommendation changes.

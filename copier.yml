@@ -231,6 +231,49 @@ max_salt_version:
       Maximum version needs to be at least {{ salt_version }}
     {%- endif -%}
 
+venv_python:
+  type: str
+  help: >-
+    Python version (MAJOR.MINOR) for the local development virtual environment.
+    The default follows the latest supported Salt onedir release, which is the
+    least likely to cause installation issues. Choose a different one if it is
+    hard to come by on your platform.
+    Note: Changing this during updates causes the virtual environment to be recreated.
+  default: >-
+    {%- if salt_python_support is not defined -%}
+    {%-   import "data/salt_python_support.yaml" as sps -%}
+    {%-   set salt_python_support = sps | string | from_yaml -%}
+    {%- endif -%}
+    {%- set entry = salt_python_support[max_salt_version | float | int] -%}
+    {%- set onedir = entry.get("onedir", entry["max"])[:2] | list -%}
+    {%- set minreq = python_requires -%}
+    {%- if minreq is string -%}
+    {%-   set minreq = minreq.split(".") | map("int") -%}
+    {%- endif -%}
+    {%- set minreq = minreq | list -%}
+    {{- (onedir if onedir >= minreq else minreq) | join(".") -}}
+  validator: >-
+    {%- if not (venv_python | regex_search("^[0-9]+\.[0-9]+$")) -%}
+      Invalid version. Allowed format: MAJOR.MINOR
+    {%- else -%}
+    {%-   if salt_python_support is not defined -%}
+    {%-     import "data/salt_python_support.yaml" as sps -%}
+    {%-     set salt_python_support = sps | string | from_yaml -%}
+    {%-   endif -%}
+    {%-   set selected = venv_python.split(".") | map("int") | list -%}
+    {%-   set minsup = python_requires -%}
+    {%-   if minsup is string -%}
+    {%-     set minsup = minsup.split(".") | map("int") -%}
+    {%-   endif -%}
+    {%-   set minsup = minsup | list -%}
+    {%-   set maxsup = salt_python_support[max_salt_version | float | int]["max"] | list -%}
+    {%-   if selected < minsup -%}
+      This project's minimum supported Python version is {{ minsup | join(".") }}
+    {%-   elif selected > maxsup -%}
+      Maximum supported Python version of Salt {{ max_salt_version }} is {{ maxsup | join(".") }}
+    {%-   endif -%}
+    {%- endif -%}
+
 no_saltext_namespace:
   type: bool
   help: Omit the `saltext` namespace
