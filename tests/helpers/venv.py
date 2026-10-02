@@ -40,8 +40,12 @@ class VirtualEnv:
     full_environ: dict = field(init=False, repr=False)
     venv_python: Path = field(init=False, repr=False)
     venv_bin_dir: Path = field(init=False, repr=False)
+    uv: str | None = field(init=False, repr=False)
 
     def __post_init__(self):
+        # uv does not consider packages inherited via --system-site-packages
+        # during installs (astral-sh/uv#4466), so avoid it for such venvs.
+        self.uv = None if self.system_site_packages else shutil.which("uv")
         if platform.system() == "Windows":
             self.venv_python = self.venv_dir / "Scripts" / "python.exe"
         else:
@@ -70,10 +74,19 @@ class VirtualEnv:
         return f"{ver[0]}.{ver[1]}"
 
     def install(self, *args, **kwargs):
+        if self.uv:
+            return self.run(self.uv, "pip", "install", *args, **kwargs)
         return self.run_module("pip", "install", *args, **kwargs)
 
     def uninstall(self, *args, **kwargs):
+        if self.uv:
+            return self.run(self.uv, "pip", "uninstall", *args, **kwargs)
         return self.run_module("pip", "uninstall", "-y", *args, **kwargs)
+
+    def rm_cached(self, pkg):
+        self.run_module("pip", "cache", "remove", pkg, check=False)
+        if self.uv is not None:
+            self.run(self.uv, "cache", "clean", pkg, check=False)
 
     def run_module(self, module, *args, **kwargs):
         return self.run(str(self.venv_python), "-m", module, *args, **kwargs)
@@ -157,6 +170,18 @@ class VirtualEnv:
         return data
 
     def _create_virtualenv(self):
+        if self.uv:
+            # --seed provides pip, which some tests and helpers call directly
+            self.run(
+                self.uv,
+                "venv",
+                "--seed",
+                f"--python={self.get_real_python()}",
+                str(self.venv_dir),
+                cwd=str(self.venv_dir.parent),
+            )
+            log.debug("Created virtualenv in %s using uv", self.venv_dir)
+            return
         virtualenv = shutil.which("virtualenv")
         if not virtualenv:
             pytest.fail("'virtualenv' binary not found")
