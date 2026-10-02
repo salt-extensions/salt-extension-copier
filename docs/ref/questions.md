@@ -140,7 +140,25 @@ Add support for running containers in the test suite (for functional and integra
 ## `os_support`
 Select supported operating systems. Usually, you should leave the default of `Linux`, `macOS` and `Windows`, but some extensions only make sense on specific systems.
 
-This question influences on which systems the tests are run.
+This question influences on which systems the tests are run and which `Operating System ::` [Trove classifiers](https://pypi.org/classifiers/) are added to the package metadata.
+
+:::{note}
+`Linux`, `macOS` and `Windows` tests run on native GitHub-hosted runners.
+`FreeBSD` and `OpenBSD` tests run inside VMs on Linux runners, courtesy of
+the [vmactions](https://github.com/vmactions) project. No Salt onedir
+builds exist for these platforms, so instead of a Salt version matrix, the
+tests run against the Salt release packaged by the OS, like Python itself.
+The project's minimum Salt requirement acts as a lower bound: if the
+packaged release is older, the newest release satisfying it is installed
+from PyPI instead.
+
+For speed, the prepared VM images – including the installed Salt release –
+are cached between CI runs. The cache is only invalidated when the
+preparation script changes (e.g. during template updates) or when GitHub
+evicts it, so the tests can lag behind the currently packaged Salt release.
+To force a refresh, delete the corresponding `...-prep-...` entries in your
+repository's GitHub Actions caches.
+:::
 
 :::{question} deploy_docs
 :::

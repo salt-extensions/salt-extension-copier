@@ -34,6 +34,9 @@ classifiers = [
 {%- if license_classifier %}
     "{{ license_classifier }}",
 {%- endif %}
+{%- for os in os_support | select("in", os_meta) | sort %}
+    "{{ os_meta[os]["classifier"] }}",
+{%- endfor %}
 ]
 requires-python = ">= {{ python_requires | join(".") }}"
 dynamic = ["version"]

@@ -49,6 +49,9 @@ class SaltExt(ContextHook):  # pylint: disable=abstract-method
         self.versions = yaml.safe_load(
             (Path(__file__).parent.parent / "data" / "versions.yaml").read_text()
         )
+        self.os_meta = yaml.safe_load(
+            (Path(__file__).parent.parent / "data" / "os_support.yaml").read_text()
+        )
 
     def hook(self, context):
         if "python_requires" in context:
@@ -61,6 +64,7 @@ class SaltExt(ContextHook):  # pylint: disable=abstract-method
                 "singular_loader_dirs": SINGULAR_LOADER_DIRS,
                 "salt_latest_point": copy.deepcopy(self.slp),
                 "versions": copy.deepcopy(self.versions),
+                "os_meta": copy.deepcopy(self.os_meta),
             }
         )
 

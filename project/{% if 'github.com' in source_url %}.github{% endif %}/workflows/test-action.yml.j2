@@ -401,3 +401,214 @@ jobs:
           name: ${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
 {%-   endraw %}
 {%- endif %}
+
+{#- The following platforms have no native GitHub-hosted runners and are
+    tested inside VMs provided by the vmactions actions. There are no Salt
+    onedir builds for them either, so instead of a version matrix, the
+    tests run against the Salt release packaged by the OS (see
+    data/os_support.yaml), inherited into the session venvs via
+    VENV_SYSTEM_SITE_PACKAGES. The project's minimum Salt requirement
+    acts as a lower bound: if the packaged release is older, the newest
+    release satisfying it is pulled from PyPI instead. #}
+{%- if "FreeBSD" in os_support %}
+
+  FreeBSD:
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%-   raw %}
+    timeout-minutes: 45
+
+    env:
+      # Salt and its dependencies are provided as system packages, which
+      # the session venvs inherit. This makes the tests run against the
+      # OS-packaged Salt release and avoids expensive source builds of
+      # binary dependencies.
+      VENV_SYSTEM_SITE_PACKAGES: '1'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        osrelease:
+{%-   endraw %}
+{%-   for osrelease in os_meta["FreeBSD"]["vm"]["releases"] %}
+          - "{{ osrelease }}"
+{%-   endfor %}
+
+    steps:
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%-   raw %}
+        with:
+          fetch-depth: 2  # coverage: Issue detecting commit SHA
+
+      - name: Start VM
+{%-   endraw %}
+        uses: vmactions/freebsd-vm@{{ versions["vmactions/freebsd-vm"] }}
+{%-   raw %}
+        with:
+          release: "${{ matrix.osrelease }}"
+          envs: 'SKIP_REQUIREMENTS_INSTALL VENV_SYSTEM_SITE_PACKAGES'
+          # Cache the prepared VM image, keyed on the `prepare` script's hash
+          cache-after-prepare: true
+          prepare: |
+{%-   endraw %}
+            {{ os_meta["FreeBSD"]["vm"]["prepare"] | trim | indent(12) }}
+{%-   raw %}
+
+      - name: Install Test Requirements
+        shell: freebsd {0}
+        run: |
+          nox --force-color -e tests-3 --install-only
+
+      - name: Test
+        shell: freebsd {0}
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e tests-3 -- -vv --instafail tests/
+
+      - name: Upload Project Code Coverage
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
+        with:
+          files: artifacts/coverage-project.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ github.job }}-${{ matrix.osrelease }},project
+          name: ${{ github.job }}-${{ matrix.osrelease }}-project
+          use_oidc: true
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
+
+      - name: Upload Tests Code Coverage
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
+        with:
+          files: artifacts/coverage-tests.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ github.job }}-${{ matrix.osrelease }},tests
+          name: ${{ github.job }}-${{ matrix.osrelease }}-tests
+          use_oidc: true
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
+
+      - name: Upload Logs
+        if: always()
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
+        with:
+          name: runtests-${{ github.job }}-${{ matrix.osrelease }}.log
+          path: artifacts/runtests-*.log
+
+      - name: Upload Exit Status
+        if: always()
+        uses: ./.github/actions/upload-exitstatus
+        with:
+          name: ${{ github.job }}-${{ matrix.osrelease }}
+{%-   endraw %}
+{%- endif %}
+{%- if "OpenBSD" in os_support %}
+
+  OpenBSD:
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+{%-   raw %}
+    timeout-minutes: 45
+
+    env:
+      # Salt and its dependencies are provided as system packages, which
+      # the session venvs inherit. This makes the tests run against the
+      # OS-packaged Salt release and avoids expensive source builds of
+      # binary dependencies.
+      VENV_SYSTEM_SITE_PACKAGES: '1'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        osrelease:
+{%-   endraw %}
+{%-   for osrelease in os_meta["OpenBSD"]["vm"]["releases"] %}
+          - "{{ osrelease }}"
+{%-   endfor %}
+
+    steps:
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+{%-   raw %}
+        with:
+          fetch-depth: 2  # coverage: Issue detecting commit SHA
+
+      - name: Start VM
+{%-   endraw %}
+        uses: vmactions/openbsd-vm@{{ versions["vmactions/openbsd-vm"] }}
+{%-   raw %}
+        with:
+          release: "${{ matrix.osrelease }}"
+          envs: 'SKIP_REQUIREMENTS_INSTALL VENV_SYSTEM_SITE_PACKAGES'
+          # Cache the prepared VM image, keyed on the `prepare` script's hash
+          cache-after-prepare: true
+          prepare: |
+{%-   endraw %}
+            {{ os_meta["OpenBSD"]["vm"]["prepare"] | trim | indent(12) }}
+{%-   raw %}
+
+      - name: Install Test Requirements
+        shell: openbsd {0}
+        run: |
+          nox --force-color -e tests-3 --install-only
+
+      - name: Test
+        shell: openbsd {0}
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e tests-3 -- -vv --instafail tests/
+
+      - name: Upload Project Code Coverage
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
+        with:
+          files: artifacts/coverage-project.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ github.job }}-${{ matrix.osrelease }},project
+          name: ${{ github.job }}-${{ matrix.osrelease }}-project
+          use_oidc: true
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
+
+      - name: Upload Tests Code Coverage
+{%-   endraw %}
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+{%-   raw %}
+        with:
+          files: artifacts/coverage-tests.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: ${{ github.job }}-${{ matrix.osrelease }},tests
+          name: ${{ github.job }}-${{ matrix.osrelease }}-tests
+          use_oidc: true
+{%-   endraw %}
+          version: {{ versions["codecov_cli"] }}
+{%-   raw %}
+
+      - name: Upload Logs
+        if: always()
+{%-   endraw %}
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+{%-   raw %}
+        with:
+          name: runtests-${{ github.job }}-${{ matrix.osrelease }}.log
+          path: artifacts/runtests-*.log
+
+      - name: Upload Exit Status
+        if: always()
+        uses: ./.github/actions/upload-exitstatus
+        with:
+          name: ${{ github.job }}-${{ matrix.osrelease }}
+{%-   endraw %}
+{%- endif %}

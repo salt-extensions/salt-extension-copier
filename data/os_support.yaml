@@ -1,0 +1,35 @@
+# Metadata for the `os_support` question choices.
+#
+# `classifier` is the OS' Trove classifier (https://pypi.org/classifiers).
+#
+# `vm` holds data for the CI test job running inside a VM via the
+# respective vmactions action (https://github.com/vmactions) since
+# there are no native GitHub-hosted runners for these platforms:
+#   releases: OS releases to test. A leading part of a release selects
+#             the newest matching one (e.g. "15" -> latest 15.x).
+#   prepare:  vmactions `prepare` script that provides `python3`, `nox`
+#             and the OS-packaged Salt release (including its
+#             dependencies), which the tests run against. The prepared
+#             VM image is cached, keyed on this script's hash.
+Linux:
+  classifier: "Operating System :: POSIX :: Linux"
+macOS:
+  classifier: "Operating System :: MacOS"
+Windows:
+  classifier: "Operating System :: Microsoft :: Windows"
+FreeBSD:
+  classifier: "Operating System :: POSIX :: BSD :: FreeBSD"
+  vm:
+    releases:
+      - "14"
+      - "15"
+    prepare: |
+      pkg install -y python3 py312-salt py312-sqlite3 nox
+OpenBSD:
+  classifier: "Operating System :: POSIX :: BSD :: OpenBSD"
+  vm:
+    releases:
+      - "7"
+    prepare: |
+      pkg_add -I python%3 salt py3-pip
+      python3 -m pip install --break-system-packages nox

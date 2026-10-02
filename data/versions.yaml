@@ -82,6 +82,12 @@ mathieudutour/github-tag-action: 'a22cf08638b34d5badda920f9daf6e72c477b07b  # v6
 # renovate: datasource=git-tags depName=peter-evans/create-pull-request packageName=https://github.com/peter-evans/create-pull-request depType=action
 peter-evans/create-pull-request: '5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1'
 
+# renovate: datasource=git-tags depName=vmactions/freebsd-vm packageName=https://github.com/vmactions/freebsd-vm depType=action
+vmactions/freebsd-vm: 'a2f9a41fa97f6848b8c3b791087dfcdaa5b473ff  # v1.5.8'
+
+# renovate: datasource=git-tags depName=vmactions/openbsd-vm packageName=https://github.com/vmactions/openbsd-vm depType=action
+vmactions/openbsd-vm: '5f7b2c933b8846a138361d6843c52af4bef5d945  # v1.4.8'
+
 # renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
 # Still can't use Renovate to update this since it pins the release tag object SHA, but
 # the action pulls a container named after its reference. The containers are

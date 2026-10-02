@@ -293,7 +293,7 @@ test_containers:
 os_support:
   type: str
   multiselect: true
-  help: Supported OS. Influences where tests run.
+  help: Supported OS. Influences where tests run and package metadata.
   default:
     - Linux
     - macOS
@@ -302,6 +302,8 @@ os_support:
     - Linux
     - macOS
     - Windows
+    - FreeBSD
+    - OpenBSD
   validator: >-
     {%- if not os_support -%}
       At least one supported OS is required.
