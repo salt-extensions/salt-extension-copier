@@ -1,3 +1,6 @@
+import os
+from itertools import islice
+
 import pytest
 from plumbum import local
 
@@ -139,6 +142,46 @@ def project_committed(project, git):
 def project_venv(project):
     with ProjectVenv(project.project_dir) as venv:
         yield venv
+
+
+# Rough relative test costs. xdist distributes tests in collection order,
+# so sorting the heaviest ones first gets them started early, minimizing
+# the chance of a single straggler dominating the suite's wall clock time.
+# The `worksteal` scheduler rebalances whatever this ordering cannot foresee.
+TEST_WEIGHTS = {
+    "test_project_migration_works": 100,
+    "test_testsuite_works": 90,
+    "test_docs_build_works": 80,
+    "test_first_commit_works": 70,
+    "test_project_init_works": 60,
+    "test_update_from_002_works": 50,
+}
+
+
+def pytest_collection_modifyitems(items):
+    items.sort(
+        key=lambda item: TEST_WEIGHTS.get(getattr(item, "originalname", item.name), 0),
+        reverse=True,
+    )
+    # The `worksteal` scheduler initially distributes the collection to the
+    # workers evenly as contiguous chunks, so consecutive heavy tests would
+    # start on the same worker and only run in parallel once stolen by an
+    # idle one. Reorder the collection so each worker's initial chunk begins
+    # with one of the heaviest tests, ensuring they all start immediately.
+    workers = int(os.environ.get("PYTEST_XDIST_WORKER_COUNT", "0"))
+    if workers < 2 or len(items) <= workers:
+        return
+    heads = items[:workers]
+    rest = iter(items[workers:])
+    reordered = []
+    remaining = len(items)
+    for i, head in enumerate(heads):
+        # Mirrors the scheduler's initial chunk size calculation
+        chunksize = remaining // (workers - i)
+        remaining -= chunksize
+        reordered.append(head)
+        reordered.extend(islice(rest, chunksize - 1))
+    items[:] = reordered
 
 
 def pytest_make_parametrize_id(config, val, argname):  # pylint: disable=unused-argument

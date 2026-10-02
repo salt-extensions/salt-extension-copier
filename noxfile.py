@@ -24,9 +24,6 @@ PIP_INSTALL_SILENT = CI_RUN is False
 SKIP_REQUIREMENTS_INSTALL = os.environ.get("SKIP_REQUIREMENTS_INSTALL", "0") == "1"
 EXTRA_REQUIREMENTS_INSTALL = os.environ.get("EXTRA_REQUIREMENTS_INSTALL")
 
-# renovate: datasource=pypi depType=devDependencies
-COVERAGE_REQUIREMENT = os.environ.get("COVERAGE_REQUIREMENT") or "coverage==7.16.2"
-
 # Prevent Python from writing bytecode
 os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 
@@ -40,8 +37,6 @@ ARTIFACTS_DIR = REPO_ROOT / "artifacts"
 ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
 CUR_TIME = datetime.datetime.now().strftime("%Y%m%d%H%M%S.%f")
 RUNTESTS_LOGFILE = ARTIFACTS_DIR / f"runtests-{CUR_TIME}.log"
-COVERAGE_REPORT_DB = REPO_ROOT / ".coverage"
-COVERAGE_REPORT_TESTS = ARTIFACTS_DIR.relative_to(REPO_ROOT) / "coverage-tests"
 
 
 DEV_REQUIREMENTS = ("pylint==4.0.9",)
@@ -70,6 +65,7 @@ TESTS_REQUIREMENTS = (
     "pytest",
     "pytest-copie>=0.2.2",
     "pytest-instafail",
+    "pytest-xdist",
     "pyyaml",
     "virtualenv",
 )
@@ -95,25 +91,25 @@ def _install_requirements(
 
 @nox.session
 def tests(session):
-    _install_requirements(session, COVERAGE_REQUIREMENT, *TESTS_REQUIREMENTS)
+    _install_requirements(session, *TESTS_REQUIREMENTS)
 
-    env = {
-        # The full path to the .coverage data file. Makes sure we always write
-        # them to the same directory
-        "COVERAGE_FILE": str(COVERAGE_REPORT_DB),
-        # Instruct sub processes to also run under coverage
-        # "COVERAGE_PROCESS_START": str(REPO_ROOT / ".coveragerc"),
-    }
-
-    session.run("coverage", "erase")
     args = [
         "--rootdir",
         str(REPO_ROOT),
         f"--log-file={RUNTESTS_LOGFILE.relative_to(REPO_ROOT)}",
+        # The xdist workers all log to the same file, which they would
+        # truncate otherwise. The file name is unique per invocation.
+        "--log-file-mode=a",
         "--log-file-level=debug",
         "--showlocals",
         "-ra",
         "-vv",
+        "-n",
+        "auto",
+        # The default `load` scheduler assigns tests to workers up front and
+        # never rebalances, which can stack several heavy tests on one worker.
+        "--dist",
+        "worksteal",
     ]
     if session._runner.global_config.forcecolor:
         args.append("--color=yes")
@@ -136,15 +132,7 @@ def tests(session):
                 continue
         else:
             args.append("tests/")
-    try:
-        session.run("coverage", "run", "-m", "pytest", *args, env=env)
-    finally:
-        try:
-            session.run("coverage", "report", "--show-missing", "--include=tests/*")
-        finally:
-            # Move the coverage DB to artifacts/coverage in order for it to be archived by CI
-            if COVERAGE_REPORT_DB.exists():
-                shutil.move(str(COVERAGE_REPORT_DB), str(ARTIFACTS_DIR / COVERAGE_REPORT_DB.name))
+    session.run("python", "-m", "pytest", *args)
 
 
 class Tee:
