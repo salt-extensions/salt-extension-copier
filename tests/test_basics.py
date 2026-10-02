@@ -1,4 +1,5 @@
 import platform
+import shutil
 import sys
 
 import pytest
@@ -277,9 +278,13 @@ def test_first_commit_works(project, project_venv):
 )
 def test_testsuite_works(project, project_venv):
     with local.cwd(project.project_dir):
-        # Force re-build of Salt in case pip cache includes corrupt wheel
-        project_venv.run_module("pip", "cache", "remove", "salt")
         res = project_venv.run_module("nox", "-e", "tests-3", check=False)
+        if res.returncode != 0:  # pragma: no cover
+            # The caches might include a corrupt Salt wheel.
+            # Evict it and retry once with a fresh session venv.
+            project_venv.rm_cached("salt")
+            shutil.rmtree(project.project_dir / ".nox", ignore_errors=True)
+            res = project_venv.run_module("nox", "-e", "tests-3", check=False)
     assert res.returncode == 0
 
 
