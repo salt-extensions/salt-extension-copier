@@ -86,6 +86,16 @@ python -m pip install -e '.[tests,dev,docs]'
 
 This creates a virtual environment and installs relevant dependencies, including `nox` and `pre-commit`.
 
+(system-site-packages-target)=
+### Inheriting system-wide packages
+Some extensions, especially OS-specific ones, depend on packages that are only available system-wide (e.g. installed via FreeBSD ports). In this case, set `VENV_SYSTEM_SITE_PACKAGES=1` in your environment (e.g. via `.envrc` or your shell profile). Both the development virtual environment and the [`nox` session venvs](run-tests-target) are then created with `--system-site-packages`, based on your system Python, and requirements that are already satisfied system-wide (such as a system-packaged Salt) are not reinstalled.
+
+Since `uv` [does not consider inherited packages during installs](https://github.com/astral-sh/uv/issues/4466), the tooling automatically falls back to `venv` and `pip` in this mode.
+
+:::{note}
+When toggling this setting, the development virtual environment is recreated automatically on the next `make dev`, but existing `nox` session venvs are not. Remove them via `make clean` (or `rm -rf .nox`).
+:::
+
 (hook-install-target)=
 ### Install the `pre-commit` hook
 ```bash
