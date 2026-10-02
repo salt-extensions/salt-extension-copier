@@ -73,6 +73,11 @@ def workflows(source_url, request):
     return getattr(request, "param", default)
 
 
+@pytest.fixture
+def os_support(request):
+    return getattr(request, "param", None) or ["Linux", "Windows", "macOS"]
+
+
 @pytest.fixture(params=((),))
 def answers(
     author,
@@ -84,6 +89,7 @@ def answers(
     project_name,
     venv_python,
     workflows,
+    os_support,
     request,
 ):
     defaults = {
@@ -95,6 +101,7 @@ def answers(
         "salt_version": salt_version,
         "max_salt_version": max_salt_version,
         "workflows": workflows,
+        "os_support": os_support,
     }
     if venv_python is not None:
         defaults["venv_python"] = venv_python
