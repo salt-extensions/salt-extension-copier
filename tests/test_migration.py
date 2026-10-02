@@ -21,6 +21,12 @@ pytestmark = [
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.7.2",), indirect=True)
 @pytest.mark.parametrize("max_salt_version", ("3007",), indirect=True)
+# The following deprecations are fixed in the current template,
+# but are still triggered when rendering the old version.
+@pytest.mark.filterwarnings(
+    "ignore:Returning a dict from the `hook` method:DeprecationWarning",
+    "ignore:`copier-templates-extensions` is renamed:DeprecationWarning",
+)
 def test_project_migration_works(copie, project, project_venv, request, capfd):
     """
     Ensure the generated project can be updated as expected
