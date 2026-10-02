@@ -129,6 +129,14 @@ def create_venv(project_root=".", directory=None, pyver=None, system_site_packag
 
 
 def ensure_project_venv(project_root=".", reinstall=True, install_extras=False, pyver=None):
+    """
+    Ensure the project venv exists and uses the configured Python version.
+
+    ``reinstall`` semantics:
+      * ``True``: always (re)install the project into the venv
+      * ``"auto"``: only install if the venv was freshly created
+      * ``False``: never install, just ensure the venv exists
+    """
     exists = False
     pyver = pyver or get_venv_pyver()
     system_site_packages = system_site_packages_requested()
@@ -162,6 +170,8 @@ def ensure_project_venv(project_root=".", reinstall=True, install_extras=False, 
         exists = True
     except RuntimeError:
         venv = create_venv(project_root, pyver=pyver, system_site_packages=system_site_packages)
+    if reinstall == "auto":
+        reinstall = not exists
     if not reinstall:
         return venv
     extras = ["dev", "tests", "docs"]
