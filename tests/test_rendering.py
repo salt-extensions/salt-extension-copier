@@ -36,6 +36,13 @@ def test_copy_works_with_salt_minor_version(copie, answers):
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 @pytest.mark.parametrize("project", ("0.0.2",), indirect=True)
 @pytest.mark.parametrize("source_url", ("org", "non_org", "non_github"), indirect=True)
+# The following deprecations are fixed in the current template,
+# but are still triggered when rendering the old version.
+@pytest.mark.filterwarnings(
+    "ignore:Returning a dict from the `hook` method:DeprecationWarning",
+    "ignore:`copier-templates-extensions` is renamed:DeprecationWarning",
+    r'ignore:"\\-" is an invalid escape sequence:DeprecationWarning',
+)
 def test_update_from_002_works(copie, project):
     assert not (new_file := project.project_dir / "CODE-OF-CONDUCT.md").exists()
     res = copie.update(project)

@@ -130,6 +130,11 @@ def test_initialize_cli_works(project):
 @pytest.mark.usefixtures("project_committed")
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.10.0",), indirect=True)
+# The following deprecation is fixed in the current template,
+# but is still triggered when rendering the old version.
+@pytest.mark.filterwarnings(
+    "ignore:`copier-templates-extensions` is renamed:DeprecationWarning",
+)
 def test_init_respects_venv_python(copie, project, project_venv, capfd):
     assert project_venv.pyver == "3.14"
     # update venv_python answer

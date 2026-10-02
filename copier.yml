@@ -253,7 +253,7 @@ venv_python:
     {%- set minreq = minreq | list -%}
     {{- (onedir if onedir >= minreq else minreq) | join(".") -}}
   validator: >-
-    {%- if not (venv_python | regex_search("^[0-9]+\.[0-9]+$")) -%}
+    {%- if not (venv_python | regex_search("^[0-9]+\\.[0-9]+$")) -%}
       Invalid version. Allowed format: MAJOR.MINOR
     {%- else -%}
     {%-   if salt_python_support is not defined -%}
@@ -484,7 +484,7 @@ _templates_suffix: j2
 
 # We need those extensions as helpers
 _jinja_extensions:
-  - copier_templates_extensions.TemplateExtensionLoader
+  - copier_template_extensions.TemplateExtensionLoader
   - jinja_extensions/saltext.py:YamlDumper
   - jinja_extensions/saltext.py:SaltExt
   - jinja2.ext.do
