@@ -1,0 +1,1 @@
+Documented how to skip pre-commit hooks relying on prebuilt binaries that are unavailable for some platforms, e.g. `actionlint` on FreeBSD, via pre-commit's standard `SKIP` environment variable. Added a corresponding hint to the generated `.envrc.example`.
