@@ -1,0 +1,1 @@
+The `tools/initialize.py` script now sports a proper CLI, providing `--help` output and rejecting unknown arguments instead of silently ignoring them. It also received a `--skip-install` flag, which only installs the project when the virtual environment has just been created. The `direnv` example configuration uses it to speed up shell entry.

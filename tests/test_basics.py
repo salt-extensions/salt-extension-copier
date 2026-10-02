@@ -76,6 +76,24 @@ def test_project_init_works(copie, answers, capfd):
     assert black_path.exists()
 
 
+def _ensure_project_venv(**kwargs):
+    """
+    Run ``ensure_project_venv`` with the test Python in a subprocess.
+    Must be called with the generated project as cwd. Pins ``pyver`` to
+    the running interpreter by default since the configured `venv_python`
+    is not guaranteed to be available on the test host.
+    """
+    kwargs.setdefault("pyver", f"{sys.version_info[0]}.{sys.version_info[1]}")
+    kwargs_repr = ", ".join(f"{key}={val!r}" for key, val in kwargs.items())
+    local[sys.executable](
+        "-c",
+        "import sys; "
+        "sys.path.insert(0, 'tools'); "
+        "from helpers.venv import ensure_project_venv; "
+        f"ensure_project_venv({kwargs_repr})",
+    )
+
+
 def test_venv_system_site_packages_works(project):
     """
     Ensure $VENV_SYSTEM_SITE_PACKAGES=1 causes both the development venv
@@ -83,14 +101,6 @@ def test_venv_system_site_packages_works(project):
     the development venv is recreated when the setting changes.
     uv must be bypassed for such venvs since it ignores inherited packages.
     """
-    pyver = f"{sys.version_info[0]}.{sys.version_info[1]}"
-    init_venv = local[sys.executable][
-        "-c",
-        "import sys; "
-        "sys.path.insert(0, 'tools'); "
-        "from helpers.venv import ensure_project_venv; "
-        f"ensure_project_venv(reinstall=False, pyver='{pyver}')",
-    ]
 
     def read_pyvenv_cfg(venv):
         cfg = {}
@@ -101,7 +111,7 @@ def test_venv_system_site_packages_works(project):
 
     with local.cwd(project.project_dir):
         with local.env(VENV_SYSTEM_SITE_PACKAGES="1"):
-            init_venv()
+            _ensure_project_venv(reinstall=False)
         cfg = read_pyvenv_cfg(project.project_dir / ".venv")
         assert cfg["include-system-site-packages"] == "true"
         # uv pip install ignores inherited packages, so it must not be used
@@ -110,7 +120,7 @@ def test_venv_system_site_packages_works(project):
         assert "uv" not in cfg
 
         # The dev venv should be recreated isolated when the setting is unset
-        init_venv()
+        _ensure_project_venv(reinstall=False)
         cfg = read_pyvenv_cfg(project.project_dir / ".venv")
         assert cfg.get("include-system-site-packages", "false") == "false"
 
@@ -123,6 +133,25 @@ def test_venv_system_site_packages_works(project):
         assert len(session_venvs) == 1
         cfg = read_pyvenv_cfg(session_venvs[0].parent)
         assert cfg["include-system-site-packages"] == "true"
+
+
+def test_initialize_cli_works(project):
+    """
+    Ensure ``tools/initialize.py`` rejects unknown arguments and that
+    ``reinstall="auto"`` (``--skip-install``) does not reinstall the
+    project into an existing venv.
+    """
+    with local.cwd(project.project_dir):
+        # Unknown arguments should be rejected before anything else runs
+        retcode, _, stderr = local[sys.executable]["tools/initialize.py", "--bogus"].run(
+            retcode=None
+        )
+        assert retcode == 2
+        assert "unrecognized arguments: --bogus" in stderr
+        # Create a bare venv, then ensure auto mode skips the installation
+        _ensure_project_venv(reinstall=False)
+        _ensure_project_venv(reinstall="auto")
+        assert not list((project.project_dir / ".venv").rglob("*copiertest*"))
 
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)

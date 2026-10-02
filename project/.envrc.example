@@ -1,5 +1,7 @@
 layout_saltext() {
-    VIRTUAL_ENV="$(python3 tools/initialize.py --print-venv)"
+    # --skip-install only installs the project when the venv is freshly
+    # created. Run `make dev` to synchronize it after dependency changes.
+    VIRTUAL_ENV="$(python3 tools/initialize.py --skip-install --print-venv)"
     PATH_add "$VIRTUAL_ENV/bin"
     export VIRTUAL_ENV
 }
