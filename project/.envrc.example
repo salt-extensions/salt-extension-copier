@@ -4,4 +4,8 @@ layout_saltext() {
     export VIRTUAL_ENV
 }
 
+# Uncomment to inherit system-wide packages in the development venvs,
+# e.g. when dependencies are only available as system packages:
+# export VENV_SYSTEM_SITE_PACKAGES=1
+
 layout_saltext

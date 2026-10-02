@@ -43,3 +43,13 @@ Useful if you want to invoke a fancier debugger from the tests:
 ```bash
 EXTRA_REQUIREMENTS_INSTALL="ipdb" PYTHONBREAKPOINT="ipdb.set_trace" nox -e tests-3
 ```
+
+### Test against system-wide packages
+
+Useful if some dependencies are only available as system packages, e.g. when developing OS-specific extensions:
+
+```bash
+VENV_SYSTEM_SITE_PACKAGES=1 nox -e tests-3
+```
+
+See [Inheriting system-wide packages](system-site-packages-target) for details. Remember to remove existing session venvs (`make clean` or `rm -rf .nox`) when toggling this setting.

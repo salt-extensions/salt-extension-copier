@@ -64,6 +64,8 @@ DOCSAUTO_REQUIREMENTS = ("sphinx-autobuild",)
 TESTS_REQUIREMENTS = (
     "copier>=9.6",
     "copier-template-extensions",
+    # for generated project checks that run nox sessions
+    "nox",
     "plumbum",
     "pytest",
     "pytest-copie>=0.2.2",

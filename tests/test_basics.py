@@ -1,4 +1,5 @@
 import platform
+import sys
 
 import pytest
 from plumbum import ProcessExecutionError
@@ -73,6 +74,55 @@ def test_project_init_works(copie, answers, capfd):
     with local.cwd(proj):
         local["python"]("tools/initialize.py", "--extras")
     assert black_path.exists()
+
+
+def test_venv_system_site_packages_works(project):
+    """
+    Ensure $VENV_SYSTEM_SITE_PACKAGES=1 causes both the development venv
+    and the nox session venvs to inherit system-wide packages and that
+    the development venv is recreated when the setting changes.
+    uv must be bypassed for such venvs since it ignores inherited packages.
+    """
+    pyver = f"{sys.version_info[0]}.{sys.version_info[1]}"
+    init_venv = local[sys.executable][
+        "-c",
+        "import sys; "
+        "sys.path.insert(0, 'tools'); "
+        "from helpers.venv import ensure_project_venv; "
+        f"ensure_project_venv(reinstall=False, pyver='{pyver}')",
+    ]
+
+    def read_pyvenv_cfg(venv):
+        cfg = {}
+        for line in (venv / "pyvenv.cfg").read_text().splitlines():
+            key, _, val = line.partition("=")
+            cfg[key.strip()] = val.strip()
+        return cfg
+
+    with local.cwd(project.project_dir):
+        with local.env(VENV_SYSTEM_SITE_PACKAGES="1"):
+            init_venv()
+        cfg = read_pyvenv_cfg(project.project_dir / ".venv")
+        assert cfg["include-system-site-packages"] == "true"
+        # uv pip install ignores inherited packages, so it must not be used
+        # for such venvs, even when available. uv-created venvs contain
+        # an `uv` key in pyvenv.cfg.
+        assert "uv" not in cfg
+
+        # The dev venv should be recreated isolated when the setting is unset
+        init_venv()
+        cfg = read_pyvenv_cfg(project.project_dir / ".venv")
+        assert cfg.get("include-system-site-packages", "false") == "false"
+
+        # nox session venvs should inherit system-wide packages as well.
+        # The session itself fails since its requirements are not installed,
+        # but the venv is created before that.
+        with local.env(VENV_SYSTEM_SITE_PACKAGES="1", SKIP_REQUIREMENTS_INSTALL="1"):
+            local[sys.executable]["-m", "nox", "-e", "lint-code-3"].run(retcode=None)
+        session_venvs = list((project.project_dir / ".nox").glob("*/pyvenv.cfg"))
+        assert len(session_venvs) == 1
+        cfg = read_pyvenv_cfg(session_venvs[0].parent)
+        assert cfg["include-system-site-packages"] == "true"
 
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
