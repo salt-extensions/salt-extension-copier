@@ -43,6 +43,9 @@ uv: '0.12.23'
 #  GitHub Actions
 ###########################################################
 
+# renovate: datasource=git-tags depName=cache packageName=https://github.com/actions/cache depType=action
+actions/cache: '55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0'
+
 # renovate: datasource=git-tags depName=checkout packageName=https://github.com/actions/checkout depType=action
 actions/checkout: '3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1'
 

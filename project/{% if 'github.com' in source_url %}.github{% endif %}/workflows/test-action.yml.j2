@@ -4,6 +4,12 @@ name: Testing
 
 on:
   workflow_call:
+    inputs:
+      use-caches:
+        required: false
+        type: boolean
+        default: true
+        description: Whether dependency caches may be used. Disabled for release builds.
 
 jobs:
 {%- if "Linux" in os_support %}
