@@ -130,6 +130,46 @@ def test_initialize_cli_works(project):
 @pytest.mark.usefixtures("project_committed")
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.10.0",), indirect=True)
+# Need to remove `resource` loader, not supported in 0.10.0
+@pytest.mark.parametrize(
+    "loaders",
+    (
+        [
+            "auth",
+            "beacon",
+            "cache",
+            "cloud",
+            "engine",
+            "executor",
+            "fileserver",
+            "grain",
+            "log_handler",
+            "matcher",
+            "metaproxy",
+            "module",
+            "netapi",
+            "output",
+            "pillar",
+            "pkgdb",
+            "pkgfile",
+            "proxy",
+            "queue",
+            "renderer",
+            "returner",
+            "roster",
+            "runner",
+            "sdb",
+            "serializer",
+            "state",
+            "thorium",
+            "token",
+            "top",
+            "wheel",
+            "wrapper",
+        ],
+    ),
+    indirect=True,
+)
 # The following deprecation is fixed in the current template,
 # but is still triggered when rendering the old version.
 @pytest.mark.filterwarnings(

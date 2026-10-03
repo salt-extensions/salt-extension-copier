@@ -134,6 +134,7 @@ loaders:
     - proxy
     - queue
     - renderer
+    - resource
     - returner
     - roster
     - runner

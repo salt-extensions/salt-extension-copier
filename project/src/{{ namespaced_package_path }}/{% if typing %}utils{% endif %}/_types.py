@@ -6,6 +6,7 @@ from types import TracebackType
 from typing import Any
 from typing import Literal
 from typing import TypeAlias
+from typing import TypedDict
 
 SaltLogLevel: TypeAlias = (
     Literal[0]
@@ -164,6 +165,16 @@ class SaltLogger(logging.Logger):
         extra: Mapping[str, object] | None = None,
         exc_info_on_loglevel: SaltLogLevel | SaltLogLevelName | None = None,
     ): ...
+
+
+class SaltResource(TypedDict):
+    """
+    The ``__resource__`` dunder, describing the resource currently
+    being operated on. Available in resource modules on Salt 3008.0+.
+    """
+
+    type: str
+    id: str
 
 
 SaltContext: TypeAlias = dict[str, Any]
