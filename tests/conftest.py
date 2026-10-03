@@ -109,6 +109,18 @@ def answers(
     return {k: v for k, v in defaults.items() if v is not None}
 
 
+@pytest.fixture(autouse=True, scope="session")
+def scrub_skip_requirements_install():
+    # The repository's own CI workflow sets this for the outer nox `tests`
+    # session. It must not leak into the generated projects' nox and
+    # pre-commit invocations, which need to install their requirements.
+    # Subprocesses are spawned both via plumbum (git/pre-commit hooks) and
+    # subprocess (ProjectVenv), so scrub both environments.
+    with local.env(SKIP_REQUIREMENTS_INSTALL=""):
+        os.environ.pop("SKIP_REQUIREMENTS_INSTALL", None)
+        yield
+
+
 @pytest.fixture(params=(True,))
 def skip_init_migrate(request):
     # Copier uses plumbum as well, which is already initialized.
