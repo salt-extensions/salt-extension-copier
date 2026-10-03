@@ -309,6 +309,142 @@ os_support:
       At least one supported OS is required.
     {%- endif -%}
 
+linux_test_distros:
+  type: str
+  multiselect: true
+  help: >-
+    Linux distributions to run the test suite on. Ubuntu runs natively
+    on GitHub-hosted runners, all others run inside a VM (slower).
+  when: '{{ "Linux" in os_support }}'
+  default:
+    - Ubuntu
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"] | list }}
+  validator: >-
+    {%- if not linux_test_distros -%}
+      At least one Linux distribution is required.
+    {%- endif -%}
+
+# The choices and defaults of the following `*_releases` questions are
+# rendered from data/os_support.yaml, where they are kept in sync with
+# supported/offered OS releases by a scheduled workflow.
+# A leading part of a release selects the newest matching one
+# (e.g. "15" -> latest 15.x).
+
+ubuntu_releases:
+  type: str
+  multiselect: true
+  help: Ubuntu releases to test on
+  when: '{{ "Linux" in os_support and "Ubuntu" in linux_test_distros }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Ubuntu"]["available"] }}
+  # The default follows the Renovate-managed stable runner release.
+  default: >-
+    {%- import "data/versions.yaml" as vers -%}
+    {{ [(vers | string | from_yaml)["ubuntu"]] }}
+  validator: >-
+    {%- if not ubuntu_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
+debian_releases:
+  type: str
+  multiselect: true
+  help: Debian releases to test on
+  when: '{{ "Linux" in os_support and "Debian" in linux_test_distros }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Debian"]["vm"]["available"] }}
+  default: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Debian"]["vm"]["releases"] }}
+  validator: >-
+    {%- if not debian_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
+alpine_releases:
+  type: str
+  multiselect: true
+  help: Alpine releases to test on
+  when: '{{ "Linux" in os_support and "Alpine" in linux_test_distros }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Alpine"]["vm"]["available"] }}
+  default: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Alpine"]["vm"]["releases"] }}
+  validator: >-
+    {%- if not alpine_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
+almalinux_releases:
+  type: str
+  multiselect: true
+  help: AlmaLinux releases to test on
+  when: '{{ "Linux" in os_support and "AlmaLinux" in linux_test_distros }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["AlmaLinux"]["vm"]["available"] }}
+  default: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["AlmaLinux"]["vm"]["releases"] }}
+  validator: >-
+    {%- if not almalinux_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
+rockylinux_releases:
+  type: str
+  multiselect: true
+  help: Rocky Linux releases to test on
+  when: '{{ "Linux" in os_support and "Rocky Linux" in linux_test_distros }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Rocky Linux"]["vm"]["available"] }}
+  default: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["Linux"]["distros"]["Rocky Linux"]["vm"]["releases"] }}
+  validator: >-
+    {%- if not rockylinux_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
+freebsd_releases:
+  type: str
+  multiselect: true
+  help: FreeBSD releases to test on
+  when: '{{ "FreeBSD" in os_support }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["FreeBSD"]["vm"]["available"] }}
+  default: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["FreeBSD"]["vm"]["releases"] }}
+  validator: >-
+    {%- if not freebsd_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
+openbsd_releases:
+  type: str
+  multiselect: true
+  help: OpenBSD releases to test on
+  when: '{{ "OpenBSD" in os_support }}'
+  choices: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["OpenBSD"]["vm"]["available"] }}
+  default: >-
+    {%- import "data/os_support.yaml" as oss -%}
+    {{ (oss | string | from_yaml)["OpenBSD"]["vm"]["releases"] }}
+  validator: >-
+    {%- if not openbsd_releases -%}
+      At least one release is required.
+    {%- endif -%}
+
 deploy_docs:
   type: str
   help: >-

@@ -88,6 +88,18 @@ vmactions/freebsd-vm: 'a2f9a41fa97f6848b8c3b791087dfcdaa5b473ff  # v1.5.8'
 # renovate: datasource=git-tags depName=vmactions/openbsd-vm packageName=https://github.com/vmactions/openbsd-vm depType=action
 vmactions/openbsd-vm: '5f7b2c933b8846a138361d6843c52af4bef5d945  # v1.4.8'
 
+# renovate: datasource=git-tags depName=vmactions/debian-vm packageName=https://github.com/vmactions/debian-vm depType=action
+vmactions/debian-vm: '626b64f9a6be64bbeaf3850f8bac2532d4e77db4  # v1.0.1'
+
+# renovate: datasource=git-tags depName=vmactions/alpine-vm packageName=https://github.com/vmactions/alpine-vm depType=action
+vmactions/alpine-vm: 'bbc5d76bdbe2d3497bdd8c6c7f09c94aa01c785e  # v1.0.2'
+
+# renovate: datasource=git-tags depName=vmactions/almalinux-vm packageName=https://github.com/vmactions/almalinux-vm depType=action
+vmactions/almalinux-vm: '926c2897e439c5f5042bf83fb93c0f64aeb2737d  # v1.0.1'
+
+# renovate: datasource=git-tags depName=vmactions/rockylinux-vm packageName=https://github.com/vmactions/rockylinux-vm depType=action
+vmactions/rockylinux-vm: '5fbbd33a61c26c9b48c54e39e8a67eab3370b8aa  # v1.0.2'
+
 # renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
 # Still can't use Renovate to update this since it pins the release tag object SHA, but
 # the action pulls a container named after its reference. The containers are

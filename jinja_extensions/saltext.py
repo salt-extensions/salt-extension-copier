@@ -54,7 +54,10 @@ class SaltExt(ContextHook):  # pylint: disable=abstract-method
         )
 
     def hook(self, context):
-        if "python_requires" in context:
+        # The hook can run multiple times for a single render when
+        # other templates are imported (e.g. the `includes` dir),
+        # so the conversion needs to be idempotent.
+        if isinstance(context.get("python_requires"), str):
             context["python_requires"] = tuple(
                 int(x) for x in context["python_requires"].split(".")
             )

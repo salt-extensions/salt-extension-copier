@@ -5,11 +5,16 @@ Run migrations between template versions during updates.
 from packaging.version import Version
 from task_helpers.copier import load_data_yaml
 from task_helpers.migrate import COPIER_CONF
+from task_helpers.migrate import load_old_data_yaml
 from task_helpers.migrate import migration
 from task_helpers.migrate import run_migrations
 from task_helpers.migrate import status
 from task_helpers.migrate import sync_minimum_version
 from task_helpers.migrate import var_migration
+from task_helpers.os_releases import RELEASE_QUESTIONS
+from task_helpers.os_releases import default_releases
+from task_helpers.os_releases import migrate_release_answer
+from task_helpers.os_releases import release_meta
 
 # 0.5.0 migrates all projects to the enhanced workflows, which
 # require accurate Salt versions to generate sensible test matrices.
@@ -41,6 +46,38 @@ def ensure_minimum_python_requires(answers):
         status(f"Answer migration: Updating python_requires from {current!r} to {new!r}")
         answers["python_requires"] = new
     return answers
+
+
+# The release choices offered by the `*_releases` questions change when
+# OS releases go EOL or are dropped/added in CI. During all updates,
+# follow the current default selection if the previous default was
+# chosen, otherwise drop releases that are not offered anymore.
+def _sync_release_answers(varname, path):
+    @var_migration(None, varname)
+    def _sync_releases(val):
+        os_support = load_data_yaml("os_support")
+        versions = load_data_yaml("versions")
+        old_default = None
+        if old_os_support := load_old_data_yaml("os_support"):
+            try:
+                old_default = default_releases(
+                    old_os_support, load_old_data_yaml("versions") or {}, path
+                )
+            except KeyError:
+                # The entry (or the Ubuntu runner pin) did not exist
+                pass
+        return migrate_release_answer(
+            val,
+            release_meta(os_support, path)["available"],
+            old_default,
+            default_releases(os_support, versions, path),
+        )
+
+    return _sync_releases
+
+
+for _varname, _path in RELEASE_QUESTIONS.items():
+    _sync_release_answers(_varname, _path)
 
 
 @var_migration("0.9.1", "max_salt_version")
