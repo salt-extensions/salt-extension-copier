@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 # Creates a new release.
 # Triggered by pushing a tag beginning with `v`.
 # The resulting version is taken from the tag.
@@ -16,17 +16,13 @@ on:
 jobs:
   get_version_tag:
     name: Extract version from tag
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     outputs:
-      version: ${{ steps.get_version_tag.outputs.version }}
+      version: {{ expr("steps.get_version_tag.outputs.version") }}
 
     steps:
       - name: Checkout code
-{%- endraw %}
         uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%- raw %}
 
       - name: Extract version from tag name
         id: get_version_tag
@@ -34,57 +30,51 @@ jobs:
 
       - name: Ensure changelog was rendered
         env:
-          VERSION: ${{ steps.get_version_tag.outputs.version }}
+          VERSION: {{ expr("steps.get_version_tag.outputs.version") }}
         run: |
           test "$VERSION" = "$(python tools/version.py)" && \
           test -z "$(find changelog -type f -not -name '.*' -print -quit)"
 
       - name: Write version file
         env:
-          VERSION: ${{ steps.get_version_tag.outputs.version }}
+          VERSION: {{ expr("steps.get_version_tag.outputs.version") }}
         run: echo -n "$VERSION" > "$RUNNER_TEMP/version.txt"
 
       - name: Upload version
-{%- endraw %}
         uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%- raw %}
         with:
           archive: false
-          path: ${{ runner.temp }}/version.txt
+          path: {{ expr("runner.temp") }}/version.txt
 
   close_autopr_on_tag:
     name: Close release PR on manual tag
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
     permissions:
       # Allow closing the release PR and deleting its branch
       contents: write
       pull-requests: write
-{%- raw %}
     needs:
       - get_version_tag
 
     steps:
       - name: Find Pull Request
-{%- endraw %}
         uses: juliangruber/find-pull-request-action@{{ versions["juliangruber/find-pull-request-action"] }}
-{%- raw %}
         id: find-pull-request
         with:
           branch: release/auto
-          base: ${{ github.event.repository.default_branch }}
+          base: {{ expr("github.event.repository.default_branch") }}
           state: open
 
       - name: Close release PR
         if: steps.find-pull-request.outputs.number != ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: {{ expr("secrets.GITHUB_TOKEN") }}
         run: |
           gh pr close \
-            --comment "This release was triggered manually as v${{ needs.get_version_tag.outputs.version }}" \
+            --comment "This release was triggered manually as v{{ expr("needs.get_version_tag.outputs.version") }}" \
             --delete-branch \
             --repo "$GITHUB_REPOSITORY" \
-            "${{ steps.find-pull-request.outputs.number }}"
+            "{{ expr("steps.find-pull-request.outputs.number") }}"
 
   call_central_workflow:
     needs:
@@ -100,4 +90,3 @@ jobs:
       pull-requests: read
 
   # Further jobs are run separately on `workflow_run` in deploy-package-action.yml
-{%- endraw %}

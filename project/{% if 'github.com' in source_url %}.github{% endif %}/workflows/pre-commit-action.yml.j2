@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: Pre-Commit
 
@@ -21,11 +21,9 @@ permissions:
 jobs:
   Pre-Commit:
     name: Pre-Commit
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
     container:
       image: 'docker.io/library/python:{{ versions["python_container_" ~ (python_requires[:2] | join(""))] }}'
-{%- raw %}
 
     steps:
       - name: Install System Deps
@@ -33,20 +31,16 @@ jobs:
           apt-get update
           apt-get install -y git gcc libc-dev
           git config --global --add safe.directory "$(pwd)"
-{%- endraw %}
 
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%- raw %}
 
       - name: Cache Pre-Commit Environments
         # Release builds must not use cached environments
-        if: ${{ inputs.use-caches && !startsWith(github.ref, 'refs/tags/') }}
-{%- endraw %}
+        if: {{ expr("inputs.use-caches && !startsWith(github.ref, 'refs/tags/')") }}
         uses: actions/cache@{{ versions["actions/cache"] }}
-{%- raw %}
         with:
           path: ~/.cache/pre-commit
-          key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          key: pre-commit-{{ expr("hashFiles('.pre-commit-config.yaml')") }}
 
       - name: Install Pre-Commit
         run: |
@@ -63,9 +57,8 @@ jobs:
         # Skip when the previous step already checked all files
         if: github.event_name == 'pull_request' && fromJSON(inputs.changed-files)['repo'] == 'true' && fromJSON(inputs.changed-files)['pre-commit'] != 'true'
         run: |
-          pre-commit run --show-diff-on-failure --color=always --files ${{ fromJSON(inputs.changed-files)['repo_files'] }}
+          pre-commit run --show-diff-on-failure --color=always --files {{ expr("fromJSON(inputs.changed-files)['repo_files']") }}
 
       - name: Upload Exit Status
         if: always()
         uses: ./.github/actions/upload-exitstatus
-{%- endraw %}
