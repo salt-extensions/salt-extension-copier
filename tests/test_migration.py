@@ -1,4 +1,5 @@
 import pytest
+import yaml
 
 from tests.helpers import assert_worked
 
@@ -20,6 +21,46 @@ pytestmark = [
 
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.7.2",), indirect=True)
+# Need to remove `resource` loader, not supported in 0.7.2
+@pytest.mark.parametrize(
+    "loaders",
+    (
+        [
+            "auth",
+            "beacon",
+            "cache",
+            "cloud",
+            "engine",
+            "executor",
+            "fileserver",
+            "grain",
+            "log_handler",
+            "matcher",
+            "metaproxy",
+            "module",
+            "netapi",
+            "output",
+            "pillar",
+            "pkgdb",
+            "pkgfile",
+            "proxy",
+            "queue",
+            "renderer",
+            "returner",
+            "roster",
+            "runner",
+            "sdb",
+            "serializer",
+            "state",
+            "thorium",
+            "token",
+            "top",
+            "wheel",
+            "wrapper",
+        ],
+    ),
+    indirect=True,
+)
 @pytest.mark.parametrize("max_salt_version", ("3007",), indirect=True)
 # The following deprecations are fixed in the current template,
 # but are still triggered when rendering the old version.
@@ -59,6 +100,12 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     ]
     for bpl in boilerplate:
         bpl.unlink()
+    # Resource modules created before the template supported the loader
+    # type should cause `resource` to be selected during the update.
+    resources_dir = next(project.project_dir.glob("src/**/sdb")).parent / "resources"
+    resources_dir.mkdir()
+    (resources_dir / "__init__.py").touch()
+    (resources_dir / "custom.py").write_text('"""\nCustom resource type.\n"""\n')
     # downgrade nox below minimum version
     project_venv.install("nox==2023.4.22")
     _check_version(True)
@@ -73,6 +120,11 @@ def test_project_migration_works(copie, project, project_venv, request, capfd):
     # ensure boilerplate was not recreated
     for bpl in boilerplate:
         assert not bpl.exists()
+    # ensure the pre-existing resource modules caused the loader type to be selected
+    answers = yaml.safe_load((project.project_dir / ".copier-answers.yml").read_text())
+    assert "resource" in answers["loaders"]
+    assert (project.project_dir / "tests" / "unit" / "resources" / "__init__.py").exists()
+    assert not (resources_dir / "copiertest_mod.py").exists()
     # ensure the project was reinstalled
     _check_version(False)
     # ensure the venv was recreated with the correct Python

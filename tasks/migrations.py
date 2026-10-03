@@ -2,6 +2,8 @@
 Run migrations between template versions during updates.
 """
 
+from pathlib import Path
+
 from packaging.version import Version
 from task_helpers.copier import load_data_yaml
 from task_helpers.migrate import COPIER_CONF
@@ -78,6 +80,33 @@ def _sync_release_answers(varname, path):
 
 for _varname, _path in RELEASE_QUESTIONS.items():
     _sync_release_answers(_varname, _path)
+
+
+@migration("0.11.0", "before", desc=False)
+def migrate_0110_select_resource_loader(answers):
+    """
+    The template now supports the `resource` module type (Salt 3008+).
+    If the extension already ships resource modules created before
+    this, select the loader type automatically.
+    """
+    loaders = answers.get("loaders") or []
+    if "resource" in loaders or "package_name" not in answers:
+        return None
+    package_dir = Path("src")
+    if not answers.get("no_saltext_namespace"):
+        package_dir = package_dir / "saltext"
+    resources_dir = package_dir / answers["package_name"] / "resources"
+    if not resources_dir.is_dir():
+        return None
+    for path in resources_dir.rglob("*.py"):
+        # Any module other than an empty (dunder) init indicates resources
+        if path.name != "__init__.py" or path.read_text(encoding="utf-8").strip():
+            status(
+                "Answer migration: Selecting the `resource` loader type (resource modules found)"
+            )
+            answers["loaders"] = sorted({*loaders, "resource"})
+            return answers
+    return None
 
 
 @var_migration("0.9.1", "max_salt_version")

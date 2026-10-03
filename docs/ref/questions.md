@@ -102,6 +102,19 @@ Salt expects for the corresponding module type, where applicable. See
 the Salt documentation on [module types](https://docs.saltproject.io/en/latest/topics/development/modules/index.html)
 for details.
 
+:::{note}
+The `resource` module type requires Salt 3008.0 or newer. The generated
+stub's `__virtual__` returns false on older releases, so selecting it
+does not prevent the extension from supporting older Salt versions.
+
+The generated stub is a flat module, but a resource type can also be
+authored as a package (`resources/<rtype>/__init__.py` carrying the
+connection module) containing per-type loader overlay directories such
+as `modules/` or `states/`. The docs and pre-commit tooling account for
+both shapes. Ensure each overlay directory contains an `__init__.py`,
+otherwise it is not included in built packages.
+:::
+
 :::{question} salt_version
 :::
 ## `salt_version`
