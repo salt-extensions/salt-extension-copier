@@ -19,6 +19,7 @@ log = logging.getLogger(__name__)
 {%- endif %}
 
 __virtualname__ = "{{ package_name }}"
+__func_alias__ = {"set_": "set"}
 
 
 def __virtual__():
@@ -43,3 +44,11 @@ def get(key, profile=None):
     """
     profile = profile or {}
     return profile.get(key, key)
+
+
+def set_(key, value, profile=None):
+    """
+    Set a value in the {{ project_name }} store. Only required for
+    writable SDB modules.
+    """
+    raise NotImplementedError

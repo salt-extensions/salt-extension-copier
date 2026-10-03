@@ -97,6 +97,11 @@ Only asked if a non-Apache {question}`license` is selected.
 ## `loaders`
 Choose the Salt module types this extension should provide.
 
+The generated module stubs scaffold the specifically named functions
+Salt expects for the corresponding module type, where applicable. See
+the Salt documentation on [module types](https://docs.saltproject.io/en/latest/topics/development/modules/index.html)
+for details.
+
 :::{question} salt_version
 :::
 ## `salt_version`
@@ -316,7 +321,9 @@ aliases for common Salt loader globals (such as `SaltFunctions`,
 `SaltOpts`) and a `SaltLogger` class accounting for Salt's custom log
 levels. The generated loader module stubs declare the dunders they use
 inside `if typing.TYPE_CHECKING` blocks, a pattern you can extend as your
-modules grow:
+modules grow. Which dunders are available – and what they contain –
+depends on the module type, see the Salt documentation on
+[dunder dictionaries](https://docs.saltproject.io/en/latest/topics/development/modules/developing.html#dunder-dictionaries):
 
 ```python
 import logging

@@ -25,3 +25,15 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} engine module is not implemented yet")
     return __virtualname__
+
+
+def start():
+    """
+    Start the engine.
+
+    This function is called in a dedicated process and should block
+    until the engine terminates. Values from the engine configuration
+    are passed as keyword arguments, which need to be accepted as
+    parameters (or default values provided).
+    """
+    raise NotImplementedError
