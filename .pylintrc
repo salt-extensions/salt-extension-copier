@@ -645,7 +645,14 @@ additional-builtins=__opts__,
   __serializers__,
   __reg__,
   __executors__,
-  __events__
+  __events__,
+  __ext_pillar__,
+  __thorium__,
+  __sdb__,
+  __file_client__,
+  __minion__,
+  __resource__,
+  __resource_funcs__
 
 # Tells whether unused global variables should be treated as a violation.
 allow-global-unused-variables=yes

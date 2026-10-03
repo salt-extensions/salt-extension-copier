@@ -1,0 +1,1 @@
+Synced the generated loader module stubs with the interfaces Salt expects: they now scaffold the specifically named functions required by the respective module type, where applicable. Also fixed the matcher stub's `__virtualname__` (must carry a `_match` suffix to be selectable as a target type) and added the required `__proxyenabled__` declaration to the proxy stub.
