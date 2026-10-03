@@ -1,10 +1,19 @@
-{%- raw -%}
-# Creates a new release and tag.
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
+# Creates a new release tag.
 # Triggered when the PR created by prepare-release-action.yml is merged.
 # The resulting version is taken from the topmost CHANGELOG.md entry.
 # Fails if any news fragments are left over or the inferred version does not match the PR title.
 #
-# Alternative to releasing by manual tag push handled in tag.yml.
+{%- if require_autorelease_app %}
+# The new tag is pushed using the autorelease app's token, which causes
+# a tag push event that hands the release off to tag.yml.
+{%- else %}
+# If the autorelease app is configured, its token is used to push the new tag,
+# which causes a tag push event that hands the release off to tag.yml.
+# Otherwise, the tag is pushed with the default GITHUB_TOKEN, which does not
+# trigger workflows, so this workflow runs the release pipeline itself as an
+# alternative entry point to tag.yml.
+{%- endif %}
 ---
 name: Auto PR Releases
 
@@ -21,9 +30,7 @@ jobs:
   ensure_trigger:
     # We need this workflow to fail if it was triggered accidentally.
     name: Ensure trigger is valid
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     permissions: {}
 
     steps:
@@ -36,35 +43,70 @@ jobs:
           #   - The PR targeted the default branch of the repository this workflow is running from.
           #   - The PR was labeled with `release`.
           IS_VALID: >-
-            ${{
-              github.event.pull_request.merged == true &&
+            {{ expr("github.event.pull_request.merged == true &&
               github.repository == github.event.pull_request.head.repo.full_name &&
               github.head_ref == 'release/auto' &&
               github.base_ref == github.event.repository.default_branch &&
-              contains(github.event.pull_request.labels.*.name, 'release')
-            }}
+              contains(github.event.pull_request.labels.*.name, 'release')") }}
         run: test "$IS_VALID" = "true"
 
   get_version_pr:
     name: Extract version from merged release PR
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     needs:
       - ensure_trigger
+{%- if require_autorelease_app %}
     permissions:
-      contents: write  # To push the new tag. This does not cause a tag event.
+      # The tag is pushed using the autorelease app's token.
+      contents: read
+{%- else %}
+    permissions:
+      # Allow pushing the new tag when falling back to the default token
+      # (no autorelease app configured). This does not cause a tag event.
+      contents: write
 
     outputs:
-      version: ${{ steps.get_version_pr.outputs.version }}
+      version: {{ expr("steps.get_version_pr.outputs.version") }}
+      app_used: {{ expr("steps.check-app.outputs.available") }}
+{%- endif %}
 
     steps:
+{%- if not require_autorelease_app %}
+      # We support running with and without a dedicated app.
+      # With an app, the tag is pushed using its token, which triggers
+      # the regular release pipeline in tag.yml on the tag push event.
+      - name: Check if autorelease app was setup
+        id: check-app
+        env:
+          AUTORELEASE_CLID: {{ expr("secrets.AUTORELEASE_CLID") }}
+          AUTORELEASE_PRIV: {{ expr("secrets.AUTORELEASE_PRIV") }}
+        run: |-
+          if [ -n "$AUTORELEASE_CLID" ] && [ -n "$AUTORELEASE_PRIV" ]; then
+            echo "available=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=0" >> "$GITHUB_OUTPUT"
+          fi
+{%- endif %}
+
+      - name: Generate autorelease token
+        uses: actions/create-github-app-token@{{ versions["actions/create-github-app-token"] }}
+{%- if not require_autorelease_app %}
+        if: steps.check-app.outputs.available == '1'
+{%- endif %}
+        id: generate-token
+        with:
+          app-id: {{ expr("secrets.AUTORELEASE_CLID") }}
+          private-key: {{ expr("secrets.AUTORELEASE_PRIV") }}
+
       - name: Checkout code
-{%- endraw %}
         uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%- raw %}
         with:
           fetch-tags: true
+{%- if require_autorelease_app %}
+          token: {{ expr("steps.generate-token.outputs.token") }}
+{%- else %}
+          token: {{ expr("steps.check-app.outputs.available == '1' && steps.generate-token.outputs.token || github.token") }}
+{%- endif %}
 
       - name: Extract version of merged release PR
         id: get_version_pr
@@ -75,38 +117,51 @@ jobs:
 
       - name: Check extracted version matches PR title
         env:
-          TITLE: ${{ github.event.pull_request.title }}
-          VERSION: ${{ steps.get_version_pr.outputs.version }}
+          TITLE: {{ expr("github.event.pull_request.title") }}
+          VERSION: {{ expr("steps.get_version_pr.outputs.version") }}
         run: test "$TITLE" = "Release v$VERSION"
 
       - name: Ensure tag does not exist yet
         env:
-          VERSION: ${{ steps.get_version_pr.outputs.version }}
+          VERSION: {{ expr("steps.get_version_pr.outputs.version") }}
         run: if git rev-parse "refs/tags/v$VERSION" 2>/dev/null; then exit 1; fi
 
-      - name: Create tag for release
-{%- endraw %}
-        uses: mathieudutour/github-tag-action@{{ versions["mathieudutour/github-tag-action"] }}
-{%- raw %}
-        with:
-          github_token: ${{ github.token }}
-          custom_tag: ${{ steps.get_version_pr.outputs.version }}
-          create_annotated_tag: true
+      - name: Create and push tag for release
+        env:
+          VERSION: {{ expr("steps.get_version_pr.outputs.version") }}
+          # On closed PR events, github.sha points to an ephemeral merge ref
+          # commit, so tag the actual merge commit on the base branch instead.
+          MERGE_COMMIT: {{ expr("github.event.pull_request.merge_commit_sha") }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898148+github-actions[bot]@users.noreply.github.com"
+          git fetch --depth=1 origin "$MERGE_COMMIT"
+          git tag --annotate --message "Release v$VERSION" "v$VERSION" "$MERGE_COMMIT"
+          git push origin "refs/tags/v$VERSION"
+{%- if require_autorelease_app %}
+
+  # The release pipeline is triggered by the tag push event, see tag.yml.
+{%- else %}
 
       - name: Write version file
+        # With the autorelease app, the release is handled by tag.yml,
+        # which uploads the version artifact itself.
+        if: steps.check-app.outputs.available == '0'
         env:
-          VERSION: ${{ steps.get_version_pr.outputs.version }}
+          VERSION: {{ expr("steps.get_version_pr.outputs.version") }}
         run: echo -n "$VERSION" > "$RUNNER_TEMP/version.txt"
 
       - name: Upload version
-{%- endraw %}
         uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%- raw %}
+        if: steps.check-app.outputs.available == '0'
         with:
           archive: false
-          path: ${{ runner.temp }}/version.txt
+          path: {{ expr("runner.temp") }}/version.txt
 
   call_central_workflow:
+    # With the autorelease app, the tag push event triggers the release
+    # pipeline in tag.yml instead.
+    if: needs.get_version_pr.outputs.app_used == '0'
     needs:
       - get_version_pr
     uses: ./.github/workflows/ci.yml
@@ -119,4 +174,5 @@ jobs:
       pull-requests: read
 
   # Further jobs are run separately on `workflow_run` in deploy-package-action.yml
-{%- endraw %}
+  # (no autorelease app) or triggered via the tag push event in tag.yml (app).
+{%- endif %}
