@@ -25,7 +25,7 @@ repos:
         name: Check CLI examples on execution modules
         entry: python .pre-commit-hooks/check-cli-examples.py
         language: python
-        files: ^src/{{ namespaced_package_path }}/modules/.*\.py$
+        files: ^src/{{ namespaced_package_path }}/(resources/[^/]+/)?modules/.*\.py$
 
   - repo: local
     hooks:

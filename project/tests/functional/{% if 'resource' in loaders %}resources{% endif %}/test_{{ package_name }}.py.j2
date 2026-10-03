@@ -1,0 +1,37 @@
+"""
+Tests for the ``{{ package_name }}`` resource type.
+
+The resources subsystem requires Salt 3008.0 or newer,
+these tests are skipped on earlier releases.
+"""
+
+import pytest
+import salt.loader
+
+pytest.importorskip(
+    "salt.utils.resources", reason="The resources subsystem requires Salt 3008.0 or newer"
+)
+
+
+@pytest.fixture(scope="module")
+def resource_funcs(minion_opts):
+    """
+    The resource connection modules as discovered by the Salt loader.
+    Ensures the extension's `resources` directory is found via its
+    `salt.loader` entrypoint.
+    """
+    return salt.loader.resource(minion_opts, context={})
+
+
+def test_resource_connection_module_is_discovered(resource_funcs):
+    assert "{{ package_name }}.ping" in resource_funcs
+    assert resource_funcs["{{ package_name }}.ping"]() is True
+
+
+def test_replace_this_with_something_meaningful(resource_funcs, minion_opts):
+    resource_funcs["{{ package_name }}.init"](minion_opts)
+    try:
+        assert resource_funcs["{{ package_name }}.initialized"]() is True
+    finally:
+        resource_funcs["{{ package_name }}.shutdown"](minion_opts)
+    assert resource_funcs["{{ package_name }}.initialized"]() is False

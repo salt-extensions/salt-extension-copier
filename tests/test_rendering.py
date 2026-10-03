@@ -177,6 +177,46 @@ def test_test_workflow_ubuntu_releases(project):
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
 @pytest.mark.parametrize("project", ("0.0.2",), indirect=True)
 @pytest.mark.parametrize("source_url", ("org", "non_org", "non_github"), indirect=True)
+# Need to remove `resource` loader, not supported in 0.0.2
+@pytest.mark.parametrize(
+    "loaders",
+    (
+        [
+            "auth",
+            "beacon",
+            "cache",
+            "cloud",
+            "engine",
+            "executor",
+            "fileserver",
+            "grain",
+            "log_handler",
+            "matcher",
+            "metaproxy",
+            "module",
+            "netapi",
+            "output",
+            "pillar",
+            "pkgdb",
+            "pkgfile",
+            "proxy",
+            "queue",
+            "renderer",
+            "returner",
+            "roster",
+            "runner",
+            "sdb",
+            "serializer",
+            "state",
+            "thorium",
+            "token",
+            "top",
+            "wheel",
+            "wrapper",
+        ],
+    ),
+    indirect=True,
+)
 # The following deprecations are fixed in the current template,
 # but are still triggered when rendering the old version.
 @pytest.mark.filterwarnings(
