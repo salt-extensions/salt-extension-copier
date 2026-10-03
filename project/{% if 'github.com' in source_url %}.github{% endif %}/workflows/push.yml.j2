@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: Push
 
@@ -15,17 +15,15 @@ jobs:
   # This pauses CI on pushes to the main branch completely.
   check_release_in_progress:
     name: Skip CI While Releasing
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     outputs:
-      count: ${{ steps.workflow_count.outputs.count }}
+      count: {{ expr("steps.workflow_count.outputs.count") }}
 
     steps:
       - name: Count Running Release Workflows Triggered by Automated PR
         id: workflow_count
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: {{ expr("github.token") }}
         run: |
           count="$(gh run list \
             --repo "$GITHUB_REPOSITORY" \
@@ -46,7 +44,6 @@ jobs:
       contents: read
       id-token: write
       pull-requests: read
-{%- endraw %}
 {%- if deploy_docs == "rolling" %}
 
   deploy-docs:
@@ -61,23 +58,18 @@ jobs:
       pages: write
       id-token: write
 {%- endif %}
-{%- raw %}
 
   check-prepare-release:
     name: Check if we can prepare release PR
     needs:
       - call_central_workflow
     if: success() && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     outputs:
-      news-fragments-available: ${{ steps.check-available.outputs.available }}
+      news-fragments-available: {{ expr("steps.check-available.outputs.available") }}
 
     steps:
-{%- endraw %}
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%- raw %}
 
       - name: Check if news fragments are available
         id: check-available
@@ -93,7 +85,6 @@ jobs:
     needs:
       - check-prepare-release
     if: success() && needs.check-prepare-release.outputs.news-fragments-available == '1'
-{%- endraw %}
 {%- if require_autorelease_app %}
     permissions:
       # The release branch and PR are managed using the autorelease app's token.
@@ -105,11 +96,10 @@ jobs:
       contents: write
       pull-requests: write
 {%- endif %}
-{%- raw %}
     uses: ./.github/workflows/prepare-release-action.yml
     secrets:
-      AUTORELEASE_CLID: ${{ secrets.AUTORELEASE_CLID }}
-      AUTORELEASE_PRIV: ${{ secrets.AUTORELEASE_PRIV }}
+      AUTORELEASE_CLID: {{ expr("secrets.AUTORELEASE_CLID") }}
+      AUTORELEASE_PRIV: {{ expr("secrets.AUTORELEASE_PRIV") }}
 
   set_resolution:
     # This step is just so we can make github require this step, to pass checks
@@ -118,12 +108,9 @@ jobs:
     needs:
       - check_release_in_progress
       - call_central_workflow
-{%- endraw %}
 {%- if deploy_docs == "rolling" %}
       - deploy-docs
 {%- endif %}
-{%- raw %}
       - prepare-release
     if: always() && needs.check_release_in_progress.outputs.count == '0'
     uses: ./.github/workflows/set-resolution-action.yml
-{%- endraw %}

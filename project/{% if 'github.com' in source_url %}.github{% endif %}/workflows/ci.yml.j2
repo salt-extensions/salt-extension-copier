@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: CI
 
@@ -25,8 +25,8 @@ jobs:
       - get-changed-files
     uses: ./.github/workflows/pre-commit-action.yml
     with:
-      changed-files: ${{ needs.get-changed-files.outputs.changed-files }}
-      use-caches: ${{ inputs.use-caches }}
+      changed-files: {{ expr("needs.get-changed-files.outputs.changed-files") }}
+      use-caches: {{ expr("inputs.use-caches") }}
     permissions:
       contents: read
 
@@ -36,7 +36,7 @@ jobs:
       - pre-commit
     uses: ./.github/workflows/test-action.yml
     with:
-      use-caches: ${{ inputs.use-caches }}
+      use-caches: {{ expr("inputs.use-caches") }}
 
   docs:
     name: Docs
@@ -53,4 +53,3 @@ jobs:
     uses: ./.github/workflows/package-action.yml
     permissions:
       contents: read
-{%- endraw %}

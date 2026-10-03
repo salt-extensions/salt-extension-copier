@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: upload-exitstatus
 description: Upload a job's status as an artifact
@@ -18,19 +18,16 @@ runs:
       - name: Set Exit Status
         if: always()
         env:
-          OUTFILE: exitstatus/${{ inputs.name == '' && github.job || inputs.name }}
+          OUTFILE: exitstatus/{{ expr("inputs.name == '' && github.job || inputs.name") }}
         shell: bash
         run: |
           mkdir exitstatus
-          echo "${{ job.status }}" > "$OUTFILE"
+          echo "{{ expr("job.status") }}" > "$OUTFILE"
 
       - name: Upload Exit Status
         if: always()
-{%-   endraw %}
         uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%-   raw %}
         with:
-          name: ${{ inputs.artifact_prefix }}${{ inputs.name == '' && github.job || inputs.name }}
+          name: {{ expr("inputs.artifact_prefix") }}{{ expr("inputs.name == '' && github.job || inputs.name") }}
           path: exitstatus
           if-no-files-found: error
-{%-   endraw %}
