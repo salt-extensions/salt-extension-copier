@@ -1,4 +1,5 @@
-{%- from pathjoin("includes", "test-jobs.yml.j2") import expr, runner_test_job, vm_test_job with context -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
+{%- from pathjoin("includes", "test-jobs.yml.j2") import runner_test_job, vm_test_job with context -%}
 ---
 name: Testing
 
