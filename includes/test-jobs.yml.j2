@@ -1,0 +1,283 @@
+{#- Macros for rendering the jobs of the `Testing` workflow
+    (test-action.yml). All test jobs share the same basic structure:
+
+      * build a test matrix (Salt/Python versions and/or OS releases)
+      * check out the repository
+      * provide the test environment (runner setup or vmactions VM)
+      * install the test requirements and run the test suite via nox
+      * upload code coverage, logs and exit status
+
+    The entrypoints are `runner_test_job` (GitHub-hosted runners:
+    Ubuntu, Windows, macOS) and `vm_test_job` (vmactions VMs: other
+    Linux distributions and the BSDs).
+-#}
+
+{#- Renders a GitHub Actions expression, which cannot be written
+    literally since its delimiters clash with Jinja's. -#}
+{%- macro expr(e) -%}
+${{ '{{' }} {{ e }} }}
+{%- endmacro -%}
+
+{#- Renders the `strategy` block for jobs running a Salt/Python
+    version matrix.
+
+    By default, each tested Salt release is paired with one Python
+    version (the newest one its onedir builds ship). `full` adds the
+    newest supported Python for LTS Salt releases and the project's
+    minimum Python once (for the oldest tested Salt release).
+
+    If `releases` is given, the matrix is multiplied by the OS
+    releases to test on, exposed as `matrix.osrelease`.
+
+    `cap` limits the number of parallel matrix jobs. -#}
+{%- macro test_strategy(full=false, releases=none, cap=none) %}
+    strategy:
+      fail-fast: false
+{%- set ns = namespace(entries=[], supported_seen=false, lowest_included=false) %}
+{%- for sver in range(salt_version_major, max_salt_version_major + 1) %}
+{%-   if ns.supported_seen and not salt_python_support[sver]["supported"] %}
+{%-     continue %}
+{%-   elif salt_python_support[sver]["supported"] %}
+{%-     set ns.supported_seen = true %}
+{%-   endif %}
+{%-   if sver == max_salt_version_major %}
+{%-     set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
+{%-   else %}
+{%-     set sver_minor = salt_latest_point[sver] %}
+{%-   endif %}
+{%-   set test_py_versions = [(python_requires[1], salt_python_support[sver]["onedir"][1]) | max] %}
+{%-   if full %}
+{%-     if salt_python_support[sver]["lts"] %}
+{%-       do test_py_versions.append(salt_python_support[sver]["max"][1]) %}
+{%-     endif %}
+{%-     if not ns.lowest_included %}
+{%-       do test_py_versions.append((python_requires[1], salt_python_support[sver]["min"][1]) | max) %}
+{%-       set ns.lowest_included = true %}
+{%-     endif %}
+{%-   endif %}
+{%-   for pyver in test_py_versions | unique | sort %}
+{%-     do ns.entries.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
+{%-   endfor %}
+{%- endfor %}
+{%- if cap is not none %}
+      max-parallel: {{ ((ns.entries | length) * (releases | length if releases else 1), cap) | min }}
+{%- endif %}
+      matrix:
+        include:
+{%- for osrelease in (releases if releases is not none else [none]) %}
+{%-   for sver, pyver in ns.entries %}
+{%-     if osrelease is not none %}
+          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}", osrelease: "{{ osrelease }}"}
+{%-     else %}
+          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
+{%-     endif %}
+{%-   endfor %}
+{%- endfor %}
+{%- endmacro %}
+
+{%- macro checkout() %}
+      - uses: actions/checkout@{{ versions["actions/checkout"] }}
+        with:
+          fetch-depth: 2  # coverage: Issue detecting commit SHA
+{%- endmacro %}
+
+{%- macro setup_python_nox(powershell=false) %}
+      - name: Set up Python {{ expr("matrix.python-version") }}
+        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
+        with:
+          python-version: {{ expr("matrix.python-version") }}
+
+      - name: Install Nox
+        run: |
+          python -m pip install --upgrade pip
+          pip install "nox=={{ "$env:" if powershell else "$" }}NOX_VERSION" "uv=={{ "$env:" if powershell else "$" }}UV_VERSION"
+        env:
+          NOX_VERSION: '{{ versions["nox"] }}'
+          UV_VERSION: '{{ versions["uv"] }}'
+{%- endmacro %}
+
+{#- The test suite invocation on GitHub-hosted runners. The Python
+    version is determined by the runner setup (plain `tests-3`), the
+    Salt version via SALT_REQUIREMENT. -#}
+{%- macro run_tests(windows=false) %}
+{%- for name, posargs in (("Install Test Requirements", "--install-only"), ("Test", "-- -vv --instafail tests/")) %}
+{%- if not loop.first %}
+{{ "" }}
+{%- endif %}
+      - name: {{ name }}
+{%- if windows %}
+        shell: bash
+{%- endif %}
+        env:
+          SALT_REQUIREMENT: salt=={{ expr("matrix.salt-version") }}
+{%- if not loop.first %}
+          SKIP_REQUIREMENTS_INSTALL: true
+{%- elif windows %}
+          # EXTRA_REQUIREMENTS_INSTALL: Cython
+{%- endif %}
+        run: |
+{%- if windows %}
+          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
+{%- endif %}
+          nox --force-color -e tests-3 {{ posargs }}
+{%- endfor %}
+{%- endmacro %}
+
+{#- The test suite invocation inside a vmactions VM via its custom
+    shell wrapper. All required environment variables are forwarded
+    into the VM via the `envs` input of the Start VM step. -#}
+{%- macro run_tests_vm(shell_name, session="3") %}
+      - name: Install Test Requirements
+        shell: {{ shell_name }} {0}
+        run: |
+          nox --force-color -e tests-{{ session }} --install-only
+
+      - name: Test
+        shell: {{ shell_name }} {0}
+        env:
+          SKIP_REQUIREMENTS_INSTALL: true
+        run: |
+          nox --force-color -e tests-{{ session }} -- -vv --instafail tests/
+{%- endmacro %}
+
+{#- The `prepare` scripts in data/os_support.yaml reference the pinned
+    tool versions from data/versions.yaml via placeholders. Embedding
+    the pins in the script text ensures version bumps invalidate the
+    cached VM image. -#}
+{%- macro start_vm(slug, meta, envs) %}
+      - name: Start VM
+        uses: vmactions/{{ slug }}-vm@{{ versions["vmactions/" ~ slug ~ "-vm"] }}
+        with:
+          release: "{{ expr("matrix.osrelease") }}"
+          envs: '{{ envs }}'
+          custom-shell-name: {{ slug }}
+          # Cache the prepared VM image, keyed on the `prepare` script's hash
+          cache-after-prepare: true
+          prepare: |-
+            {{ meta["prepare"] | trim | replace("{nox_version}", versions["nox"]) | replace("{uv_version}", versions["uv"]) | indent(12) }}
+{%- endmacro %}
+
+{#- Computes the CodeCov flags for Salt/Python matrix jobs on
+    GitHub-hosted runners, e.g. `Linux,py310,salt_3006_10`. -#}
+{%- macro codecov_flags() %}
+      - name: Create CodeCov Flags
+        if: always()
+        id: codecov-flags
+        run: |
+          echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('{{ expr("runner.os") }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '{{ expr("matrix.salt-version") }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
+{%- endmacro %}
+
+{%- macro codecov_uploads(flags, name_prefix) %}
+{%- for kind, title in (("project", "Project"), ("tests", "Tests")) %}
+{%- if not loop.first %}
+{{ "" }}
+{%- endif %}
+      - name: Upload {{ title }} Code Coverage
+        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
+        with:
+          files: artifacts/coverage-{{ kind }}.xml
+          disable_search: true
+          fail_ci_if_error: false
+          flags: {{ flags }},{{ kind }}
+          name: {{ name_prefix }}-{{ kind }}
+          use_oidc: true
+          version: {{ versions["codecov_cli"] }}
+{%- endfor %}
+{%- endmacro %}
+
+{%- macro upload_logs_and_status(ident) %}
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
+        with:
+          name: runtests-{{ ident }}.log
+          path: artifacts/runtests-*.log
+
+      - name: Upload Exit Status
+        if: always()
+        uses: ./.github/actions/upload-exitstatus
+        with:
+          name: {{ ident }}
+{%- endmacro %}
+
+{#- A test job running natively on GitHub-hosted runners (Ubuntu,
+    Windows, macOS) with a Salt/Python version matrix. If `releases`
+    is given, the matrix additionally spans the OS releases to test on
+    and `runs_on` should reference `matrix.osrelease`. -#}
+{%- macro runner_test_job(job_id, runs_on, timeout, full=false, releases=none, cap=3, windows=false) %}
+{%- set rel = "-" ~ expr("matrix.osrelease") if releases is not none else "" %}
+{%- set ident = expr("github.job") ~ rel ~ "-Py" ~ expr("matrix.python-version") ~ "-Salt" ~ expr("matrix.salt-version") %}
+  {{ job_id }}:
+    runs-on: {{ runs_on }}
+    timeout-minutes: {{ timeout }}
+{{ test_strategy(full=full, releases=releases, cap=cap) }}
+
+    steps:
+{{- checkout() }}
+{{ setup_python_nox(powershell=windows) }}
+{{ run_tests(windows=windows) }}
+{{ codecov_flags() }}
+{{ codecov_uploads(expr("steps.codecov-flags.outputs.flags"), ident) }}
+{{ upload_logs_and_status(ident) }}
+{%- endmacro %}
+
+{#- A test job running inside a vmactions VM on a Linux runner, used
+    for platforms without native GitHub-hosted runners. The matrix
+    spans the OS releases to test on.
+
+    If `parametrized` is true (most non-Ubuntu Linux distributions),
+    the matrix additionally spans Salt/Python versions like on the
+    native runners. The Python versions are provisioned on demand by
+    uv, which the `prepare` script in data/os_support.yaml provides.
+
+    Otherwise (BSDs and `system_salt` distributions like Alpine),
+    there are neither Salt onedir builds nor Python wheels for
+    important binary dependencies, so instead of a version matrix,
+    the tests run against the Salt release packaged by the OS,
+    inherited into the session venvs via VENV_SYSTEM_SITE_PACKAGES.
+    The project's minimum Salt requirement acts as a lower bound: if
+    the packaged release is older, the newest release satisfying it is
+    pulled from PyPI instead. -#}
+{%- macro vm_test_job(os_name, meta, releases, parametrized=false) %}
+{%- set slug = os_name | lower | replace(" ", "") %}
+{%- set ident = expr("github.job") ~ "-" ~ expr("matrix.osrelease") %}
+{%- if parametrized %}
+{%-   set ident = ident ~ "-Py" ~ expr("matrix.python-version") ~ "-Salt" ~ expr("matrix.salt-version") %}
+{%- endif %}
+  {{ os_name | replace(" ", "-") }}:
+{%- if " " in os_name %}
+    name: {{ os_name }}
+{%- endif %}
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+    timeout-minutes: 45
+
+    env:
+{%- if parametrized %}
+      SALT_REQUIREMENT: salt=={{ expr("matrix.salt-version") }}
+{%- else %}
+      # Salt and its dependencies are provided as system packages, which
+      # the session venvs inherit. This makes the tests run against the
+      # OS-packaged Salt release and avoids expensive source builds of
+      # binary dependencies.
+      VENV_SYSTEM_SITE_PACKAGES: '1'
+{%- endif %}
+{%- if parametrized %}
+{{ test_strategy(releases=releases) }}
+{%- else %}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        osrelease:
+{%-   for osrelease in releases %}
+          - "{{ osrelease }}"
+{%-   endfor %}
+{%- endif %}
+
+    steps:
+{{- checkout() }}
+{{ start_vm(slug, meta, "SKIP_REQUIREMENTS_INSTALL " ~ ("SALT_REQUIREMENT" if parametrized else "VENV_SYSTEM_SITE_PACKAGES")) }}
+{{ run_tests_vm(slug, session=expr("matrix.python-version") if parametrized else "3") }}
+{{ codecov_uploads(expr("github.job") ~ "-" ~ expr("matrix.osrelease"), ident) }}
+{{ upload_logs_and_status(ident) }}
+{%- endmacro %}

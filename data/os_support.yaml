@@ -1,18 +1,102 @@
-# Metadata for the `os_support` question choices.
+# Metadata for the `os_support`, `linux_test_distros` and `*_releases`
+# question choices.
 #
 # `classifier` is the OS' Trove classifier (https://pypi.org/classifiers).
 #
-# `vm` holds data for the CI test job running inside a VM via the
+# `releases`/`available` describe the OS releases tests can run on:
+#   available: All currently selectable releases. Kept in sync with
+#              upstream-supported (https://endoflife.date) and
+#              CI-offered (https://github.com/vmactions or
+#              https://github.com/actions/runner-images) releases by
+#              `tasks/sync_os_releases.py` via a scheduled workflow.
+#   releases:  The default selection of releases to test. Also synced.
+#              A leading part of a release selects the newest matching
+#              one (e.g. "15" -> latest 15.x).
+#
+# `runner: github` indicates the tests run natively on GitHub-hosted
+# runners whose labels are derived from the release
+# (e.g. "24.04" -> ubuntu-24.04).
+#
+# `vm` holds data for CI test jobs running inside a VM via the
 # respective vmactions action (https://github.com/vmactions) since
 # there are no native GitHub-hosted runners for these platforms:
-#   releases: OS releases to test. A leading part of a release selects
-#             the newest matching one (e.g. "15" -> latest 15.x).
-#   prepare:  vmactions `prepare` script that provides `python3`, `nox`
-#             and the OS-packaged Salt release (including its
-#             dependencies), which the tests run against. The prepared
-#             VM image is cached, keyed on this script's hash.
+#   prepare:     vmactions `prepare` script run once when creating the
+#                VM image, executed by the POSIX `sh` of the respective
+#                OS. The prepared VM image is cached, keyed on this
+#                script's hash. `{nox_version}`/`{uv_version}`
+#                placeholders are replaced with the pinned versions
+#                from data/versions.yaml during template rendering –
+#                keeping the pins in the script text ensures version
+#                bumps invalidate the cached VM image.
+#                Jobs testing against the OS-packaged Salt release
+#                (BSDs, `system_salt` distros) provide `python3`, `nox`
+#                and the packaged Salt (including its dependencies).
+#                Jobs running the regular parametrized Salt/Python
+#                matrix provide pinned `uv` (which provisions the
+#                requested Python versions on demand) and `nox`.
+#   system_salt: Marks a Linux distribution whose tests run against
+#                the OS-packaged Salt release (like the BSDs) instead
+#                of the parametrized Salt/Python matrix.
 Linux:
   classifier: "Operating System :: POSIX :: Linux"
+  distros:
+    Ubuntu:
+      # The available releases are defined by the GitHub-hosted runner
+      # images (https://github.com/actions/runner-images). There is no
+      # `releases` key since the default release follows the
+      # Renovate-managed `ubuntu` runner version in data/versions.yaml.
+      runner: github
+      available:
+        - "26.04"
+        - "24.04"
+        - "22.04"
+    Debian:
+      vm:
+        releases:
+          - "13"
+        available:
+          - "13"
+          - "12"
+        prepare: |
+          apt-get update -y
+          apt-get install -y ca-certificates python3-pip
+          env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "uv=={uv_version}"
+          env UV_TOOL_BIN_DIR=/usr/local/bin uv tool install "nox=={nox_version}"
+    Alpine:
+      vm:
+        # No musl wheels exist for important binary dependencies, so
+        # test against the OS-packaged Salt release like on the BSDs.
+        system_salt: true
+        releases:
+          - "3.24"
+        available:
+          - "3.24"
+          - "3.23"
+        prepare: |
+          apk add salt py3-pip
+          env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "nox=={nox_version}"
+    AlmaLinux:
+      vm:
+        releases:
+          - "10"
+        available:
+          - "10"
+          - "9"
+        prepare: |
+          dnf install -y ca-certificates python3-pip
+          env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "uv=={uv_version}"
+          env UV_TOOL_BIN_DIR=/usr/local/bin uv tool install "nox=={nox_version}"
+    Rocky Linux:
+      vm:
+        releases:
+          - "10"
+        available:
+          - "10"
+          - "9"
+        prepare: |
+          dnf install -y ca-certificates python3-pip
+          env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "uv=={uv_version}"
+          env UV_TOOL_BIN_DIR=/usr/local/bin uv tool install "nox=={nox_version}"
 macOS:
   classifier: "Operating System :: MacOS"
 Windows:
@@ -21,15 +105,23 @@ FreeBSD:
   classifier: "Operating System :: POSIX :: BSD :: FreeBSD"
   vm:
     releases:
-      - "14"
-      - "15"
+      - "15.1"
+      - "14.5"
+    available:
+      - "15.1"
+      - "14.5"
+      - "14.4"
     prepare: |
-      pkg install -y python3 py312-salt py312-sqlite3 nox
+      pkg install -y python3 py312-salt py312-sqlite3 py312-pip
+      env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "nox=={nox_version}"
 OpenBSD:
   classifier: "Operating System :: POSIX :: BSD :: OpenBSD"
   vm:
     releases:
-      - "7"
+      - "7.9"
+    available:
+      - "7.9"
+      - "7.8"
     prepare: |
       pkg_add -I python%3 salt py3-pip
-      python3 -m pip install --break-system-packages nox
+      env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "nox=={nox_version}"
