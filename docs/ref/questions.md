@@ -141,7 +141,7 @@ runners (the `Linux` workflow job). Jobs running inside VMs – non-Ubuntu
 {question}`linux_test_distros` and the BSD platforms – as well as the
 `macOS` and `Windows` runners don't provide one, so ensure
 container-based tests are skipped when Docker is unavailable, e.g. via
-the `skip_if_binaries_missing("docker")` marker ([pytest-skip-markers](https://pytest-skip-markers.readthedocs.io),
+the `skip_if_binaries_missing("docker")` marker ([pytest-skip-markers](https://github.com/saltstack/pytest-skip-markers),
 a dependency of pytest-salt-factories).
 :::
 
@@ -299,3 +299,36 @@ Additionally suppresses `unused-argument` in the test suite, often caused
 by requesting fixtures in the function signature instead of using
 `@pytest.mark.usefixtures`. Note that the decorator does not work on
 fixtures requesting other fixtures.
+
+:::{question} typing
+:::
+## `typing`
+Add support for static type checking via [ty](https://docs.astral.sh/ty/).
+
+This adds a pre-commit hook that typechecks the project (hook ID `ty`,
+alias `typing`), corresponding `[tool.ty.*]` configuration in
+`pyproject.toml` and a `typing-extensions` test dependency.
+
+Since Salt injects global dunders like `__salt__` into loader modules at
+runtime, static type checkers cannot resolve them by themselves. The
+template thus also generates a `utils/_types.py` module providing type
+aliases for common Salt loader globals (such as `SaltFunctions`,
+`SaltOpts`) and a `SaltLogger` class accounting for Salt's custom log
+levels. The generated loader module stubs declare the dunders they use
+inside `if typing.TYPE_CHECKING` blocks, a pattern you can extend as your
+modules grow:
+
+```python
+import logging
+import typing
+
+if typing.TYPE_CHECKING:
+    from saltext.foo.utils._types import SaltFunctions
+    from saltext.foo.utils._types import SaltLogger
+    from saltext.foo.utils._types import SaltOpts
+
+    __salt__: SaltFunctions
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+```

@@ -99,6 +99,9 @@ tests = [
     "pytest-salt-factories>=1.0.0",
 {%- endif %}
     "pytest-instafail",
+{%- if typing %}
+    "typing-extensions>=4",
+{%- endif %}
 ]
 
 [project.entry-points."salt.loader"]
@@ -215,3 +218,19 @@ builtins = [
     "__resource__",
     "__resource_funcs__",
 ]
+{%- if typing %}
+
+[tool.ty.environment]
+# Ensure deterministic typechecking results regardless of the
+# development platform. Unix-only APIs (e.g. `pwd`, `os.getuid`) are
+# used behind runtime platform guards ty cannot narrow.
+python-platform = "linux"
+
+[tool.ty.rules]
+missing-type-argument = "error"
+possibly-unresolved-reference = "warn"
+
+[tool.ty.src]
+include = ["src", "tests"]
+exclude = ["docs/conf.py", "noxfile.py", "tools/"]
+{%- endif %}

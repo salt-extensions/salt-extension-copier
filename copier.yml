@@ -487,6 +487,11 @@ relax_pylint:
   help: Suppress some Pylint messages that can cause noise or be difficult to solve with legacy code.
   default: false
 
+typing:
+  type: bool
+  help: Add support for static type checking via `ty`.
+  default: false
+
 # ===========================================
 # | Computed values for less ugly templates |
 # ===========================================
