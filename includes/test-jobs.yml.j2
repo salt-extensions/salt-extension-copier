@@ -98,7 +98,7 @@
         with:
           path: {{ expr("env.UV_CACHE_DIR") }}
           key: {{ key }}-{{ expr("hashFiles('pyproject.toml', 'noxfile.py')") }}
-          restore-keys: |
+          restore-keys: |-
             {{ key }}-
 {%- endmacro %}
 
@@ -138,7 +138,7 @@
         env:
           SALT_REQUIREMENT: salt=={{ expr("matrix.salt-version") }}
 {%- if not loop.first %}
-          SKIP_REQUIREMENTS_INSTALL: "1"
+          SKIP_REQUIREMENTS_INSTALL: '1'
 {%- elif windows %}
           # EXTRA_REQUIREMENTS_INSTALL: Cython
 {%- endif %}
@@ -169,7 +169,7 @@
       - name: Test
         shell: {{ shell_name }} {0}
         env:
-          SKIP_REQUIREMENTS_INSTALL: "1"
+          SKIP_REQUIREMENTS_INSTALL: '1'
         run: |
           nox --force-color -e tests-{{ session }} -- -vv --instafail tests/
 {%- endmacro %}
