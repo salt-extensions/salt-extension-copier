@@ -292,6 +292,29 @@ The URL for hosted documentation, typically your GitHub Pages URL if using {ques
 
 **Example**: `https://salt-extensions.github.io/saltext-vault/`
 
+:::{question} require_autorelease_app
+:::
+## `require_autorelease_app`
+Whether the release workflows require a [dedicated GitHub App](optional-secrets-target)
+for release automation (`AUTORELEASE_CLID`/`AUTORELEASE_PRIV` secrets).
+
+Requiring the app simplifies the release workflows significantly:
+CI always runs on the autorelease PR and all releases are handled by the
+tag push workflow since the release tag is pushed using the app's token.
+
+If false, the workflows additionally support running with the default
+GitHub token, at the cost of a more complex release pipeline and no CI runs
+on the autorelease PR.
+
+:::{note}
+Defaults to true for repositories inside the `salt-extensions` organization,
+where the app is configured organization-wide.
+:::
+
+:::{note}
+Not asked if {question}`source_url` is not on GitHub.
+:::
+
 :::{question} coc_contact
 :::
 ## `coc_contact`

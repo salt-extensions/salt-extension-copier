@@ -471,6 +471,17 @@ docs_url:
     {%- if docs_url and "://" not in docs_url -%}Does not look like a valid URL
     {%- endif %}
 
+require_autorelease_app:
+  type: bool
+  help: >-
+    Require a GitHub App for release automation (AUTORELEASE_CLID/AUTORELEASE_PRIV secrets).
+    This simplifies the release workflows significantly: CI always runs on the autorelease PR
+    and all releases are handled by the tag push workflow.
+    If false, the workflows additionally support running with the default GitHub token
+    at the cost of a more complex release pipeline.
+  default: '{{ "github.com/salt-extensions/" in source_url }}'
+  when: '{{ "github.com" in source_url }}'
+
 coc_contact:
   type: str
   help: Optionally provide a contact for Code of Conduct violation reports.

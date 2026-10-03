@@ -11,12 +11,7 @@
     Ubuntu, Windows, macOS) and `vm_test_job` (vmactions VMs: other
     Linux distributions and the BSDs).
 -#}
-
-{#- Renders a GitHub Actions expression, which cannot be written
-    literally since its delimiters clash with Jinja's. -#}
-{%- macro expr(e) -%}
-${{ '{{' }} {{ e }} }}
-{%- endmacro -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 
 {#- Renders the `strategy` block for jobs running a Salt/Python
     version matrix.

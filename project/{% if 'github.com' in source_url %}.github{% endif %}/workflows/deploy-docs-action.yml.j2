@@ -11,6 +11,12 @@ on:
         type: string
         required: false
         default: html-docs
+      # The workflow run that hosts the docs artifact. Defaults to
+      # the triggering run (`workflow_run` trigger) or the current one.
+      run-id:
+        type: string
+        required: false
+        default: ''
 
 
 permissions:
@@ -50,7 +56,7 @@ jobs:
           name: ${{ inputs.artifact-name }}
           path: html-docs
           github-token: ${{ github.token }}
-          run-id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || github.run_id }}
+          run-id: ${{ inputs.run-id || github.event_name == 'workflow_run' && github.event.workflow_run.id || github.run_id }}
 
       - name: Upload GitHub Pages artifact
 {%- endraw %}
