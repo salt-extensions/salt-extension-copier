@@ -3,8 +3,20 @@ Salt fileserver module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
+
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
 __virtualname__ = "{{ package_name }}"
 
@@ -13,3 +25,60 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} fileserver module is not implemented yet")
     return __virtualname__
+
+
+def envs():
+    """
+    Return the environments provided by this backend.
+    """
+    return ["base"]
+
+
+def update():
+    """
+    Update the backend's local state, e.g. pull changes from upstream.
+
+    This is called periodically by the Salt master.
+    """
+    # Nothing to synchronize for this backend yet
+
+
+def find_file(path, saltenv="base", **kwargs):  # pylint: disable=unused-argument
+    """
+    Search the environment for the relative path.
+
+    Returns a dict containing the full and relative paths of the file
+    if it is found, otherwise one with empty values.
+    """
+    return {"path": "", "rel": ""}
+
+
+def serve_file(load, fnd):
+    """
+    Return a chunk of the file found by ``find_file``, beginning at the
+    byte offset in ``load["loc"]``.
+    """
+    raise NotImplementedError
+
+
+def file_hash(load, fnd):
+    """
+    Return a file hash as a dict with ``hash_type`` and ``hsum`` keys.
+    """
+    raise NotImplementedError
+
+
+def file_list(load):  # pylint: disable=unused-argument
+    """
+    Return a list of all relative file paths in the environment
+    specified in ``load["saltenv"]``.
+    """
+    return []
+
+
+def dir_list(load):  # pylint: disable=unused-argument
+    """
+    Return a list of all directories in the environment specified in
+    ``load["saltenv"]``.
+    """
+    return []

@@ -1,0 +1,35 @@
+import pytest
+
+import {{ namespaced_package_pkg }}.resources.{{ package_name }}_mod as {{ package_name }}_resource
+
+
+@pytest.fixture
+def configure_loader_modules():
+    module_globals = {
+        "__context__": {},
+    }
+    return {
+        {{ package_name }}_resource: module_globals,
+    }
+
+
+def test_replace_this_with_something_meaningful(monkeypatch):
+    # pytest-salt-factories does not know about the ``__resource__`` dunder
+    # (yet), so it cannot be mocked via configure_loader_modules.
+    monkeypatch.setattr(
+        {{ package_name }}_resource,
+        "__resource__",
+        {"type": "{{ package_name }}", "id": "{{ package_name }}-01"},
+        raising=False,
+    )
+    assert {{ package_name }}_resource.grains() == {
+        "{{ package_name }}_resource_id": "{{ package_name }}-01",
+    }
+
+
+def test_init_tracks_initialization():
+    assert {{ package_name }}_resource.initialized() is False
+    {{ package_name }}_resource.init({})
+    assert {{ package_name }}_resource.initialized() is True
+    {{ package_name }}_resource.shutdown({})
+    assert {{ package_name }}_resource.initialized() is False

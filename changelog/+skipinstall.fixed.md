@@ -1,0 +1,1 @@
+Fixed `SKIP_REQUIREMENTS_INSTALL` never engaging in the generated CI workflows. They set it to `true`, but the `noxfile` only recognizes `1`, so the `Test`/`Build Docs` steps silently reinstalled all requirements that the preceding `--install-only` step had just installed.

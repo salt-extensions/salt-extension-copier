@@ -1,11 +1,11 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 on:
   workflow_call:
     outputs:
       changed-files:
         description: "Changed file JSON output from dorny/paths-filter"
-        value: ${{ jobs.get-changed-files.outputs.changed-files }}
+        value: {{ expr("jobs.get-changed-files.outputs.changed-files") }}
 
 permissions:
   contents: read  # for dorny/paths-filter to fetch a list of changed files
@@ -14,24 +14,18 @@ permissions:
 jobs:
   get-changed-files:
     name: Get Changed Files
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     outputs:
-      changed-files: ${{ toJSON(steps.changed-files.outputs) }}
+      changed-files: {{ expr("toJSON(steps.changed-files.outputs)") }}
 
     steps:
-{%- endraw %}
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%- raw %}
 
       - name: Get Changed Files
         id: changed-files
-{%- endraw %}
         uses: dorny/paths-filter@{{ versions["dorny/paths-filter"] }}
-{%- raw %}
         with:
-          token: ${{ github.token }}
+          token: {{ expr("github.token") }}
           list-files: escape
           filters: |-
             repo:
@@ -57,5 +51,4 @@ jobs:
                 - setup.py
 
       - name: Echo Changed Files Output
-        run: echo "${{ toJSON(steps.changed-files.outputs) }}"
-{%- endraw %}
+        run: echo "{{ expr("toJSON(steps.changed-files.outputs)") }}"

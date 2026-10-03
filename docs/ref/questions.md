@@ -97,6 +97,24 @@ Only asked if a non-Apache {question}`license` is selected.
 ## `loaders`
 Choose the Salt module types this extension should provide.
 
+The generated module stubs scaffold the specifically named functions
+Salt expects for the corresponding module type, where applicable. See
+the Salt documentation on [module types](https://docs.saltproject.io/en/latest/topics/development/modules/index.html)
+for details.
+
+:::{note}
+The `resource` module type requires Salt 3008.0 or newer. The generated
+stub's `__virtual__` returns false on older releases, so selecting it
+does not prevent the extension from supporting older Salt versions.
+
+The generated stub is a flat module, but a resource type can also be
+authored as a package (`resources/<rtype>/__init__.py` carrying the
+connection module) containing per-type loader overlay directories such
+as `modules/` or `states/`. The docs and pre-commit tooling account for
+both shapes. Ensure each overlay directory contains an `__init__.py`,
+otherwise it is not included in built packages.
+:::
+
 :::{question} salt_version
 :::
 ## `salt_version`
@@ -135,12 +153,109 @@ Include test fixtures for Salt-SSH tests (`salt_ssh_cli` etc.). Defaults to true
 ## `test_containers`
 Add support for running containers in the test suite (for functional and integration tests).
 
+:::{note}
+In CI, a Docker daemon is only available on the GitHub-hosted Ubuntu
+runners (the `Linux` workflow job). Jobs running inside VMs – non-Ubuntu
+{question}`linux_test_distros` and the BSD platforms – as well as the
+`macOS` and `Windows` runners don't provide one, so ensure
+container-based tests are skipped when Docker is unavailable, e.g. via
+the `skip_if_binaries_missing("docker")` marker ([pytest-skip-markers](https://github.com/saltstack/pytest-skip-markers),
+a dependency of pytest-salt-factories).
+:::
+
 :::{question} os_support
 :::
 ## `os_support`
 Select supported operating systems. Usually, you should leave the default of `Linux`, `macOS` and `Windows`, but some extensions only make sense on specific systems.
 
-This question influences on which systems the tests are run.
+This question influences on which systems the tests are run and which `Operating System ::` [Trove classifiers](https://pypi.org/classifiers/) are added to the package metadata.
+
+:::{note}
+`macOS` and `Windows` tests run on native GitHub-hosted runners, `Linux`
+tests on the distributions selected in {question}`linux_test_distros`.
+`FreeBSD` and `OpenBSD` tests run inside VMs on Linux runners, courtesy of
+the [vmactions](https://github.com/vmactions) project. No Salt onedir
+builds exist for these platforms, so instead of a Salt version matrix, the
+tests run against the Salt release packaged by the OS, like Python itself.
+The project's minimum Salt requirement acts as a lower bound: if the
+packaged release is older, the newest release satisfying it is installed
+from PyPI instead.
+
+For speed, the prepared VM images are cached between CI runs. On the
+platforms testing against the OS-packaged Salt release – the BSDs and
+`Alpine` – the cached image includes the installed Salt itself. Since the
+cache is only invalidated when the preparation script changes (e.g. during
+template updates) or when GitHub evicts it, their tests can lag behind the
+currently packaged Salt release. To force a refresh, delete the
+corresponding `...-prep-...` entries in your repository's GitHub Actions
+caches. The other Linux distribution VMs are unaffected: they install the
+respective Salt version matrix leg during the test run (see
+{question}`linux_test_distros`).
+:::
+
+:::{question} linux_test_distros
+:::
+## `linux_test_distros`
+Select the Linux distributions the test suite runs on. The default of
+`Ubuntu` is appropriate for most extensions, but distribution-specific
+ones can select the distributions they target instead (or additionally).
+
+`Ubuntu` tests run on native GitHub-hosted runners (as the `Linux`
+workflow job), all other distributions run inside VMs on Linux runners,
+courtesy of the [vmactions](https://github.com/vmactions) project. In contrast to the
+BSD platforms, Linux distribution VMs run a parametrized Salt/Python
+version matrix (like `Windows` and `macOS`, each tested Salt release is
+paired with the newest Python version its onedir builds ship, which is
+provisioned on demand by `uv`). `Alpine` is the exception: since
+neither Salt onedir builds nor `musl` wheels for important binary
+dependencies exist, its tests run against the OS-packaged Salt release,
+like on the BSD platforms (see {question}`os_support`). Since each
+matrix job boots its own VM, consider the increased CI resource usage
+when selecting several distributions or releases.
+
+The VMs don't provide a container runtime, so container-based tests
+must be skipped there and only execute in the `Ubuntu` jobs (see
+{question}`test_containers`).
+
+:::{note}
+Not asked if `Linux` is not part of {question}`os_support`.
+:::
+
+:::{question} ubuntu_releases
+:::
+:::{question} debian_releases
+:::
+:::{question} alpine_releases
+:::
+:::{question} almalinux_releases
+:::
+:::{question} rockylinux_releases
+:::
+:::{question} freebsd_releases
+:::
+:::{question} openbsd_releases
+:::
+## `*_releases`
+Each operating system/Linux distribution selected for testing via
+{question}`os_support` or {question}`linux_test_distros` (except
+`macOS` and `Windows`) comes with a corresponding question for the OS
+releases to test against, e.g. `ubuntu_releases` or `freebsd_releases`.
+
+The selectable releases are limited to those that are still supported
+upstream (according to [endoflife.date](https://endoflife.date)) and
+available in CI. They are refreshed regularly and template updates
+adjust your answers automatically:
+
+* If the default selection was chosen and has changed since, the new
+  default is adopted.
+* Otherwise, releases that are not selectable anymore are removed from
+  a custom selection. If no selected release remains, the question is
+  asked again.
+
+The default Ubuntu release follows the newest stable GitHub-hosted
+runner release. For VM-based platforms, a leading part of a release
+selects the newest matching one (e.g. `15` selects the latest `15.x`
+release).
 
 :::{question} deploy_docs
 :::
@@ -177,6 +292,29 @@ The URL for hosted documentation, typically your GitHub Pages URL if using {ques
 
 **Example**: `https://salt-extensions.github.io/saltext-vault/`
 
+:::{question} require_autorelease_app
+:::
+## `require_autorelease_app`
+Whether the release workflows require a [dedicated GitHub App](optional-secrets-target)
+for release automation (`AUTORELEASE_CLID`/`AUTORELEASE_PRIV` secrets).
+
+Requiring the app simplifies the release workflows significantly:
+CI always runs on the autorelease PR and all releases are handled by the
+tag push workflow since the release tag is pushed using the app's token.
+
+If false, the workflows additionally support running with the default
+GitHub token, at the cost of a more complex release pipeline and no CI runs
+on the autorelease PR.
+
+:::{note}
+Defaults to true for repositories inside the `salt-extensions` organization,
+where the app is configured organization-wide.
+:::
+
+:::{note}
+Not asked if {question}`source_url` is not on GitHub.
+:::
+
 :::{question} coc_contact
 :::
 ## `coc_contact`
@@ -202,3 +340,38 @@ Additionally suppresses `unused-argument` in the test suite, often caused
 by requesting fixtures in the function signature instead of using
 `@pytest.mark.usefixtures`. Note that the decorator does not work on
 fixtures requesting other fixtures.
+
+:::{question} typing
+:::
+## `typing`
+Add support for static type checking via [ty](https://docs.astral.sh/ty/).
+
+This adds a pre-commit hook that typechecks the project (hook ID `ty`,
+alias `typing`), corresponding `[tool.ty.*]` configuration in
+`pyproject.toml` and a `typing-extensions` test dependency.
+
+Since Salt injects global dunders like `__salt__` into loader modules at
+runtime, static type checkers cannot resolve them by themselves. The
+template thus also generates a `utils/_types.py` module providing type
+aliases for common Salt loader globals (such as `SaltFunctions`,
+`SaltOpts`) and a `SaltLogger` class accounting for Salt's custom log
+levels. The generated loader module stubs declare the dunders they use
+inside `if typing.TYPE_CHECKING` blocks, a pattern you can extend as your
+modules grow. Which dunders are available – and what they contain –
+depends on the module type, see the Salt documentation on
+[dunder dictionaries](https://docs.saltproject.io/en/latest/topics/development/modules/developing.html#dunder-dictionaries):
+
+```python
+import logging
+import typing
+
+if typing.TYPE_CHECKING:
+    from saltext.foo.utils._types import SaltFunctions
+    from saltext.foo.utils._types import SaltLogger
+    from saltext.foo.utils._types import SaltOpts
+
+    __salt__: SaltFunctions
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+```

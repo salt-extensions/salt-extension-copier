@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: Publish Documentation
 
@@ -11,6 +11,12 @@ on:
         type: string
         required: false
         default: html-docs
+      # The workflow run that hosts the docs artifact. Defaults to
+      # the triggering run (`workflow_run` trigger) or the current one.
+      run-id:
+        type: string
+        required: false
+        default: ''
 
 
 permissions:
@@ -36,8 +42,7 @@ jobs:
 
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-{%- endraw %}
+      url: {{ expr("steps.deployment.outputs.page_url") }}
 
     runs-on: ubuntu-{{ versions["ubuntu"] }}
 
@@ -45,43 +50,33 @@ jobs:
 
       - name: Download built docs
         uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
-{%- raw %}
         with:
-          name: ${{ inputs.artifact-name }}
+          name: {{ expr("inputs.artifact-name") }}
           path: html-docs
-          github-token: ${{ github.token }}
-          run-id: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || github.run_id }}
+          github-token: {{ expr("github.token") }}
+          run-id: {{ expr("inputs.run-id || github.event_name == 'workflow_run' && github.event.workflow_run.id || github.run_id") }}
 
       - name: Upload GitHub Pages artifact
-{%- endraw %}
         uses: actions/upload-pages-artifact@{{ versions["actions/upload-pages-artifact"] }}
-{%- raw %}
         with:
           name: html-docs-pages
           path: html-docs
 
       - name: Deploy to GitHub Pages
         id: deployment
-{%- endraw %}
         uses: actions/deploy-pages@{{ versions["actions/deploy-pages"] }}
-{%- raw %}
         with:
           artifact_name: html-docs-pages
 
       - name: Delete GitHub Pages artifact
         if: always()
-{%- endraw %}
         uses: geekyeggo/delete-artifact@{{ versions["geekyeggo/delete-artifact"] }}
-{%- raw %}
         with:
           name: html-docs-pages
           failOnError: false
-{%- endraw %}
 
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%- raw %}
 
       - name: Upload Exit Status
         if: always()
         uses: ./.github/actions/upload-exitstatus
-{%- endraw %}

@@ -1,0 +1,7 @@
+{#- Shared macros for rendering GitHub Actions workflows. -#}
+
+{#- Renders a GitHub Actions expression, which cannot be written
+    literally since its delimiters clash with Jinja's. -#}
+{%- macro expr(e) -%}
+${{ '{{' }}{{ (' ' if e.splitlines() | first | trim else '') ~ e ~ (' ' if e.splitlines() | last | trim else '') }}}}
+{%- endmacro -%}

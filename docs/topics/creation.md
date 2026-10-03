@@ -104,6 +104,16 @@ python -m pre_commit install --install-hooks
 
 This ensures `pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files. To skip these checks temporarily, use `git commit --no-verify`.
 
+:::{note}
+Some hooks rely on prebuilt binaries that are unavailable for certain platforms. For example, `actionlint` (including its `shellcheck-py` dependency) and `ty` (which relies on `uv`, only generated when {question}`typing` is enabled) cannot be installed on FreeBSD. In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
+
+```bash
+export SKIP=actionlint,ty
+```
+
+The skipped hooks still run in CI, which executes on platforms with prebuilt binaries.
+:::
+
 ## First commit
 ```bash
 git add .

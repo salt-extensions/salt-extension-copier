@@ -25,7 +25,7 @@ repos:
         name: Check CLI examples on execution modules
         entry: python .pre-commit-hooks/check-cli-examples.py
         language: python
-        files: ^src/{{ namespaced_package_path }}/modules/.*\.py$
+        files: ^src/{{ namespaced_package_path }}/(resources/[^/]+/)?modules/.*\.py$
 
   - repo: local
     hooks:
@@ -124,7 +124,9 @@ repos:
         require_serial: true
         additional_dependencies:
           - nox=={{ versions["nox"] }}
-          - uv=={{ versions["uv"] }}  # Makes this hook much faster
+          # Speeds up this hook significantly. uv only ships wheels for these platforms;
+          # elsewhere (e.g. FreeBSD) nox falls back to the virtualenv backend.
+          - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
       - id: nox
         alias: lint-tests
@@ -135,7 +137,22 @@ repos:
         require_serial: true
         additional_dependencies:
           - nox=={{ versions["nox"] }}
-          - uv=={{ versions["uv"] }}  # Makes this hook much faster
+          # Speeds up this hook significantly. uv only ships wheels for these platforms;
+          # elsewhere (e.g. FreeBSD) nox falls back to the virtualenv backend.
+          - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
+
+{%- if typing %}
+
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: {{ versions["ty"] }}
+    hooks:
+      - id: ty
+        alias: typing
+        name: Typecheck Project
+        args:
+          - --isolated
+          - --extra=tests
+{%- endif %}
 
 {%- if "github.com" in source_url %}
 

@@ -3,8 +3,20 @@ Salt pkgfile module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
+
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
 __virtualname__ = "{{ package_name }}"
 
@@ -13,3 +25,57 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} pkgfile module is not implemented yet")
     return __virtualname__
+
+
+def init(**kwargs):
+    """
+    Initialize the package files storage and return a connection
+    handle, which is passed to most other functions as ``conn``.
+    """
+    raise NotImplementedError
+
+
+def check_existing(package, pkg_files, formula_def, conn=None):
+    """
+    Return a list of the target paths of package files that already
+    exist on the filesystem.
+    """
+    raise NotImplementedError
+
+
+def install_file(package, formula_tar, member, formula_def, conn=None):
+    """
+    Install a single file to the correct location on the filesystem.
+    Returns the directory it was installed into, or ``False`` if it
+    was skipped.
+    """
+    raise NotImplementedError
+
+
+def remove_file(path, conn=None):
+    """
+    Remove a single file from the filesystem.
+    """
+    raise NotImplementedError
+
+
+def hash_file(path, hashobj, conn=None):
+    """
+    Return the hexdigest hash value of a file, or an empty string for
+    directories.
+    """
+    raise NotImplementedError
+
+
+def path_exists(path):
+    """
+    Check whether the path exists on the filesystem.
+    """
+    raise NotImplementedError
+
+
+def path_isdir(path):
+    """
+    Check whether the path is a directory.
+    """
+    raise NotImplementedError

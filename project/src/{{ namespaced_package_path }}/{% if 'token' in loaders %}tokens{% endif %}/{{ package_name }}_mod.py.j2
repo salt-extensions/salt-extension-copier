@@ -3,8 +3,20 @@ Salt token module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
+
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
 __virtualname__ = "{{ package_name }}"
 
@@ -13,3 +25,34 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} token module is not implemented yet")
     return __virtualname__
+
+
+def mk_token(opts, tdata):
+    """
+    Create a new token, set its ``token`` key in ``tdata`` and store
+    the data. Returns the updated ``tdata``, or an empty dict on
+    failure.
+    """
+    raise NotImplementedError
+
+
+def get_token(opts, tok):
+    """
+    Return the data stored for a token, or an empty dict if it does
+    not exist.
+    """
+    raise NotImplementedError
+
+
+def rm_token(opts, tok):
+    """
+    Remove the token. Returns an empty dict on success.
+    """
+    raise NotImplementedError
+
+
+def list_tokens(opts):
+    """
+    Return an iterable of all token IDs in the store.
+    """
+    raise NotImplementedError

@@ -3,8 +3,20 @@ Salt auth module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltFunctions
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+
+    __salt__: SaltFunctions
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
 __virtualname__ = "{{ package_name }}"
 
@@ -13,3 +25,14 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} auth module is not implemented yet")
     return __virtualname__
+
+
+def auth(username, password):
+    """
+    Authenticate the user.
+
+    Salt matches this function's parameters by name against the
+    authentication load, so they must be named ``username`` and
+    ``password``. Return ``True`` to allow access, ``False`` to deny.
+    """
+    raise NotImplementedError

@@ -1,403 +1,48 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
+{%- from pathjoin("includes", "test-jobs.yml.j2") import runner_test_job, vm_test_job with context -%}
 ---
 name: Testing
 
 on:
   workflow_call:
+    inputs:
+      use-caches:
+        required: false
+        type: boolean
+        default: true
+        description: Whether dependency caches may be used. Disabled for release builds.
 
 jobs:
-{%- endraw %}
 {%- if "Linux" in os_support %}
-
-  Linux:
-    runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%-   raw %}
-    timeout-minutes: 30
-
-    strategy:
-      fail-fast: false
-{%-   endraw %}
-{%-   set test_matrix = [] %}
-{%-   set supported_seen = [] %}
-{%-   set lowest_pyver_included = [] %}
-{%-   for sver in range(salt_version_major, max_salt_version_major + 1) %}
-{%-     if supported_seen and not salt_python_support[sver]["supported"] %}
-{%-       continue %}
-{%-     elif salt_python_support[sver]["supported"] %}
-{%-       do supported_seen.append(true) %}
-{%-     endif %}
-
-{%-     if sver == max_salt_version_major %}
-{%-       set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
+{%-   if "Ubuntu" in linux_test_distros %}
+{#-     Keeps the historic `Linux` job ID, which existing repos may rely on
+        for required status checks. -#}
+{%-     if ubuntu_releases | length > 1 %}
+{{ runner_test_job("Linux", "ubuntu-" ~ expr("matrix.osrelease"), timeout=30, full=true, releases=ubuntu_releases, cap=12) }}
 {%-     else %}
-{%-       set sver_minor = salt_latest_point[sver] %}
+{{ runner_test_job("Linux", "ubuntu-" ~ ubuntu_releases | first, timeout=30, full=true, cap=12) }}
 {%-     endif %}
-
-{%-     if salt_python_support[sver]["lts"] %}
-{%-       set test_py_versions = [
-            (python_requires[1], salt_python_support[sver]["onedir"][1]) | max,
-            salt_python_support[sver]["max"][1]
-          ] %}
-{%-     else %}
-{%-       set test_py_versions = [(python_requires[1], salt_python_support[sver]["onedir"][1]) | max] %}
-{%-     endif %}
-{%-     if not lowest_pyver_included %}
-{%-       do test_py_versions.append((python_requires[1], salt_python_support[sver]["min"][1]) | max) %}
-{%-       do lowest_pyver_included.append(true) %}
-{%-     endif %}
-
-{%-     for pyver in test_py_versions | unique | sort  %}
-{%-       do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
-{%-     endfor %}
+{%-   endif %}
+{%-   set distro_releases = {
+        "Debian": debian_releases,
+        "Alpine": alpine_releases,
+        "AlmaLinux": almalinux_releases,
+        "Rocky Linux": rockylinux_releases,
+      } %}
+{%-   for distro, releases in distro_releases.items() if distro in linux_test_distros %}
+{%-     set vm_meta = os_meta["Linux"]["distros"][distro]["vm"] %}
+{{ vm_test_job(distro, vm_meta, releases, parametrized=not vm_meta.get("system_salt", false)) }}
 {%-   endfor %}
-      max-parallel: {{ (test_matrix | length, 12) | min }}
-      matrix:
-        include:
-{%-   for sver, pyver in test_matrix %}
-          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
-{%-   endfor %}
-
-    steps:
-      - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%-   raw %}
-        with:
-          fetch-depth: 2  # coverage: Issue detecting commit SHA
-
-      - name: Set up Python ${{ matrix.python-version }}
-{%-   endraw %}
-        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
-{%-   raw %}
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Nox
-        run: |
-          python -m pip install --upgrade pip
-          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
-        env:
-{%- endraw %}
-          NOX_VERSION: '{{ versions["nox"] }}'
-          UV_VERSION: '{{ versions["uv"] }}'
-{%- raw %}
-
-      - name: Install Test Requirements
-        env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
-        run: |
-          nox --force-color -e tests-3 --install-only
-
-      - name: Test
-        env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
-          SKIP_REQUIREMENTS_INSTALL: true
-        run: |
-          nox --force-color -e tests-3 -- -vv --instafail tests/
-
-      - name: Create CodeCov Flags
-        if: always()
-        id: codecov-flags
-        run: |
-          echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
-
-      - name: Upload Project Code Coverage
-{%-   endraw %}
-        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
-{%-   raw %}
-        with:
-          files: artifacts/coverage-project.xml
-          disable_search: true
-          fail_ci_if_error: false
-          flags: ${{ steps.codecov-flags.outputs.flags }},project
-          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-          use_oidc: true
-{%-   endraw %}
-          version: {{ versions["codecov_cli"] }}
-{%-   raw %}
-
-      - name: Upload Tests Code Coverage
-{%-   endraw %}
-        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
-{%-   raw %}
-        with:
-          files: artifacts/coverage-tests.xml
-          disable_search: true
-          fail_ci_if_error: false
-          flags: ${{ steps.codecov-flags.outputs.flags }},tests
-          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-          use_oidc: true
-{%-   endraw %}
-          version: {{ versions["codecov_cli"] }}
-{%-   raw %}
-
-      - name: Upload Logs
-        if: always()
-{%-   endraw %}
-        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%-   raw %}
-        with:
-          name: runtests-${{ runner.os }}-py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}.log
-          path: artifacts/runtests-*.log
-
-      - name: Upload Exit Status
-        if: always()
-        uses: ./.github/actions/upload-exitstatus
-        with:
-          name: ${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
-{%-   endraw %}
 {%- endif %}
 {%- if "Windows" in os_support %}
-
-  Windows:
-    runs-on: windows-{{ versions["windows"] }}
-{%-   raw %}
-    timeout-minutes: 40
-
-    strategy:
-      fail-fast: false
-{%-   endraw %}
-{%-   set test_matrix = [] %}
-{%-   set supported_seen = [] %}
-{%-   for sver in range(salt_version_major, max_salt_version_major + 1) %}
-{%-     if supported_seen and not salt_python_support[sver]["supported"] %}
-{%-       continue %}
-{%-     elif salt_python_support[sver]["supported"] %}
-{%-       do supported_seen.append(true) %}
-{%-     endif %}
-
-{%-     if sver == max_salt_version_major %}
-{%-       set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
-{%-     else %}
-{%-       set sver_minor = salt_latest_point[sver] %}
-{%-     endif %}
-
-{%-     set pyver = (python_requires[1], salt_python_support[sver]["onedir"][1]) | max %}
-{%-     do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
-{%-   endfor %}
-      max-parallel: {{ (test_matrix | length, 3) | min }}
-      matrix:
-        include:
-{%-   for sver, pyver in test_matrix %}
-          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
-{%-   endfor %}
-
-    steps:
-      - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%-   raw %}
-        with:
-          fetch-depth: 2
-
-      - name: Set up Python ${{ matrix.python-version }}
-{%-   endraw %}
-        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
-{%-   raw %}
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Nox
-        run: |
-          python -m pip install --upgrade pip
-          pip install "nox==$env:NOX_VERSION" "uv==$env:UV_VERSION"
-        env:
-{%- endraw %}
-          NOX_VERSION: '{{ versions["nox"] }}'
-          UV_VERSION: '{{ versions["uv"] }}'
-{%- raw %}
-
-      - name: Install Test Requirements
-        shell: bash
-        env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
-          # EXTRA_REQUIREMENTS_INSTALL: Cython
-        run: |
-          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
-          nox --force-color -e tests-3 --install-only
-
-      - name: Test
-        shell: bash
-        env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
-          SKIP_REQUIREMENTS_INSTALL: true
-        run: |
-          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
-          nox --force-color -e tests-3 -- -vv --instafail tests/
-
-      - name: Create CodeCov Flags
-        if: always()
-        id: codecov-flags
-        run: |
-          echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
-
-      - name: Upload Project Code Coverage
-{%-   endraw %}
-        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
-{%-   raw %}
-        with:
-          files: artifacts/coverage-project.xml
-          disable_search: true
-          fail_ci_if_error: false
-          flags: ${{ steps.codecov-flags.outputs.flags }},project
-          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-          use_oidc: true
-{%-   endraw %}
-          version: {{ versions["codecov_cli"] }}
-{%-   raw %}
-
-      - name: Upload Tests Code Coverage
-{%-   endraw %}
-        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
-{%-   raw %}
-        with:
-          files: artifacts/coverage-tests.xml
-          disable_search: true
-          fail_ci_if_error: false
-          flags: ${{ steps.codecov-flags.outputs.flags }},tests
-          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-          use_oidc: true
-{%-   endraw %}
-          version: {{ versions["codecov_cli"] }}
-{%-   raw %}
-
-      - name: Upload Logs
-        if: always()
-{%-   endraw %}
-        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%-   raw %}
-        with:
-          name: runtests-${{ runner.os }}-py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}.log
-          path: artifacts/runtests-*.log
-
-      - name: Upload Exit Status
-        if: always()
-        uses: ./.github/actions/upload-exitstatus
-        with:
-          name: ${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
-{%-   endraw %}
+{{ runner_test_job("Windows", "windows-" ~ versions["windows"], timeout=40, windows=true) }}
 {%- endif %}
-
 {%- if "macOS" in os_support %}
-
-  macOS:
-    runs-on: macos-{{ versions["macos"] }}
-{%-   raw %}
-    timeout-minutes: 40
-
-    strategy:
-      fail-fast: false
-{%-   endraw %}
-
-{%-   set test_matrix = [] %}
-{%-   set macos_pyver = [] %}
-{%-   set supported_seen = [] %}
-{%-   for sver in range(salt_version_major, max_salt_version_major + 1) %}
-{%-     if supported_seen and not salt_python_support[sver]["supported"] %}
-{%-       continue %}
-{%-     elif salt_python_support[sver]["supported"] %}
-{%-       do supported_seen.append(true) %}
-{%-     endif %}
-
-{%-     if sver == max_salt_version_major %}
-{%-       set sver_minor = (salt_latest_point[sver], max_salt_version_minor) | min %}
-{%-     else %}
-{%-       set sver_minor = salt_latest_point[sver] %}
-{%-     endif %}
-
-{%-     set pyver = (python_requires[1], salt_python_support[sver]["onedir"][1]) | max %}
-{%-     do test_matrix.append(("{}.{}".format(sver, sver_minor), "3.{}".format(pyver))) %}
-{%-   endfor %}
-      max-parallel: {{ (test_matrix | length, 3) | min }}
-      matrix:
-        include:
-{%-   for sver, pyver in test_matrix %}
-          - {salt-version: "{{ sver }}", python-version: "{{ pyver }}"}
-{%-   endfor %}
-{%-   raw %}
-
-    steps:
-{%-   endraw %}
-      - uses: actions/checkout@{{ versions["actions/checkout"] }}
-{%-   raw %}
-        with:
-          fetch-depth: 2
-
-      - name: Set up Python ${{ matrix.python-version }}
-{%-   endraw %}
-        uses: actions/setup-python@{{ versions["actions/setup-python"] }}
-{%-   raw %}
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Nox
-        run: |
-          python -m pip install --upgrade pip
-          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
-        env:
-{%- endraw %}
-          NOX_VERSION: '{{ versions["nox"] }}'
-          UV_VERSION: '{{ versions["uv"] }}'
-{%- raw %}
-
-      - name: Install Test Requirements
-        env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
-        run: |
-          nox --force-color -e tests-3 --install-only
-
-      - name: Test
-        env:
-          SALT_REQUIREMENT: salt==${{ matrix.salt-version }}
-          SKIP_REQUIREMENTS_INSTALL: true
-        run: |
-          nox --force-color -e tests-3 -- -vv --instafail tests/
-
-      - name: Create CodeCov Flags
-        if: always()
-        id: codecov-flags
-        run: |
-          echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('${{ runner.os }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '${{ matrix.salt-version }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
-
-      - name: Upload Project Code Coverage
-{%-   endraw %}
-        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
-{%-   raw %}
-        with:
-          files: artifacts/coverage-project.xml
-          disable_search: true
-          fail_ci_if_error: false
-          flags: ${{ steps.codecov-flags.outputs.flags }},project
-          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-project
-          use_oidc: true
-{%-   endraw %}
-          version: {{ versions["codecov_cli"] }}
-{%-   raw %}
-
-      - name: Upload Tests Code Coverage
-{%-   endraw %}
-        uses: codecov/codecov-action@{{ versions["codecov/codecov-action"] }}
-{%-   raw %}
-        with:
-          files: artifacts/coverage-tests.xml
-          disable_search: true
-          fail_ci_if_error: false
-          flags: ${{ steps.codecov-flags.outputs.flags }},tests
-          name: ${{ runner.os }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}-tests
-          use_oidc: true
-{%-   endraw %}
-          version: {{ versions["codecov_cli"] }}
-{%-   raw %}
-
-      - name: Upload Logs
-        if: always()
-{%-   endraw %}
-        uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
-{%-   raw %}
-        with:
-          name: runtests-${{ runner.os }}-py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}.log
-          path: artifacts/runtests-*.log
-
-      - name: Upload Exit Status
-        if: always()
-        uses: ./.github/actions/upload-exitstatus
-        with:
-          name: ${{ github.job }}-Py${{ matrix.python-version }}-Salt${{ matrix.salt-version }}
-{%-   endraw %}
+{{ runner_test_job("macOS", "macos-" ~ versions["macos"], timeout=40) }}
+{%- endif %}
+{%- if "FreeBSD" in os_support %}
+{{ vm_test_job("FreeBSD", os_meta["FreeBSD"]["vm"], freebsd_releases) }}
+{%- endif %}
+{%- if "OpenBSD" in os_support %}
+{{ vm_test_job("OpenBSD", os_meta["OpenBSD"]["vm"], openbsd_releases) }}
 {%- endif %}

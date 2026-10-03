@@ -1,0 +1,101 @@
+"""
+Salt resource module
+
+The resources subsystem was introduced in Salt 3008.0. On older
+releases, this module stays dormant: ``__virtual__`` returns false and
+the loader skips it.
+"""
+
+import importlib.util
+import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltContext
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltResource
+
+    __context__: SaltContext
+    __resource__: SaltResource
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
+
+log = logging.getLogger(__name__)
+{%- endif %}
+
+__virtualname__ = "{{ package_name }}"
+
+CONTEXT_KEY = "{{ package_name }}_resource"
+
+
+def __virtual__():
+    if importlib.util.find_spec("salt.utils.resources") is None:
+        return False, "The resources subsystem requires Salt 3008.0 or newer"
+    return __virtualname__
+
+
+def init(opts):  # pylint: disable=unused-argument
+    """
+    Initialize this resource type. Called once per minion when the
+    resource type is loaded, before any per-resource operations.
+
+    Establish shared connections here, if applicable. The type
+    configuration is usually read from the resource pillar subtree via
+    ``salt.utils.resources.pillar_resources_tree(opts)``.
+    """
+    __context__[CONTEXT_KEY] = {"initialized": True}
+
+
+def initialized():
+    """
+    Report whether ``init()`` has completed for this resource type.
+    """
+    return __context__.get(CONTEXT_KEY, {}).get("initialized", False)
+
+
+def discover(opts):
+    """
+    Return the list of bare resource IDs of this type that this minion
+    manages, e.g. ``["{{ package_name }}-01", "{{ package_name }}-02"]``.
+
+    Called by ``saltutil.refresh_resources`` to populate the master's
+    resource registry. The IDs are usually derived from the resource
+    pillar subtree (``salt.utils.resources.pillar_resources_tree(opts)``)
+    or discovered by querying the managed system.
+    """
+    raise NotImplementedError
+
+
+def grains():
+    """
+    Return the grains dict for the current resource.
+
+    The resource currently being operated on is available via the
+    ``__resource__`` dunder.
+    """
+    return {"{{ package_name }}_resource_id": __resource__["id"]}
+
+
+def grains_refresh():
+    """
+    Invalidate cached grains for the current resource and return a
+    freshly generated grains dict.
+    """
+    return grains()
+
+
+def ping():
+    """
+    Report whether the current resource is reachable.
+    """
+    return True
+
+
+def shutdown(opts):  # pylint: disable=unused-argument
+    """
+    Tear down this resource type when the minion shuts down or the
+    resource type is unloaded.
+    """
+    __context__.pop(CONTEXT_KEY, None)

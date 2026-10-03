@@ -3,13 +3,72 @@ Salt cache module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
+
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
 __virtualname__ = "{{ package_name }}"
+__func_alias__ = {"list_": "list"}
 
 
 def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} cache module is not implemented yet")
     return __virtualname__
+
+
+def store(bank, key, data):
+    """
+    Store data in the cache.
+    """
+    raise NotImplementedError
+
+
+def fetch(bank, key):
+    """
+    Fetch data from the cache. Returns an empty dict if the key does
+    not exist.
+    """
+    raise NotImplementedError
+
+
+def updated(bank, key):
+    """
+    Return the epoch of the last time the key was modified, or ``None``
+    if it does not exist.
+    """
+    raise NotImplementedError
+
+
+def flush(bank, key=None):
+    """
+    Remove a key from the cache. If ``key`` is None, remove the
+    complete bank.
+    """
+    raise NotImplementedError
+
+
+def list_(bank):
+    """
+    Return an iterable of all keys in a bank.
+    """
+    raise NotImplementedError
+
+
+def contains(bank, key):
+    """
+    Check whether a key exists in a bank. If ``key`` is None, check
+    whether the bank itself exists.
+    """
+    raise NotImplementedError

@@ -1,0 +1,34 @@
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
+---
+name: Clear Actions Caches
+
+on:
+  workflow_dispatch:
+    inputs:
+      key:
+        description: Only delete the cache with this key. Deletes all caches when empty.
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  actions: write
+
+jobs:
+  clear-caches:
+    name: Clear Actions Caches
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+
+    steps:
+      - name: Clear caches
+        env:
+          GH_TOKEN: {{ expr("github.token") }}
+          KEY: {{ expr("inputs.key") }}
+        run: |
+          if [ -n "$KEY" ]; then
+            gh cache delete --repo "$GITHUB_REPOSITORY" "$KEY"
+          elif [ "$(gh cache list --repo "$GITHUB_REPOSITORY" --limit 1 --json id --jq length)" = "0" ]; then
+            echo "No caches to delete"
+          else
+            gh cache delete --repo "$GITHUB_REPOSITORY" --all
+          fi

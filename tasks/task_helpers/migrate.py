@@ -1,7 +1,12 @@
+import functools
 import os
+import re
+import subprocess
 
+import yaml
 from packaging.version import Version
 
+from .copier import TEMPLATE_ROOT
 from .copier import load_copier_conf
 from .pythonpath import project_tools
 
@@ -19,6 +24,33 @@ STAGE = os.environ["STAGE"]
 
 MIGRATIONS = []
 COPIER_CONF = load_copier_conf()
+
+
+@functools.cache
+def load_old_data_yaml(name):
+    """
+    Load a file in the template root `data` directory as of the
+    template version that is being updated from.
+    Returns None if it cannot be retrieved (e.g. it did not exist).
+    """
+    # VERSION_FROM is the `git describe` output for the template
+    # version the project is on. When it's not exactly on a tag,
+    # extract the commit hash.
+    ref = os.environ.get("VERSION_FROM", "")
+    if match := re.search(r"-g([0-9a-f]+)$", ref):
+        ref = match.group(1)
+    if not ref:
+        return None
+    try:
+        old = subprocess.run(
+            ["git", "-C", str(TEMPLATE_ROOT), "show", f"{ref}:data/{name}.yaml"],
+            capture_output=True,
+            check=True,
+            text=True,
+        ).stdout
+        return yaml.safe_load(old)
+    except (OSError, subprocess.CalledProcessError, yaml.YAMLError):
+        return None
 
 
 def run_migrations():

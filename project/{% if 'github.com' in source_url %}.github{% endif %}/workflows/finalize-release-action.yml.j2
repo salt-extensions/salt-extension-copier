@@ -1,0 +1,111 @@
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
+# Finalizes a release after the packages were published to PyPI:
+# creates the GitHub release{{ " and deploys the docs" if deploy_docs in ["rolling", "release"] else "" }}.
+#
+# These jobs are kept out of deploy-package-action.yml on purpose:
+# that workflow is registered as the PyPI Trusted Publisher and
+# should contain as little code as possible.
+---
+name: Finalize Release
+
+on:
+  workflow_run:
+    types:
+      - completed
+    workflows:
+      - Release Salt Extension Python Package
+
+jobs:
+  get_release_meta:
+    name: Get release metadata
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+    if: github.event.workflow_run.conclusion == 'success'
+    permissions:
+      actions: read
+    outputs:
+      version: {{ expr("steps.meta.outputs.version") }}
+      source-run-id: {{ expr("steps.meta.outputs.source-run-id") }}
+
+    steps:
+      # The triggering workflow also completes successfully when all its
+      # jobs were skipped, e.g. because its own triggering run failed or
+      # the release was handled via the tag push event instead. In that
+      # case, nothing was published and this workflow has nothing to do.
+      - name: Check triggering workflow for release metadata
+        id: check-meta
+        env:
+          GH_TOKEN: {{ expr("secrets.GITHUB_TOKEN") }}
+          RUN_ID: {{ expr("github.event.workflow_run.id") }}
+        run: |-
+          artifacts="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$RUN_ID/artifacts" --paginate --jq '.artifacts[].name')"
+          if grep -qx 'release-meta' <<< "$artifacts"; then
+            echo "available=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=0" >> "$GITHUB_OUTPUT"
+            echo "::notice::No release metadata found, assuming the triggering run did not publish a release."
+          fi
+
+      - name: Download release metadata
+        uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
+        if: steps.check-meta.outputs.available == '1'
+        with:
+          name: release-meta
+          path: {{ expr("runner.temp") }}/release-meta
+          github-token: {{ expr("secrets.GITHUB_TOKEN") }}
+          run-id: {{ expr("github.event.workflow_run.id") }}
+
+      - name: Read release metadata
+        id: meta
+        if: steps.check-meta.outputs.available == '1'
+        run: |-
+          echo "version=$(cat "$RUNNER_TEMP/release-meta/version.txt")" >> "$GITHUB_OUTPUT"
+          echo "source-run-id=$(cat "$RUNNER_TEMP/release-meta/source-run-id.txt")" >> "$GITHUB_OUTPUT"
+
+  gh_release:
+    name: Create GitHub release
+    runs-on: ubuntu-{{ versions["ubuntu"] }}
+    needs:
+      - get_release_meta
+    # Skip (together with all dependent jobs) when the triggering workflow
+    # did not publish a release.
+    if: needs.get_release_meta.outputs.version != ''
+    permissions:
+      actions: read
+      contents: write
+
+    steps:
+      - name: Download verified packages
+        uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
+        with:
+          name: salt-extension-packages
+          path: dist
+          github-token: {{ expr("secrets.GITHUB_TOKEN") }}
+          run-id: {{ expr("github.event.workflow_run.id") }}
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: {{ expr("secrets.GITHUB_TOKEN") }}
+          VERSION: {{ expr("needs.get_release_meta.outputs.version") }}
+        run: |
+          gh release create "v$VERSION" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} $VERSION" \
+              --generate-notes \
+              dist/*
+{%- if deploy_docs in ["rolling", "release"] %}
+
+  docs_release:
+    name: Deploy Docs
+    uses: ./.github/workflows/deploy-docs-action.yml
+    needs:
+      - get_release_meta
+    if: needs.get_release_meta.outputs.version != ''
+    with:
+      # The docs artifact is hosted by the original CI run, two
+      # `workflow_run` hops back.
+      run-id: {{ expr("needs.get_release_meta.outputs.source-run-id") }}
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+{%- endif %}

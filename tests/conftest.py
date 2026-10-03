@@ -73,6 +73,16 @@ def workflows(source_url, request):
     return getattr(request, "param", default)
 
 
+@pytest.fixture
+def os_support(request):
+    return getattr(request, "param", None) or ["Linux", "Windows", "macOS"]
+
+
+@pytest.fixture
+def typing_(request):
+    return getattr(request, "param", False)
+
+
 @pytest.fixture(params=((),))
 def answers(
     author,
@@ -84,6 +94,8 @@ def answers(
     project_name,
     venv_python,
     workflows,
+    os_support,
+    typing_,
     request,
 ):
     defaults = {
@@ -95,11 +107,25 @@ def answers(
         "salt_version": salt_version,
         "max_salt_version": max_salt_version,
         "workflows": workflows,
+        "os_support": os_support,
+        "typing": typing_,
     }
     if venv_python is not None:
         defaults["venv_python"] = venv_python
     defaults.update(request.param)
     return {k: v for k, v in defaults.items() if v is not None}
+
+
+@pytest.fixture(autouse=True, scope="session")
+def scrub_skip_requirements_install():
+    # The repository's own CI workflow sets this for the outer nox `tests`
+    # session. It must not leak into the generated projects' nox and
+    # pre-commit invocations, which need to install their requirements.
+    # Subprocesses are spawned both via plumbum (git/pre-commit hooks) and
+    # subprocess (ProjectVenv), so scrub both environments.
+    with local.env(SKIP_REQUIREMENTS_INSTALL=""):
+        os.environ.pop("SKIP_REQUIREMENTS_INSTALL", None)
+        yield
 
 
 @pytest.fixture(params=(True,))

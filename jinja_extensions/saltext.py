@@ -49,9 +49,15 @@ class SaltExt(ContextHook):  # pylint: disable=abstract-method
         self.versions = yaml.safe_load(
             (Path(__file__).parent.parent / "data" / "versions.yaml").read_text()
         )
+        self.os_meta = yaml.safe_load(
+            (Path(__file__).parent.parent / "data" / "os_support.yaml").read_text()
+        )
 
     def hook(self, context):
-        if "python_requires" in context:
+        # The hook can run multiple times for a single render when
+        # other templates are imported (e.g. the `includes` dir),
+        # so the conversion needs to be idempotent.
+        if isinstance(context.get("python_requires"), str):
             context["python_requires"] = tuple(
                 int(x) for x in context["python_requires"].split(".")
             )
@@ -61,6 +67,7 @@ class SaltExt(ContextHook):  # pylint: disable=abstract-method
                 "singular_loader_dirs": SINGULAR_LOADER_DIRS,
                 "salt_latest_point": copy.deepcopy(self.slp),
                 "versions": copy.deepcopy(self.versions),
+                "os_meta": copy.deepcopy(self.os_meta),
             }
         )
 

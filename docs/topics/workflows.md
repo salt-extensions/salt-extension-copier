@@ -55,8 +55,11 @@ in the top right corner, then `Your projects`. In the left menu, select `Publish
 Scroll down until you see `Add a new pending publisher`. Select `GitHub` (should be selected by default).
 Specify a PyPI project name, the name of the GitHub organization/user account that owns the repository
 and the repository name. As `Workflow name`, fill in `deploy-package-action.yml`.
+It is recommended to also fill in `release` as the `Environment name`, which ensures publish
+tokens are only valid when minted from the protected [release environment](actions-release-environment-target).
 
-Repeat the above steps for `test.pypi.org`.
+Repeat the above steps for `test.pypi.org`, but leave the `Environment name` empty there
+since the Test PyPI publishing job does not run in an environment.
 
 #### Legacy API token
 Alternatively, you can add the following secrets:
@@ -68,12 +71,23 @@ Alternatively, you can add the following secrets:
 :   An [API token for TestPyPI](https://test.pypi.org/help/#apitoken) for testing the [release of your Saltext](publishing-target).
 
 (optional-secrets-target)=
-### Optional secrets (non-org)
+### GitHub App secrets (non-org)
 #### Release automation
-Without a dedicated GitHub App for autorelease PR creation,
-CI does not run on the autorelease PR because it is created by the default `GITHUB_TOKEN`.
-To allow CI to run, follow the steps described [here](https://github.com/peter-evans/create-pull-request#user-content-token) and add the following two secrets:
+The release workflows use a dedicated GitHub App:
+
+* CI runs on the autorelease PR. PRs created with the default `GITHUB_TOKEN` do not trigger workflows.
+* When the autorelease PR is merged, the release tag is pushed with the app's token,
+  meaning all releases are handled uniformly by the tag push workflow.
+
+When {question}`require_autorelease_app` is true (the default for repositories inside
+the `salt-extensions` organization, where the app is configured organization-wide),
+the workflows require the app and fail without it.
+Otherwise, they additionally support falling back to the default `GITHUB_TOKEN`,
+at the cost of a more complex release pipeline and no CI runs on the autorelease PR.
+
+To set up an app, follow the steps described [here](https://github.com/peter-evans/create-pull-request#user-content-token) and add the following two secrets:
 The app's client ID as `AUTORELEASE_CLID` and the generated private key as `AUTORELEASE_PRIV`.
+The app needs read and write permissions for the repository's `Contents` and `Pull requests`.
 
 ## Important artifacts
 

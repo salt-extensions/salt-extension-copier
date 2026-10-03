@@ -3,13 +3,34 @@ Salt matcher module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
+
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
-__virtualname__ = "{{ package_name }}"
+# Matcher modules are referenced by `<target type>_match`,
+# so the effective target type is the name without the suffix.
+__virtualname__ = "{{ package_name }}_match"
 
 
 def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} matcher module is not implemented yet")
     return __virtualname__
+
+
+def match(tgt, opts=None, minion_id=None):
+    """
+    Determine whether this minion is matched by the target expression.
+    """
+    raise NotImplementedError

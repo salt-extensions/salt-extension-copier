@@ -2,14 +2,21 @@
 Run migrations between template versions during updates.
 """
 
+from pathlib import Path
+
 from packaging.version import Version
 from task_helpers.copier import load_data_yaml
 from task_helpers.migrate import COPIER_CONF
+from task_helpers.migrate import load_old_data_yaml
 from task_helpers.migrate import migration
 from task_helpers.migrate import run_migrations
 from task_helpers.migrate import status
 from task_helpers.migrate import sync_minimum_version
 from task_helpers.migrate import var_migration
+from task_helpers.os_releases import RELEASE_QUESTIONS
+from task_helpers.os_releases import default_releases
+from task_helpers.os_releases import migrate_release_answer
+from task_helpers.os_releases import release_meta
 
 # 0.5.0 migrates all projects to the enhanced workflows, which
 # require accurate Salt versions to generate sensible test matrices.
@@ -41,6 +48,65 @@ def ensure_minimum_python_requires(answers):
         status(f"Answer migration: Updating python_requires from {current!r} to {new!r}")
         answers["python_requires"] = new
     return answers
+
+
+# The release choices offered by the `*_releases` questions change when
+# OS releases go EOL or are dropped/added in CI. During all updates,
+# follow the current default selection if the previous default was
+# chosen, otherwise drop releases that are not offered anymore.
+def _sync_release_answers(varname, path):
+    @var_migration(None, varname)
+    def _sync_releases(val):
+        os_support = load_data_yaml("os_support")
+        versions = load_data_yaml("versions")
+        old_default = None
+        if old_os_support := load_old_data_yaml("os_support"):
+            try:
+                old_default = default_releases(
+                    old_os_support, load_old_data_yaml("versions") or {}, path
+                )
+            except KeyError:
+                # The entry (or the Ubuntu runner pin) did not exist
+                pass
+        return migrate_release_answer(
+            val,
+            release_meta(os_support, path)["available"],
+            old_default,
+            default_releases(os_support, versions, path),
+        )
+
+    return _sync_releases
+
+
+for _varname, _path in RELEASE_QUESTIONS.items():
+    _sync_release_answers(_varname, _path)
+
+
+@migration("0.11.0", "before", desc=False)
+def migrate_0110_select_resource_loader(answers):
+    """
+    The template now supports the `resource` module type (Salt 3008+).
+    If the extension already ships resource modules created before
+    this, select the loader type automatically.
+    """
+    loaders = answers.get("loaders") or []
+    if "resource" in loaders or "package_name" not in answers:
+        return None
+    package_dir = Path("src")
+    if not answers.get("no_saltext_namespace"):
+        package_dir = package_dir / "saltext"
+    resources_dir = package_dir / answers["package_name"] / "resources"
+    if not resources_dir.is_dir():
+        return None
+    for path in resources_dir.rglob("*.py"):
+        # Any module other than an empty (dunder) init indicates resources
+        if path.name != "__init__.py" or path.read_text(encoding="utf-8").strip():
+            status(
+                "Answer migration: Selecting the `resource` loader type (resource modules found)"
+            )
+            answers["loaders"] = sorted({*loaders, "resource"})
+            return answers
+    return None
 
 
 @var_migration("0.9.1", "max_salt_version")

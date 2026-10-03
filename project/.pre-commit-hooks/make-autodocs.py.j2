@@ -1,5 +1,5 @@
 import ast
-import os.path
+import posixpath
 import subprocess
 from pathlib import Path
 
@@ -24,6 +24,9 @@ def _find_virtualname(path):
                 continue
             break
     else:
+        if path.name == "__init__.py":
+            # Resource type packages carry their connection module there
+            path = path.parent
         virtualname = path.with_suffix("").name
     return virtualname
 
@@ -52,15 +55,18 @@ def write_module(rst_path, header, paths):
 def write_index(index_rst, import_paths, kind):
     if kind == "utils":
         header_text = "Utilities"
-        common_path = os.path.commonpath(tuple(x.replace(".", "/") for x in import_paths)).replace(
+    else:
+        header_text = (
+            "execution modules" if kind.lower() == "modules" else kind.rstrip("s") + " modules"
+        )
+    if kind in ("utils", "resources"):
+        # These can contain nested modules, so find the common parent
+        common_path = posixpath.commonpath(tuple(x.replace(".", "/") for x in import_paths)).replace(
             "/", "."
         )
         if any(x == common_path for x in import_paths):
             common_path = common_path[: common_path.rfind(".")]
     else:
-        header_text = (
-            "execution modules" if kind.lower() == "modules" else kind.rstrip("s") + " modules"
-        )
         common_path = import_paths[0][: import_paths[0].rfind(".")]
     header = f"{'_'*len(header_text)}\n{header_text.title()}\n{'_'*len(header_text)}"
     index_contents = f"""\
@@ -88,17 +94,37 @@ def make_import_path(path):
     return ".".join(path.relative_to(repo_path / "src").with_suffix("").parts)
 
 
+tracked = set(
+    subprocess.check_output(["git", "ls-files", "-z"], text=True, cwd=repo_path).split("\x00")
+)
+
 for path in src_dir.glob("*/*.py"):
-    if path.name != "__init__.py":
+    if path.name != "__init__.py" and path.relative_to(repo_path).as_posix() in tracked:
         kind = path.parent.name
-        if kind != "utils":
+        if kind not in ("utils", "resources"):
             docs_by_kind.setdefault(kind, set()).add(path)
 
 # Utils can have subdirectories, treat them separately
 for path in (src_dir / "utils").rglob("*.py"):
+    if path.relative_to(repo_path).as_posix() not in tracked:
+        continue
     if path.name == "__init__.py" and not path.read_text():
         continue
     docs_by_kind.setdefault("utils", set()).add(path)
+
+# Resource types can be packages containing per-type loader overlay
+# directories (resources/<rtype>/{modules,states,grains,...}), treat
+# them separately
+for path in (src_dir / "resources").rglob("*.py"):
+    if path.relative_to(repo_path).as_posix() not in tracked:
+        continue
+    if path.name == "__init__.py":
+        # Only a resource type package's own __init__.py is a loader
+        # module (the connection module), the other ones are packaging
+        # artifacts.
+        if path.parent.parent != src_dir / "resources" or not path.read_text():
+            continue
+    docs_by_kind.setdefault("resources", set()).add(path)
 
 
 def _group_by_virtualname(paths):
@@ -110,10 +136,34 @@ def _group_by_virtualname(paths):
     # rst file is named after.
     for virtualname, group in grouped.items():
         for path in group:
-            if path.stem in (virtualname, virtualname + "_mod"):
+            stem = path.parent.name if path.name == "__init__.py" else path.stem
+            if stem in (virtualname, virtualname + "_mod"):
                 group.remove(path)
                 group.insert(0, path)
                 break
+    return grouped
+
+
+def _group_resources(paths):
+    """
+    Group resource modules by namespace first. Flat modules and package
+    connection modules share the ``resources`` loader namespace, while
+    each overlay directory (``resources/<rtype>/<loader_dir>/``) forms
+    a separate one.
+    """
+    resources_dir = src_dir / "resources"
+    by_namespace = {}
+    for path in paths:
+        if path.name == "__init__.py":
+            namespace = ()
+        else:
+            namespace = path.parent.relative_to(resources_dir).parts
+        by_namespace.setdefault(namespace, set()).add(path)
+    grouped = {}
+    for namespace, namespace_paths in sorted(by_namespace.items()):
+        prefix = "".join(part + "." for part in namespace)
+        for virtualname, group in _group_by_virtualname(namespace_paths).items():
+            grouped[f"``{prefix}{virtualname}``"] = group
     return grouped
 
 
@@ -125,6 +175,8 @@ for kind in docs_by_kind:
     if kind == "utils":
         # Utils are documented under their import path, no grouping necessary
         grouped = {make_import_path(path): [path] for path in sorted(docs_by_kind[kind])}
+    elif kind == "resources":
+        grouped = _group_resources(docs_by_kind[kind])
     else:
         grouped = {
             f"``{virtualname}``": paths

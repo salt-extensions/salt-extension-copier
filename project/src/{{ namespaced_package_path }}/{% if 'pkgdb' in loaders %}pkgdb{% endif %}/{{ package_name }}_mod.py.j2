@@ -3,8 +3,20 @@ Salt pkgdb module
 """
 
 import logging
+{%- if typing %}
+import typing
+
+if typing.TYPE_CHECKING:
+    from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
+
+    __opts__: SaltOpts
+
+log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
+{%- else %}
 
 log = logging.getLogger(__name__)
+{%- endif %}
 
 __virtualname__ = "{{ package_name }}"
 
@@ -13,3 +25,72 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} pkgdb module is not implemented yet")
     return __virtualname__
+
+
+def init():
+    """
+    Initialize the package database and return a connection handle.
+    The object needs a ``close`` method.
+    """
+    raise NotImplementedError
+
+
+def info(package, conn=None):
+    """
+    Return information (formula definition) about an installed
+    package, or ``None`` if it is not installed.
+    """
+    raise NotImplementedError
+
+
+def list_packages(conn=None):
+    """
+    Return a list of installed packages, each one a sequence whose
+    first item is the package name.
+    """
+    raise NotImplementedError
+
+
+def list_files(package, conn=None):
+    """
+    Return a list of files for an installed package, each one a
+    sequence whose first item is the file path, or ``None`` if the
+    package is not installed.
+    """
+    raise NotImplementedError
+
+
+def register_pkg(name, formula_def, conn=None):
+    """
+    Register a package in the database.
+    """
+    raise NotImplementedError
+
+
+def register_file(name, member, path, digest="", conn=None):
+    """
+    Register a file in the database. ``member`` is the ``TarInfo``
+    object of the file.
+    """
+    raise NotImplementedError
+
+
+def unregister_pkg(name, conn=None):
+    """
+    Unregister a package from the database.
+    """
+    raise NotImplementedError
+
+
+def unregister_file(path, pkg=None, conn=None):
+    """
+    Unregister a file from the database.
+    """
+    raise NotImplementedError
+
+
+def db_exists(db_):
+    """
+    Check whether the database file exists.
+    """
+    raise NotImplementedError

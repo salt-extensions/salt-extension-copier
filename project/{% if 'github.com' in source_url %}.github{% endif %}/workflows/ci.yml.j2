@@ -1,9 +1,15 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: CI
 
 on:
   workflow_call:
+    inputs:
+      use-caches:
+        required: false
+        type: boolean
+        default: true
+        description: Whether dependency caches may be used. Disabled for release builds.
 
 jobs:
   get-changed-files:
@@ -19,7 +25,8 @@ jobs:
       - get-changed-files
     uses: ./.github/workflows/pre-commit-action.yml
     with:
-      changed-files: ${{ needs.get-changed-files.outputs.changed-files }}
+      changed-files: {{ expr("needs.get-changed-files.outputs.changed-files") }}
+      use-caches: {{ expr("inputs.use-caches") }}
     permissions:
       contents: read
 
@@ -28,6 +35,8 @@ jobs:
     needs:
       - pre-commit
     uses: ./.github/workflows/test-action.yml
+    with:
+      use-caches: {{ expr("inputs.use-caches") }}
 
   docs:
     name: Docs
@@ -44,4 +53,3 @@ jobs:
     uses: ./.github/workflows/package-action.yml
     permissions:
       contents: read
-{%- endraw %}
