@@ -142,6 +142,21 @@ def sshd_server(salt_factories, sshd_config_dir):  # pragma: no cover
 
 @pytest.fixture(scope="module")
 def known_hosts_file(sshd_server, master, salt_factories):  # pragma: no cover
+{%- if typing %}
+    with (
+        pytest.helpers.temp_file(  # type: ignore
+            "ssh-known-hosts",
+            "\n".join(sshd_server.get_host_keys()),
+            salt_factories.tmp_root_dir,
+        ) as known_hosts_file,
+        pytest.helpers.temp_file(  # type: ignore
+            "master.d/ssh-known-hosts.conf",
+            f"known_hosts_file: {known_hosts_file}",
+            master.config_dir,
+        ),
+    ):
+        yield known_hosts_file
+{%- else %}
     with pytest.helpers.temp_file(
         "ssh-known-hosts",
         "\n".join(sshd_server.get_host_keys()),
@@ -152,6 +167,7 @@ def known_hosts_file(sshd_server, master, salt_factories):  # pragma: no cover
         master.config_dir,
     ):
         yield known_hosts_file
+{%- endif %}
 
 
 @pytest.fixture(scope="module")
@@ -167,7 +183,15 @@ def salt_ssh_roster_file(
     if salt.utils.platform.is_darwin():
         roster_contents += "  set_path: $PATH:/usr/local/bin/\n"
 
+{%- if typing %}
+
+    with pytest.helpers.temp_file(  # type: ignore
+        "roster", roster_contents, master.config_dir
+    ) as roster_file:
+{%- else %}
+
     with pytest.helpers.temp_file("roster", roster_contents, master.config_dir) as roster_file:
+{%- endif %}
         yield roster_file
 
 

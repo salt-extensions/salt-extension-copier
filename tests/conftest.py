@@ -78,6 +78,11 @@ def os_support(request):
     return getattr(request, "param", None) or ["Linux", "Windows", "macOS"]
 
 
+@pytest.fixture
+def typing_(request):
+    return getattr(request, "param", False)
+
+
 @pytest.fixture(params=((),))
 def answers(
     author,
@@ -90,6 +95,7 @@ def answers(
     venv_python,
     workflows,
     os_support,
+    typing_,
     request,
 ):
     defaults = {
@@ -102,6 +108,7 @@ def answers(
         "max_salt_version": max_salt_version,
         "workflows": workflows,
         "os_support": os_support,
+        "typing": typing_,
     }
     if venv_python is not None:
         defaults["venv_python"] = venv_python

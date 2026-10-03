@@ -141,6 +141,19 @@ repos:
           # elsewhere (e.g. FreeBSD) nox falls back to the virtualenv backend.
           - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
+{%- if typing %}
+
+  - repo: https://github.com/astral-sh/ty-pre-commit
+    rev: {{ versions["ty"] }}
+    hooks:
+      - id: ty
+        alias: typing
+        name: Typecheck Project
+        args:
+          - --isolated
+          - --extra=tests
+{%- endif %}
+
 {%- if "github.com" in source_url %}
 
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py

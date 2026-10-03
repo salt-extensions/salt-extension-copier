@@ -46,6 +46,12 @@ def _commit_with_pre_commit(git, venv, max_retry=3, message="initial commit"):
         raise AssertionError(msg)
 
 
+@pytest.mark.parametrize(
+    "typing_",
+    (False, True),
+    indirect=True,
+    ids=("default", "typing"),
+)
 def test_first_commit_works(project, project_venv, git):
     """
     Ensure the generated project can be committed after generation

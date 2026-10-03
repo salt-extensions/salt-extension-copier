@@ -19,6 +19,9 @@
 {% for loader in loaders %}
   ref/{{ loader.rstrip("s") + ("" if loader in singular_loader_dirs else "s") }}/index
   {%- endfor %}
+{%- if typing %}
+  ref/utils/index
+{%- endif %}
 
 .. toctree::
   :maxdepth: 2
