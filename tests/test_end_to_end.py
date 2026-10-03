@@ -79,8 +79,10 @@ def test_testsuite_works(project, project_venv):
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)
-def test_docs_build_works(project, project_venv):
+def test_docs_build_works(project, project_venv, git):
     with local.cwd(project.project_dir):
+        git("init")  # autodocs are not generated for untracked modules
+        git("add", "--intent-to-add", ".")
         for check in (False, True):
             project_venv.run(
                 project_venv.venv_python,
