@@ -25,3 +25,10 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} output module is not implemented yet")
     return __virtualname__
+
+
+def output(data, **kwargs):
+    """
+    Render the data into a string to display.
+    """
+    raise NotImplementedError

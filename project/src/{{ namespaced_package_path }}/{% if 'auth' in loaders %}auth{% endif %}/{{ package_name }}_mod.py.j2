@@ -25,3 +25,14 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} auth module is not implemented yet")
     return __virtualname__
+
+
+def auth(username, password):
+    """
+    Authenticate the user.
+
+    Salt matches this function's parameters by name against the
+    authentication load, so they must be named ``username`` and
+    ``password``. Return ``True`` to allow access, ``False`` to deny.
+    """
+    raise NotImplementedError

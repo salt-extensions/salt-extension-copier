@@ -7,10 +7,10 @@ import logging
 import typing
 
 if typing.TYPE_CHECKING:
-    from {{ namespaced_package_pkg }}.utils._types import SaltFunctions
     from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
 
-    __salt__: SaltFunctions
+    __opts__: SaltOpts
 
 log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
 {%- else %}
@@ -25,3 +25,12 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} roster module is not implemented yet")
     return __virtualname__
+
+
+def targets(tgt, tgt_type="glob", **kwargs):
+    """
+    Return a dict of target definitions matching the target
+    expression, keyed by target ID. Each value is a dict of connection
+    parameters, e.g. ``host``, ``user`` and ``port``.
+    """
+    raise NotImplementedError

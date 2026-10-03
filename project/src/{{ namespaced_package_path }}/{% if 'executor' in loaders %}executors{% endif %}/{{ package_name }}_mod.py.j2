@@ -25,3 +25,13 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} executor module is not implemented yet")
     return __virtualname__
+
+
+def execute(opts, data, func, args, kwargs):  # pylint: disable=unused-argument
+    """
+    Execute the function.
+
+    Returning ``None`` makes Salt fall through to the next configured
+    executor.
+    """
+    return func(*args, **kwargs)

@@ -19,9 +19,32 @@ log = logging.getLogger(__name__)
 {%- endif %}
 
 __virtualname__ = "{{ package_name }}"
+# This must be present for the module to be loadable
+__proxyenabled__ = ["{{ package_name }}"]
 
 
 def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} proxy module is not implemented yet")
     return __virtualname__
+
+
+def init(opts):
+    """
+    Initialize the connection to the proxied device.
+    """
+    raise NotImplementedError
+
+
+def ping():
+    """
+    Report whether the proxied device is reachable.
+    """
+    return True
+
+
+def shutdown(opts):  # pylint: disable=unused-argument
+    """
+    Terminate the connection to the proxied device.
+    """
+    # Nothing to clean up yet

@@ -7,10 +7,10 @@ import logging
 import typing
 
 if typing.TYPE_CHECKING:
-    from {{ namespaced_package_pkg }}.utils._types import SaltFunctions
     from {{ namespaced_package_pkg }}.utils._types import SaltLogger
+    from {{ namespaced_package_pkg }}.utils._types import SaltOpts
 
-    __salt__: SaltFunctions
+    __opts__: SaltOpts
 
 log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
 {%- else %}
@@ -25,3 +25,45 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} queue module is not implemented yet")
     return __virtualname__
+
+
+def insert(queue, items):
+    """
+    Add items to the queue.
+    """
+    raise NotImplementedError
+
+
+def delete(queue, items):
+    """
+    Remove items from the queue.
+    """
+    raise NotImplementedError
+
+
+def list_queues():
+    """
+    Return a list of all queue names.
+    """
+    raise NotImplementedError
+
+
+def list_items(queue):
+    """
+    Return a list of all items in the queue.
+    """
+    raise NotImplementedError
+
+
+def list_length(queue):
+    """
+    Return the number of items in the queue.
+    """
+    raise NotImplementedError
+
+
+def pop(queue, quantity=1, is_runner=False):
+    """
+    Remove and return ``quantity`` items from the queue.
+    """
+    raise NotImplementedError

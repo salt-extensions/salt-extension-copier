@@ -25,3 +25,15 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} pillar module is not implemented yet")
     return __virtualname__
+
+
+def ext_pillar(minion_id, pillar, *args, **kwargs):
+    """
+    Return the pillar values to merge for this minion.
+
+    Positional and keyword arguments are passed through from the
+    corresponding ``ext_pillar`` master configuration. ``pillar``
+    contains the pillar compiled so far. Only return new or changed
+    values.
+    """
+    raise NotImplementedError

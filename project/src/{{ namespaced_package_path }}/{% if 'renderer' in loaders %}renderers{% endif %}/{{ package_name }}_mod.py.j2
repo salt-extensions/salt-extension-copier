@@ -25,3 +25,15 @@ def __virtual__():
     # To force a module not to load return something like:
     #   return (False, "The {{ project_name }} renderer module is not implemented yet")
     return __virtualname__
+
+
+def render(data, saltenv="base", sls="", **kwargs):
+    """
+    Render the template data.
+
+    ``data`` is a file-like object or string containing the output of
+    the previous renderer in the pipeline, or the raw template.
+    Returns the rendered result, which is passed to the next renderer
+    or, for the final one in the pipeline, used as the parsed data.
+    """
+    raise NotImplementedError
