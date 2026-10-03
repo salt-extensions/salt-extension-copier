@@ -17,7 +17,11 @@ jobs:
 {%-   if "Ubuntu" in linux_test_distros %}
 {#-     Keeps the historic `Linux` job ID, which existing repos may rely on
         for required status checks. -#}
+{%-     if ubuntu_releases | length > 1 %}
 {{ runner_test_job("Linux", "ubuntu-" ~ expr("matrix.osrelease"), timeout=30, full=true, releases=ubuntu_releases, cap=12) }}
+{%-     else %}
+{{ runner_test_job("Linux", "ubuntu-" ~ ubuntu_releases | first, timeout=30, full=true, cap=12) }}
+{%-     endif %}
 {%-   endif %}
 {%-   set distro_releases = {
         "Debian": debian_releases,

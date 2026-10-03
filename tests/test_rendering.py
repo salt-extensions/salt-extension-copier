@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 import yaml
 
@@ -83,10 +85,14 @@ def test_test_workflow_os_jobs(project, os_support):
     assert set(jobs) == expected
     if "Linux" in expected:
         ubuntu = jobs["Linux"]
-        assert ubuntu["runs-on"] == "ubuntu-${{ matrix.osrelease }}"
+        # The default single Ubuntu release is rendered directly into
+        # `runs-on`, without an `osrelease` matrix dimension
+        release = yaml.safe_load(Path("data/versions.yaml").read_text("utf8"))["ubuntu"]
+        assert ubuntu["runs-on"] == f"ubuntu-{release}"
         includes = ubuntu["strategy"]["matrix"]["include"]
         assert includes
-        assert all({"salt-version", "python-version", "osrelease"} <= set(e) for e in includes)
+        assert all({"salt-version", "python-version"} <= set(e) for e in includes)
+        assert not any("osrelease" in e for e in includes)
     for os_name in set(os_support) & {"FreeBSD", "OpenBSD"}:
         steps = jobs[os_name]["steps"]
         start_vm = next(step for step in steps if step.get("name") == "Start VM")
@@ -169,7 +175,10 @@ def test_test_workflow_distro_jobs(project):
 def test_test_workflow_ubuntu_releases(project):
     workflow = project.project_dir / ".github" / "workflows" / "test-action.yml"
     jobs = yaml.safe_load(workflow.read_text())["jobs"]
-    includes = jobs["Linux"]["strategy"]["matrix"]["include"]
+    linux = jobs["Linux"]
+    # Multiple selected releases span an `osrelease` matrix dimension
+    assert linux["runs-on"] == "ubuntu-${{ matrix.osrelease }}"
+    includes = linux["strategy"]["matrix"]["include"]
     assert {entry["osrelease"] for entry in includes} == {"24.04", "22.04"}
 
 
