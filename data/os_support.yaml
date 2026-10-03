@@ -83,7 +83,9 @@ Linux:
           - "10"
           - "9"
         prepare: |
-          dnf install -y ca-certificates python3-pip
+          # gcc: sdist-only test dependencies (e.g. timelib on the
+          # newest Python before wheels are published) need a compiler
+          dnf install -y ca-certificates python3-pip gcc
           env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "uv=={uv_version}"
           env UV_TOOL_BIN_DIR=/usr/local/bin uv tool install "nox=={nox_version}"
     Rocky Linux:
@@ -94,7 +96,9 @@ Linux:
           - "10"
           - "9"
         prepare: |
-          dnf install -y ca-certificates python3-pip
+          # gcc: sdist-only test dependencies (e.g. timelib on the
+          # newest Python before wheels are published) need a compiler
+          dnf install -y ca-certificates python3-pip gcc
           env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "uv=={uv_version}"
           env UV_TOOL_BIN_DIR=/usr/local/bin uv tool install "nox=={nox_version}"
 macOS:
