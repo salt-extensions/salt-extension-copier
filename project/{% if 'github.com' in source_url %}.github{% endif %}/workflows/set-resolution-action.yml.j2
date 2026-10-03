@@ -1,4 +1,3 @@
-{%- raw -%}
 ---
 name: Set the CI Pipeline Exit Status
 
@@ -10,17 +9,13 @@ jobs:
     # This step is just so we can make github require this step, to pass checks
     # on a pull request instead of requiring all
     name: Set the CI Pipeline Exit Status
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
     if: always()
 
     steps:
       - name: Download Exit Status Files
         if: always()
-{%- endraw %}
         uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
-{%- raw %}
         with:
           path: exitstatus
           pattern: exitstatus-*
@@ -28,9 +23,7 @@ jobs:
 
       - name: Delete Exit Status Artifacts
         if: always()
-{%- endraw %}
         uses: geekyeggo/delete-artifact@{{ versions["geekyeggo/delete-artifact"] }}
-{%- raw %}
         with:
           name: exitstatus-*
           useGlob: true
@@ -46,4 +39,3 @@ jobs:
         if: always()
         run: |
           echo "All workflows finished"
-{%- endraw %}

@@ -1,4 +1,4 @@
-{%- raw -%}
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: Clear Actions Caches
 
@@ -17,15 +17,13 @@ permissions:
 jobs:
   clear-caches:
     name: Clear Actions Caches
-{%- endraw %}
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-{%- raw %}
 
     steps:
       - name: Clear caches
         env:
-          GH_TOKEN: ${{ github.token }}
-          KEY: ${{ inputs.key }}
+          GH_TOKEN: {{ expr("github.token") }}
+          KEY: {{ expr("inputs.key") }}
         run: |
           if [ -n "$KEY" ]; then
             gh cache delete --repo "$GITHUB_REPOSITORY" "$KEY"
@@ -34,4 +32,3 @@ jobs:
           else
             gh cache delete --repo "$GITHUB_REPOSITORY" --all
           fi
-{%- endraw %}
