@@ -97,7 +97,7 @@ jobs:
 {%- endif %}
         id: generate-token
         with:
-          app-id: {{ expr("secrets.AUTORELEASE_CLID") }}
+          client-id: {{ expr("secrets.AUTORELEASE_CLID") }}
           private-key: {{ expr("secrets.AUTORELEASE_PRIV") }}
 
       - name: Checkout code
