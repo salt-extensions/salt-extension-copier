@@ -37,6 +37,8 @@ topics/extraction
 
 ref/questions
 ref/layout
+ref/envvars
+ref/tools
 ref/concepts
 ref/changelog
 ```
