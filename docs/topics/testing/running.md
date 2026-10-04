@@ -44,6 +44,16 @@ Useful if you want to invoke a fancier debugger from the tests:
 EXTRA_REQUIREMENTS_INSTALL="ipdb" PYTHONBREAKPOINT="ipdb.set_trace" nox -e tests-3
 ```
 
+### Test against a specific Salt version
+
+```bash
+SALT_REQUIREMENT="salt~=3006.0" nox -e tests-3
+```
+
+:::{tip}
+{envvar}`SALT_REQUIREMENT` also understands upstream git refs: `salt==master` installs Salt from the `master` branch, release branch values like `salt==3007.x` from the corresponding release branch. This allows testing against unreleased changes.
+:::
+
 ### Test against system-wide packages
 
 Useful if some dependencies are only available as system packages, e.g. when developing OS-specific extensions:
