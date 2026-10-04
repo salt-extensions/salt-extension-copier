@@ -1,0 +1,1 @@
+The new {question}`typing` question also generates a {path}`utils/_types.py` module, providing type aliases for common Salt objects and importable typed declarations of most loader dunders. The generated loader module stubs import the ones they use inside `typing.TYPE_CHECKING` blocks.

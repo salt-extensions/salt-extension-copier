@@ -136,7 +136,7 @@ The maximum Salt version to support. Influences the Salt versions tests are run 
 Python version (MAJOR.MINOR) for the local development virtual environment.
 The default follows the latest supported Salt onedir release, which is the
 least likely to cause installation issues. Choose a different one if it is
-hard to come by on your platform.
+hard to come by on the target platform of your extension.
 
 :::{question} no_saltext_namespace
 :::
@@ -173,13 +173,12 @@ This question influences on which systems the tests are run and which `Operating
 :::{note}
 `macOS` and `Windows` tests run on native GitHub-hosted runners, `Linux`
 tests on the distributions selected in {question}`linux_test_distros`.
-`FreeBSD` and `OpenBSD` tests run inside VMs on Linux runners, courtesy of
-the [vmactions](https://github.com/vmactions) project. No Salt onedir
+`FreeBSD` and `OpenBSD` tests run inside VMs on Linux runners. No Salt onedir
 builds exist for these platforms, so instead of a Salt version matrix, the
 tests run against the Salt release packaged by the OS, like Python itself.
 The project's minimum Salt requirement acts as a lower bound: if the
 packaged release is older, the newest release satisfying it is installed
-from PyPI instead.
+from PyPI instead. This may fail because of missing build tools or libaries.
 
 For speed, the prepared VM images are cached between CI runs. On the
 platforms testing against the OS-packaged Salt release – the BSDs and
@@ -201,12 +200,11 @@ Select the Linux distributions the test suite runs on. The default of
 ones can select the distributions they target instead (or additionally).
 
 `Ubuntu` tests run on native GitHub-hosted runners (as the `Linux`
-workflow job), all other distributions run inside VMs on Linux runners,
-courtesy of the [vmactions](https://github.com/vmactions) project. In contrast to the
-BSD platforms, Linux distribution VMs run a parametrized Salt/Python
-version matrix (like `Windows` and `macOS`, each tested Salt release is
-paired with the newest Python version its onedir builds ship, which is
-provisioned on demand by `uv`). `Alpine` is the exception: since
+workflow job), all other distributions run inside VMs on Linux runners.
+In contrast to the BSD platforms, Linux distribution VMs run a parametrized
+Salt/Python version matrix (like `Windows` and `macOS`, each tested Salt release
+is paired with the newest Python version its onedir builds ship, which is
+provisioned on demand by {tool}`uv`). `Alpine` is the exception: since
 neither Salt onedir builds nor `musl` wheels for important binary
 dependencies exist, its tests run against the OS-packaged Salt release,
 like on the BSD platforms (see {question}`os_support`). Since each
@@ -221,6 +219,8 @@ must be skipped there and only execute in the `Ubuntu` jobs (see
 Not asked if `Linux` is not part of {question}`os_support`.
 :::
 
+:::{question} \*_releases
+:::
 :::{question} ubuntu_releases
 :::
 :::{question} debian_releases
@@ -352,10 +352,10 @@ alias `typing`), corresponding `[tool.ty.*]` configuration in
 
 Since Salt injects global dunders like `__salt__` into loader modules at
 runtime, static type checkers cannot resolve them by themselves. The
-template thus also generates a `utils/_types.py` module providing imports
+template thus also generates a {path}`utils/_types.py` module providing imports
 for common Salt dunder globals (such as `__salt__`, `__opts__`) and a
 `SaltLogger` class accounting for Salt's custom log levels.
-The generated loader module stubs declare the dunders they use
+The generated loader module stubs import the dunders they use
 inside `if typing.TYPE_CHECKING` blocks, a pattern you can extend as your
 modules grow. Which dunders are available – and what they contain –
 depends on the module type, see the Salt documentation on

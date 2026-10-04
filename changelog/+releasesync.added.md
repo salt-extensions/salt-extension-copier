@@ -1,0 +1,1 @@
+The selectable OS releases are limited to those that are still supported upstream and available in CI, kept in sync automatically by a scheduled workflow querying endoflife.date, the vmactions project and the GitHub runner images.

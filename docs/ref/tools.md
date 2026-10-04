@@ -116,7 +116,7 @@ Project-local hooks in {path}`.pre-commit-hooks`
 :::{tool} setuptools
 :::
 [setuptools](https://setuptools.pypa.io/en/latest/)
-:   Build backend, deriving the package version from git tags via [setuptools-scm](https://setuptools-scm.readthedocs.io/en/latest/).
+:   Build backend, deriving the package version from git tags via [setuptools-scm](https://setuptools-scm.readthedocs.io/latest/).
 
 :::{tool} build
 :::

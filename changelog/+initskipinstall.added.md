@@ -1,0 +1,1 @@
+Added a `--skip-install` flag to {path}`tools/initialize.py`, which only installs the project when the virtual environment has just been created. The `direnv` example configuration uses it to speed up shell entry.

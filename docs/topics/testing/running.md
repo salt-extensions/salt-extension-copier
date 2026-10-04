@@ -2,7 +2,7 @@
 # Running the test suite
 
 :::{important}
-Ensure `nox` is installed. If you executed the [first steps](first-steps-target) in some way, you should be ready to go.
+Ensure {tool}`nox` is installed. If you executed the [first steps](first-steps-target) in some way, you should be ready to go.
 :::
 
 ## Basic
@@ -16,7 +16,7 @@ nox -e tests-3
 
 ## With parameters
 
-You can pass `pytest` parameters through `nox` using `--`.
+You can pass {tool}`pytest` parameters through {tool}`nox` using `--`.
 
 ### Only unit tests
 

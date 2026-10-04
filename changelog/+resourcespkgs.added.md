@@ -1,0 +1,1 @@
+Resource types authored as packages with per-type loader overlay directories (`resources/<rtype>/{modules,states,...}/`) are supported by the autodocs generation, and the CLI example check covers per-resource-type execution module overlays.
