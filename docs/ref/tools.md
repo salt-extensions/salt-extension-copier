@@ -109,7 +109,7 @@ Project-local hooks in {path}`.pre-commit-hooks`
 :::{tool} sphinx
 :::
 [Sphinx](https://www.sphinx-doc.org/en/master/)
-:   Documentation builder, using the [furo](https://pradyunsg.me/furo/) theme and several extensions, notably [myst-parser](https://myst-parser.readthedocs.io/en/latest/) (Markdown support) and [sphinxcontrib-spelling](https://sphinxcontrib-spelling.readthedocs.io/en/latest/) (requires the `enchant` system library, see {envvar}`PYENCHANT_LIBRARY_PATH`). The `docs-dev` session serves live-reloading docs via [sphinx-autobuild](https://github.com/sphinx-doc/sphinx-autobuild).
+:   Documentation builder, using the [furo](https://pradyunsg.me/furo/) theme and several extensions, notably [myst-parser](https://myst-parser.readthedocs.io/en/latest/) (Markdown support). The `docs-dev` session serves live-reloading docs via [sphinx-autobuild](https://github.com/sphinx-doc/sphinx-autobuild).
 
 ## Packaging
 

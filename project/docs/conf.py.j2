@@ -91,7 +91,6 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx_copybutton",
-    "sphinxcontrib.spelling",
     "saltdomain",
     "sphinxcontrib.towncrier.ext",
     "myst_parser",

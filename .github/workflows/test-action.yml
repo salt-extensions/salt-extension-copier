@@ -197,7 +197,6 @@ jobs:
       - name: Install Test Requirements
         run: |
           nox --force-color -e tests --install-only
-          brew install enchant
 
       - name: Test
         env:
