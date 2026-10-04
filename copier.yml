@@ -629,10 +629,16 @@ _min_copier_version: "9.6.0"
 # The template root is found here
 _subdirectory: project
 
-# Don't offer updates to implementation-specific files
+# Don't offer updates to implementation-specific files.
+# Also filter out local cruft (e.g. bytecode caches in a dirty template clone) -
+# Copier's default exclusions don't apply when _subdirectory is set.
 _exclude:
   - '{%- if _copier_operation != "copy" %}tests/**/test_*.py{%- endif %}'
   - '{%- if _copier_operation != "copy" %}src/**/*_mod.py{%- endif %}'
+  - '~*'
+  - '*.py[co]'
+  - '__pycache__'
+  - '.DS_Store'
 
 # Ensure we're compatible with the official tool
 _templates_suffix: j2

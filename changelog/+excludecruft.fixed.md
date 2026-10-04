@@ -1,0 +1,1 @@
+Fixed generating projects from non-git template copies leaking local cruft (`__pycache__`, bytecode, editor backups) into the project. Copier skips its default exclusions when `_subdirectory` is set, so the relevant patterns are now listed explicitly.
