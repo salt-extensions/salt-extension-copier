@@ -1,0 +1,1 @@
+Removed the obsolete {tool}`setuptools` pins for Salt source builds. Salt 3006.24/3007.15/3008.0+ ship a PEP 517 build backend. Pinning older point releases now requires a manual `setuptools<75.6.0` build constraint to avoid a dependency-less Salt install.
