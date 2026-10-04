@@ -352,10 +352,10 @@ alias `typing`), corresponding `[tool.ty.*]` configuration in
 
 Since Salt injects global dunders like `__salt__` into loader modules at
 runtime, static type checkers cannot resolve them by themselves. The
-template thus also generates a `utils/_types.py` module providing type
-aliases for common Salt loader globals (such as `SaltFunctions`,
-`SaltOpts`) and a `SaltLogger` class accounting for Salt's custom log
-levels. The generated loader module stubs declare the dunders they use
+template thus also generates a `utils/_types.py` module providing imports
+for common Salt dunder globals (such as `__salt__`, `__opts__`) and a
+`SaltLogger` class accounting for Salt's custom log levels.
+The generated loader module stubs declare the dunders they use
 inside `if typing.TYPE_CHECKING` blocks, a pattern you can extend as your
 modules grow. Which dunders are available – and what they contain –
 depends on the module type, see the Salt documentation on
@@ -366,12 +366,9 @@ import logging
 import typing
 
 if typing.TYPE_CHECKING:
-    from saltext.foo.utils._types import SaltFunctions
     from saltext.foo.utils._types import SaltLogger
-    from saltext.foo.utils._types import SaltOpts
-
-    __salt__: SaltFunctions
-    __opts__: SaltOpts
+    from saltext.foo.utils._types import __opts__
+    from saltext.foo.utils._types import __salt__
 
 log: "SaltLogger" = logging.getLogger(__name__)  # type: ignore
 ```
