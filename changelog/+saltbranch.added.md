@@ -1,0 +1,1 @@
+The generated noxfile now recognizes Salt release branches in {envvar}`SALT_REQUIREMENT`: values like `salt==3007.x` install Salt from the corresponding upstream git branch instead of a released package, same as `salt==master`.

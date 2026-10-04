@@ -34,7 +34,7 @@ Whitespace-separated list of extra requirements to install into the session venv
 :::
 
 :::{envvar} SALT_REQUIREMENT
-Overrides the Salt requirement in `test`/`docs` sessions. Defaults to the project's minimum Salt version. The special value `salt==master` installs Salt from the git `master` branch.
+Overrides the Salt requirement in `test`/`docs` sessions. Defaults to the project's minimum Salt version. The special value `salt==master` installs Salt from the git `master` branch, release branch values like `salt==3007.x` from the corresponding upstream git branch.
 :::
 
 :::{envvar} COVERAGE_REQUIREMENT
