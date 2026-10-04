@@ -45,10 +45,6 @@ Overrides the pinned `coverage` requirement.
 Path to additionally write the `lint` sessions' output to.
 :::
 
-:::{envvar} PYENCHANT_LIBRARY_PATH
-Path to the `enchant` library required by the docs spellcheck. Autodiscovered on most platforms, including Apple Silicon Homebrew installs.
-:::
-
 ## Detected
 
 * `CI`, `JENKINS_URL`, `DRONE` – indicate a CI context: `nox` sessions install dependencies verbosely, test daemons receive longer start timeouts and rootless Podman autodetection is disabled.

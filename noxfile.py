@@ -43,7 +43,6 @@ DEV_REQUIREMENTS = ("pylint==4.0.9",)
 
 DOCS_REQUIREMENTS = (
     "sphinx",
-    "sphinxcontrib-spelling",
     "sphinx-copybutton",
     "myst_parser",
     "furo",

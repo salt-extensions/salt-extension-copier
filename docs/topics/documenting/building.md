@@ -5,28 +5,6 @@
 Ensure {tool}`nox` is installed. If you executed the [first steps](first-steps-target) in some way, you should be all set.
 :::
 
-## Prerequisites
-
-On some systems (macOS, WSL, and certain Linux distributions), you must install the `enchant` library to build the documentation.
-
-:::{tab} Linux/WSL
-```bash
-sudo apt-get install -y enchant
-```
-:::
-:::{tab} MacOS
-```bash
-brew install -y enchant
-```
-
-:::{important}
-On Apple Silicon, you might need to ensure your environment points to the correct library location:
-
-```bash
-export PYENCHANT_LIBRARY_PATH=/opt/homebrew/lib/libenchant-2.2.dylib
-```
-:::
-
 ## Build once
 
 To build your documentation once:

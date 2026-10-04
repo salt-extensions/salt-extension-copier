@@ -52,7 +52,6 @@ linkcheck_ignore = [
 # ones.
 extensions = [
     "sphinx.ext.intersphinx",
-    "sphinxcontrib.spelling",
     "sphinx_copybutton",
     "sphinxcontrib.towncrier.ext",
     "myst_parser",
