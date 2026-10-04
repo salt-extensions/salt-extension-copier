@@ -1,0 +1,1 @@
+Non-Ubuntu Linux distributions selected in {question}`linux_test_distros` are tested inside VMs with a parametrized Salt/Python version matrix, whose Python versions are provisioned by {tool}`uv` – except Alpine, which runs against the OS-packaged Salt release like the BSDs since important binary dependencies lack `musl` wheels.

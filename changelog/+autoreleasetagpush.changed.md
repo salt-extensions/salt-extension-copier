@@ -1,0 +1,1 @@
+The GitHub App for release automation (`AUTORELEASE_CLID`/`AUTORELEASE_PRIV` secrets) now also pushes the release tag when the autorelease PR is merged, making the regular tag push workflow ({path}`tag.yml <.github/workflows/tag.yml>`) the single entry point for all releases.

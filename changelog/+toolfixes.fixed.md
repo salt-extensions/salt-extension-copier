@@ -1,1 +1,1 @@
-Fixed several issues in the bundled developer tools. Notably, virtual environment creation was broken on Windows when `uv` was unavailable.
+Fixed several issues in the bundled {path}`developer tools <tools>`. Notably, virtual environment creation was broken on Windows when {tool}`uv` was unavailable.

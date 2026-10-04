@@ -1,0 +1,1 @@
+Added the {question}`require_autorelease_app` question, defaulting to true for repositories inside the `salt-extensions` organization. It renders significantly simpler release workflows that require the configured GitHub App; otherwise, they still support falling back to the default GitHub token.

@@ -13,6 +13,7 @@ The workflows currently:
 * Build the changelog and submit a PR that triggers a release when merged
 * Optionally deploy built documentation to GitHub Pages
 * Optionally build and release your project to PyPI
+* Cache dependencies between runs, purgeable via the {path}`Clear Actions Caches <.github/workflows/clear-caches.yml>` workflow
 
 ## Repository setup
 

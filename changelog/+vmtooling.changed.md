@@ -1,0 +1,1 @@
+The VM test tooling ({tool}`uv`, {tool}`nox`) is installed from PyPI at the pinned versions tracked in the template, making test environments predictable and refreshing cached VM images on version bumps.

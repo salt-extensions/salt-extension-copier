@@ -1,10 +1,10 @@
 # Installation
 
-To render the template, you only need a functional [Copier][copier-docs] installation.
+To render the template, you only need a functional {tool}`copier` installation.
 
 ## Copier
 
-It’s recommended to install Copier globally using either [uv][uv-docs] or [pipx][pipx-docs]:
+It’s recommended to install Copier globally using either {tool}`uv` or [pipx][pipx-docs]:
 
 :::{tab} uv
 
@@ -32,15 +32,12 @@ python -m pip install 'copier>=9.6' copier-template-extensions
 :::
 
 :::{note}
-The `copier` virtual environment should be based on the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.14. Other versions - especially higher ones - should work, but the template's CI tests only verify the mentioned version.
+The `copier` virtual environment should be based on a recent Python version. Other versions should work, but the template's CI tests currently only verify Python 3.14.
 :::
 
 :::{important}
 This template includes custom Jinja extensions, so ensure that [copier-template-extensions][copier-template-extensions] is installed in the same environment as `copier`. The example commands above handle this.
 :::
 
-[copier-docs]: https://copier.readthedocs.io/en/stable/
-[copier-multiselect-pr]: https://github.com/copier-org/copier/pull/1386
 [copier-template-extensions]: https://github.com/copier-org/copier-template-extensions
 [pipx-docs]: https://pipx.pypa.io/stable/
-[uv-docs]: https://docs.astral.sh/uv/

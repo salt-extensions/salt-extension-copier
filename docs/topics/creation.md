@@ -15,7 +15,7 @@ You are then prompted with questions to configure your project structure. These 
 
 :::{important}
 
-Copier needs to be invoked with the `--trust` flag in order to enable
+Copier needs to be invoked with the [`--trust` flag][trust-flag] in order to enable
 custom Jinja extensions (always) and migrations (during updates).
 This effectively runs unsandboxed commands on your host,
 so ensure you trust the template source!
@@ -27,7 +27,7 @@ so ensure you trust the template source!
 ## Important considerations
 
 ### Organization vs single
-Decide early whether to [submit your project](submitting-target) to the [`salt-extensions` GitHub organization](gh-org-ref) or host it in your [own repository](required-secrets-target). This is determined by the `source_url` you provide.
+Decide early whether to [submit your project](submitting-target) to the [`salt-extensions` GitHub organization](gh-org-ref) or host it in your [own repository](required-secrets-target). This is determined by the {question}`source_url` you provide.
 
 ### GitHub vs other Git host (non-org)
 If hosting the repository outside the organization, you can choose your provider freely. Note that the [default workflows](workflows-target) only work on GitHub though.
@@ -45,15 +45,15 @@ Contributors to existing Salt extension projects need to do the latter after clo
 
 This process is automated completely in the following cases:
 
-* For maintainers: When creating/updating a project via Copier, unless `SKIP_INIT_MIGRATE=1` was set in the environment ([repo initialization](repo-init-target) + [dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target) + running pre-commit).
-* For all developers: If you have a working `direnv` installation, you can copy the included `.envrc.example` to `.envrc` and allow it to run. This takes care of the [dev env setup](dev-setup-target) and [pre-commit hook installation](hook-install-target) as well as activating the virtual environment. To keep shell entry fast, the example passes `--skip-install`, meaning the project is only installed when the virtual environment is freshly created — run `make dev` to synchronize it after dependency changes. Without `direnv`, you can also run `make dev` to create/update the development environment. Remember to activate it via `source .venv/bin/activate` afterwards.
+* For maintainers: When creating/updating a project via Copier, unless {envvar}`SKIP_INIT_MIGRATE=1 <SKIP_INIT_MIGRATE>` was set in the environment ([repo initialization](repo-init-target) + [dev env setup](dev-setup-target) + [pre-commit hook installation](hook-install-target) + running pre-commit).
+* For all developers: If you have a working {tool}`direnv` installation, you can copy the included {path}`.envrc.example` to `.envrc` and allow it to run. This takes care of the [dev env setup](dev-setup-target) and [pre-commit hook installation](hook-install-target) as well as activating the virtual environment. To keep shell entry fast, the example passes `--skip-install`, meaning the project is only installed when the virtual environment is freshly created — run `make dev` to synchronize it after dependency changes. Without `direnv`, you can also run `make dev` (see the included {path}`Makefile` for all targets) to create/update the development environment. Remember to activate it via `source .venv/bin/activate` afterwards.
 
 :::{important}
-The automation either requires [`uv`](https://github.com/astral-sh/uv) or the Python version (MAJOR.MINOR) [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml) to be available on your system, at the time of writing Python 3.14.
+The automation either requires {tool}`uv`, which provisions the requested Python version automatically, or the Python version chosen in {question}`venv_python` to be available on your system.
 :::
 
 :::{hint}
-Without `direnv` or `make`, you can still call the automation script manually after entering the project root directory:
+Without {tool}`direnv` or {tool}`make`, you can still call the {path}`automation script <tools/initialize.py>` manually after entering the project root directory:
 
 ```bash
 python3 tools/initialize.py
@@ -75,7 +75,7 @@ Some automations assume your default branch is `main`. Ensure this is the case.
 (dev-setup-target)=
 ### Initialize the Python virtual environment
 :::{important}
-To create the virtualenv, use the Python version you chose in the `venv_python` question. It defaults to the same version (MAJOR.MINOR) as the one [listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml), at the time of writing Python 3.14.
+To create the virtualenv, use the Python version you chose in {question}`venv_python`. Its default follows the latest supported Salt onedir release ([listed here](https://github.com/saltstack/salt/blob/master/cicd/shared-gh-workflows-context.yml)). The example below assumes 3.14, substitute your answer.
 :::
 
 ```bash
@@ -84,13 +84,13 @@ source .venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```
 
-This creates a virtual environment and installs relevant dependencies, including `nox` and `pre-commit`.
+This creates a virtual environment and installs relevant dependencies, including {tool}`nox` and {tool}`pre-commit`.
 
 (system-site-packages-target)=
 ### Inheriting system-wide packages
-Some extensions, especially OS-specific ones, depend on packages that are only available system-wide (e.g. installed via FreeBSD ports). In this case, set `VENV_SYSTEM_SITE_PACKAGES=1` in your environment (e.g. via `.envrc` or your shell profile). Both the development virtual environment and the [`nox` session venvs](run-tests-target) are then created with `--system-site-packages`, based on your system Python, and requirements that are already satisfied system-wide (such as a system-packaged Salt) are not reinstalled.
+Some extensions, especially OS-specific ones, depend on packages that are only available system-wide (e.g. installed via FreeBSD ports). In this case, set {envvar}`VENV_SYSTEM_SITE_PACKAGES=1 <VENV_SYSTEM_SITE_PACKAGES>` in your environment (e.g. via `.envrc` or your shell profile). Both the development virtual environment and the [`nox` session venvs](run-tests-target) are then created with `--system-site-packages`, based on your system Python, and requirements that are already satisfied system-wide (such as a system-packaged Salt) are not reinstalled.
 
-Since `uv` [does not consider inherited packages during installs](https://github.com/astral-sh/uv/issues/4466), the tooling automatically falls back to `venv` and `pip` in this mode.
+Since {tool}`uv` [does not consider inherited packages during installs](https://github.com/astral-sh/uv/issues/4466), the tooling automatically falls back to `venv` and `pip` in this mode.
 
 :::{note}
 When toggling this setting, the development virtual environment is recreated automatically on the next `make dev`, but existing `nox` session venvs are not. Remove them via `make clean` (or `rm -rf .nox`).
@@ -102,10 +102,10 @@ When toggling this setting, the development virtual environment is recreated aut
 python -m pre_commit install --install-hooks
 ```
 
-This ensures `pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files. To skip these checks temporarily, use `git commit --no-verify`.
+This ensures {tool}`pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files, as configured in {path}`.pre-commit-config.yaml`. To skip these checks temporarily, use `git commit --no-verify`.
 
 :::{note}
-Some hooks rely on prebuilt binaries that are unavailable for certain platforms. For example, `actionlint` (including its `shellcheck-py` dependency) and `ty` (which relies on `uv`, only generated when {question}`typing` is enabled) cannot be installed on FreeBSD. In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
+Some hooks rely on prebuilt binaries that are unavailable for certain platforms. For example, {tool}`actionlint` (including its `shellcheck-py` dependency) and {tool}`ty` (which relies on {tool}`uv`, only generated when {question}`typing` is enabled) cannot be installed on FreeBSD. In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
 
 ```bash
 export SKIP=actionlint,ty
@@ -124,3 +124,4 @@ In case `pre-commit` modifies or creates files, the commit is aborted. Stage the
 
 [jinja-exts]: https://github.com/salt-extensions/salt-extension-copier/blob/main/jinja_extensions/saltext.py
 [tasks-migrations]: https://github.com/salt-extensions/salt-extension-copier/blob/main/copier.yml
+[trust-flag]: https://copier.readthedocs.io/en/stable/configuring/#unsafe

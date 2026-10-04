@@ -24,7 +24,7 @@ Before merging, ensure the PR is based on the current default branch HEAD.
 :::
 
 :::{hint}
-To force a custom version or manually trigger an update to the release PR (e.g. to adjust the release date), go to `Actions` > `Prepare Release PR` > `Run workflow`.
+To force a custom version or manually trigger an update to the release PR (e.g. to adjust the release date), dispatch {path}`prepare-release-action.yml <.github/workflows/prepare-release-action.yml>` via `Actions` > `Prepare Release PR` > `Run workflow`.
 :::
 
 :::{note}
@@ -104,4 +104,4 @@ git push upstream v1.0.0
 
 ### 5: Check the result
 
-If CI passes, a new release should be available on both PyPI and your GitHub repository.
+If CI passes, a new release should be available on PyPI (published by {path}`deploy-package-action.yml <.github/workflows/deploy-package-action.yml>`) and your GitHub repository (created by {path}`finalize-release-action.yml <.github/workflows/finalize-release-action.yml>`).
