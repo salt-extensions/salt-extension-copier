@@ -101,7 +101,7 @@ def test_venv_system_site_packages_works(project):
         # The session itself fails since its requirements are not installed,
         # but the venv is created before that.
         with local.env(VENV_SYSTEM_SITE_PACKAGES="1", SKIP_REQUIREMENTS_INSTALL="1"):
-            local[sys.executable]["-m", "nox", "-e", "lint-code-3"].run(retcode=None)
+            local[sys.executable]["-m", "nox", "-e", "lint-code"].run(retcode=None)
         session_venvs = list((project.project_dir / ".nox").glob("*/pyvenv.cfg"))
         assert len(session_venvs) == 1
         cfg = read_pyvenv_cfg(session_venvs[0].parent)

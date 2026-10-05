@@ -44,14 +44,14 @@ changelog: dev ## Render changelog. Requires VERSION parameter.
 
 .PHONY: docs
 docs: dev ## Build docs
-	@$(VENV_SH) nox -e docs --extra-pythons={{ venv_python }} --python={{ venv_python }}
+	@$(VENV_SH) nox -e docs
 
 .PHONY: docs-dev
 docs-dev: dev ## Build docs, serve them and refresh on changes
-	@$(VENV_SH) nox -e docs-dev --extra-pythons={{ venv_python }} --python={{ venv_python }}
+	@$(VENV_SH) nox -e docs-dev
 
 ## Tests
 
 .PHONY: tests
 tests: dev ## Run tests
-	@$(VENV_SH) nox -e tests-{{ python_requires[:2] | join(".") }}
+	@$(VENV_SH) nox -e test

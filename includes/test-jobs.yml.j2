@@ -123,8 +123,8 @@
 {%- endmacro %}
 
 {#- The test suite invocation on GitHub-hosted runners. The Python
-    version is determined by the runner setup (plain `tests-3`), the
-    Salt version via SALT_REQUIREMENT. -#}
+    version is determined by the VENV_PYTHON env var (plain `test`),
+    the Salt version via SALT_REQUIREMENT. -#}
 {%- macro run_tests(windows=false, prune_uv_cache=false) %}
 {%- for name, posargs in (("Install Test Requirements", "--install-only"), ("Test", "-- -vv --instafail tests/")) %}
 {%- if not loop.first %}
@@ -134,18 +134,15 @@
 {%- if windows %}
         shell: bash
 {%- endif %}
-        env:
-          SALT_REQUIREMENT: salt=={{ expr("matrix.salt-version") }}
 {%- if not loop.first %}
+        env:
           SKIP_REQUIREMENTS_INSTALL: '1'
-{%- elif windows %}
-          # EXTRA_REQUIREMENTS_INSTALL: Cython
 {%- endif %}
         run: |
 {%- if windows %}
           export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
 {%- endif %}
-          nox --force-color -e tests-3 {{ posargs }}
+          nox --force-color -e test {{ posargs }}
 {%- if loop.first and prune_uv_cache %}
 {{ "" }}
       - name: Prune uv Cache
@@ -160,17 +157,19 @@
     shell wrapper. All required environment variables are forwarded
     into the VM via the `envs` input of the Start VM step. -#}
 {%- macro run_tests_vm(shell_name, session="3") %}
+{%-  set nox_sess = ["--force-python=3", "-e", "tests"] if session == "3" else ["-e", "test"] %}
+{%-  set nox_cmd = ["nox", "--force_color"] + nox_sess %}
       - name: Install Test Requirements
         shell: {{ shell_name }} {0}
         run: |
-          nox --force-color -e tests-{{ session }} --install-only
+          {{ (nox_cmd + ["--install-only"]) | join(" ") }}
 
       - name: Test
         shell: {{ shell_name }} {0}
         env:
           SKIP_REQUIREMENTS_INSTALL: '1'
         run: |
-          nox --force-color -e tests-{{ session }} -- -vv --instafail tests/
+          {{ (nox_cmd + ["--", "-vv", "--instafail", "tests/"]) | join(" ") }}
 {%- endmacro %}
 
 {#- The `prepare` scripts in data/os_support.yaml reference the pinned
@@ -243,6 +242,10 @@
   {{ job_id }}:
     runs-on: {{ runs_on }}
     timeout-minutes: {{ timeout }}
+
+    env:
+      SALT_REQUIREMENT: salt=={{ expr("matrix.salt-version") }}
+      VENV_PYTHON: {{ expr("matrix.python-version") }}
 {{ test_strategy(full=full, releases=releases, cap=cap) }}
 
     steps:
@@ -288,6 +291,7 @@
     env:
 {%- if parametrized %}
       SALT_REQUIREMENT: salt=={{ expr("matrix.salt-version") }}
+      VENV_PYTHON: {{ expr("matrix.python-version") }}
 {%- else %}
       # Salt and its dependencies are provided as system packages, which
       # the session venvs inherit. This makes the tests run against the
@@ -310,7 +314,7 @@
 
     steps:
 {{- checkout() }}
-{{ start_vm(slug, meta, "SKIP_REQUIREMENTS_INSTALL " ~ ("SALT_REQUIREMENT" if parametrized else "VENV_SYSTEM_SITE_PACKAGES")) }}
+{{ start_vm(slug, meta, "SKIP_REQUIREMENTS_INSTALL " ~ ("SALT_REQUIREMENT VENV_PYTHON" if parametrized else "VENV_SYSTEM_SITE_PACKAGES")) }}
 {{ run_tests_vm(slug, session=expr("matrix.python-version") if parametrized else "3") }}
 {{ codecov_uploads(expr("github.job") ~ "-" ~ expr("matrix.osrelease"), ident) }}
 {{ upload_logs_and_status(ident) }}

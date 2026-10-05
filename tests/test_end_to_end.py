@@ -81,13 +81,13 @@ def test_first_commit_works(project, project_venv, git, disable_prek):
 )
 def test_testsuite_works(project, project_venv):
     with local.cwd(project.project_dir):
-        res = project_venv.run_module("nox", "-e", "tests-3", check=False)
+        res = project_venv.run_module("nox", "-e", "test", check=False)
         if res.returncode != 0:  # pragma: no cover
             # The caches might include a corrupt Salt wheel.
             # Evict it and retry once with a fresh session venv.
             project_venv.rm_cached("salt")
             shutil.rmtree(project.project_dir / ".nox", ignore_errors=True)
-            res = project_venv.run_module("nox", "-e", "tests-3", check=False)
+            res = project_venv.run_module("nox", "-e", "test", check=False)
     assert res.returncode == 0
 
 
