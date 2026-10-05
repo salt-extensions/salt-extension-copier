@@ -86,7 +86,7 @@ juliangruber/find-pull-request-action: '92b38d91ef26fd0f47374257f50e78432359a45f
 peter-evans/create-pull-request: '5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1'
 
 # renovate: datasource=git-tags depName=vmactions/freebsd-vm packageName=https://github.com/vmactions/freebsd-vm depType=action
-vmactions/freebsd-vm: 'a2f9a41fa97f6848b8c3b791087dfcdaa5b473ff  # v1.5.8'
+vmactions/freebsd-vm: 'c46abacb49f09938ca4e1702d15d836285d694cc  # v1.5.9'
 
 # renovate: datasource=git-tags depName=vmactions/openbsd-vm packageName=https://github.com/vmactions/openbsd-vm depType=action
 vmactions/openbsd-vm: '5f7b2c933b8846a138361d6843c52af4bef5d945  # v1.4.8'
@@ -101,7 +101,7 @@ vmactions/alpine-vm: 'bbc5d76bdbe2d3497bdd8c6c7f09c94aa01c785e  # v1.0.2'
 vmactions/almalinux-vm: '926c2897e439c5f5042bf83fb93c0f64aeb2737d  # v1.0.1'
 
 # renovate: datasource=git-tags depName=vmactions/rockylinux-vm packageName=https://github.com/vmactions/rockylinux-vm depType=action
-vmactions/rockylinux-vm: '5fbbd33a61c26c9b48c54e39e8a67eab3370b8aa  # v1.0.2'
+vmactions/rockylinux-vm: '6d7fc4bb22b1e201a913e36480c2905b2bb4e171  # v1.0.3'
 
 # renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
 # Still can't use Renovate to update this since it pins the release tag object SHA, but
