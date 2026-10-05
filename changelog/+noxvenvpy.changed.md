@@ -1,0 +1,1 @@
+All `nox` sessions except the version-matrixed `tests` now run on the selected {question}`venv_python` instead of a generic Python 3. A new `test` session runs the test suite on that version only; `make tests` now invokes it.

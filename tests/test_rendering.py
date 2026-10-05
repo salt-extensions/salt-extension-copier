@@ -155,16 +155,21 @@ def test_test_workflow_distro_jobs(project):
             assert start_vm["with"]["envs"] == "SKIP_REQUIREMENTS_INSTALL VENV_SYSTEM_SITE_PACKAGES"
             assert job["strategy"]["matrix"]["osrelease"]
             assert "salt" in prepare
-            assert all("tests-3 " in step["run"] for step in in_vm_steps)
+            assert all("--force-python=3" in step["run"] for step in in_vm_steps)
         else:
             # Other distro VM jobs run the parametrized Salt/Python matrix
-            assert job["env"] == {"SALT_REQUIREMENT": "salt==${{ matrix.salt-version }}"}
+            assert job["env"] == {
+                "SALT_REQUIREMENT": "salt==${{ matrix.salt-version }}",
+                "VENV_PYTHON": "${{ matrix.python-version }}",
+            }
             includes = job["strategy"]["matrix"]["include"]
             assert includes
             assert all({"salt-version", "python-version", "osrelease"} <= set(e) for e in includes)
-            assert start_vm["with"]["envs"] == "SKIP_REQUIREMENTS_INSTALL SALT_REQUIREMENT"
+            assert (
+                start_vm["with"]["envs"] == "SKIP_REQUIREMENTS_INSTALL SALT_REQUIREMENT VENV_PYTHON"
+            )
             assert "uv==" in prepare
-            assert all("tests-${{ matrix.python-version }}" in step["run"] for step in in_vm_steps)
+            assert all("-e test " in step["run"] for step in in_vm_steps)
     assert {e["osrelease"] for e in jobs["Debian"]["strategy"]["matrix"]["include"]} == {
         "13",
         "12",

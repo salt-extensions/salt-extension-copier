@@ -94,7 +94,7 @@ def _install_requirements(
         session.install(*install_command, silent=PIP_INSTALL_SILENT)
 
 
-@nox.session
+@nox.session(python="3.14")
 def tests(session):
     _install_requirements(session, *TESTS_REQUIREMENTS)
 
@@ -213,7 +213,7 @@ def _lint(session, rcfile, flags, paths, tee_output=True):
             stdout.close()
 
 
-@nox.session(python="3")
+@nox.session(python="3.14")
 def lint(session):
     """
     Run PyLint against the code and the test suite. Set PYLINT_REPORT to a path to capture output.
@@ -222,7 +222,7 @@ def lint(session):
     session.notify("lint-tools")
 
 
-@nox.session(name="lint-tests")
+@nox.session(python="3.14", name="lint-tests")
 def lint_tests(session):
     """
     Run PyLint against the test suite. Set PYLINT_REPORT to a path to capture output.
@@ -237,7 +237,7 @@ def lint_tests(session):
     _lint(session, ".pylintrc", flags, paths)
 
 
-@nox.session(name="lint-tools")
+@nox.session(python="3.14", name="lint-tools")
 def lint_tools(session):
     """
     Run PyLint against all non-templated files. Set PYLINT_REPORT to a path to capture output.
@@ -252,7 +252,7 @@ def lint_tools(session):
     _lint(session, ".pylintrc", flags, paths)
 
 
-@nox.session
+@nox.session(python="3.14")
 def docs(session):
     """
     Build Docs
@@ -268,7 +268,7 @@ def docs(session):
     os.chdir(str(REPO_ROOT))
 
 
-@nox.session(name="docs-html")
+@nox.session(python="3.14", name="docs-html")
 @nox.parametrize("clean", [False, True])
 def docs_html(session, clean):
     """
@@ -290,7 +290,7 @@ def docs_html(session, clean):
     session.run("sphinx-build", *args, external=True)
 
 
-@nox.session(name="docs-dev")
+@nox.session(python="3.14", name="docs-dev")
 def docs_dev(session) -> None:
     """
     Build and serve the Sphinx HTML documentation, with live reloading on file changes, via sphinx-autobuild.
@@ -321,7 +321,7 @@ def docs_dev(session) -> None:
     session.run("sphinx-autobuild", *args)
 
 
-@nox.session(name="docs-crosslink-info")
+@nox.session(python="3.14", name="docs-crosslink-info")
 def docs_crosslink_info(session):
     """
     Report intersphinx cross links information
