@@ -84,7 +84,7 @@ source .venv/bin/activate
 python -m pip install -e '.[tests,dev,docs]'
 ```
 
-This creates a virtual environment and installs relevant dependencies, including {tool}`nox` and {tool}`pre-commit`.
+This creates a virtual environment and installs relevant dependencies, including {tool}`nox` and {tool}`prek` (or {tool}`pre-commit` on platforms without prebuilt `prek` binaries).
 
 (system-site-packages-target)=
 ### Inheriting system-wide packages
@@ -99,13 +99,15 @@ When toggling this setting, the development virtual environment is recreated aut
 (hook-install-target)=
 ### Install the `pre-commit` hook
 ```bash
-python -m pre_commit install --install-hooks
+prek install --install-hooks
 ```
 
-This ensures {tool}`pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files, as configured in {path}`.pre-commit-config.yaml`. To skip these checks temporarily, use `git commit --no-verify`.
+If {tool}`prek` is unavailable on your platform, substitute `python -m pre_commit` for `prek`.
+
+This ensures the hooks run before each commit. They autoformat and lint your code and ensure the presence of necessary documentation files, as configured in {path}`.pre-commit-config.yaml`. To skip these checks temporarily, use `git commit --no-verify`.
 
 :::{note}
-Some hooks may fail to install or run on certain platforms. For example, this can affect {tool}`actionlint` (which is compiled locally — {tool}`pre-commit` provisions the required [Go](https://go.dev/) toolchain automatically, but only on platforms with [official Go binaries](https://go.dev/dl/)) and {tool}`ty` (which relies on prebuilt binaries of both {tool}`uv` and itself and is only generated when {question}`typing` is enabled; on platforms without `uv` wheels, the hook falls back to a locally installed `uv`, e.g. from your system package manager). In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
+Some hooks may fail to install or run on certain platforms. For example, this can affect {tool}`actionlint` (which is compiled locally — the hook manager provisions the required [Go](https://go.dev/) toolchain automatically, but only on platforms with [official Go binaries](https://go.dev/dl/)) and {tool}`ty` (which relies on prebuilt binaries of both {tool}`uv` and itself and is only generated when {question}`typing` is enabled; on platforms without `uv` wheels, the hook falls back to a locally installed `uv`, e.g. from your system package manager). In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
 
 ```bash
 export SKIP=actionlint,ty
@@ -120,7 +122,7 @@ git add .
 git commit -m "Initial extension layout"
 ```
 
-In case `pre-commit` modifies or creates files, the commit is aborted. Stage the changes and try again.
+In case the hooks modify or create files, the commit is aborted. Stage the changes and try again.
 
 [jinja-exts]: https://github.com/salt-extensions/salt-extension-copier/blob/main/jinja_extensions/saltext.py
 [tasks-migrations]: https://github.com/salt-extensions/salt-extension-copier/blob/main/copier.yml

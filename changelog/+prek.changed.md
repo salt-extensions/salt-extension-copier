@@ -1,0 +1,1 @@
+Switched CI and the dev automation to {tool}`prek`, a faster drop-in replacement for {tool}`pre-commit`. On platforms without prebuilt `prek` binaries, the dev automation still falls back to `pre-commit`.

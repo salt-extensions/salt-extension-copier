@@ -64,7 +64,11 @@ Tracker = "{{ tracker_url }}"
 changelog = ["towncrier=={{ versions["towncrier"] }}"]
 dev = [
     "nox[uv]>=2024.3,!=2025.05.01",
-    "pre-commit>=2.21.0",
+    # prek is a fast drop-in replacement for pre-commit, but it only ships
+    # prebuilt binaries for common platforms. Elsewhere (e.g. FreeBSD), the
+    # dev automation falls back to pre-commit.
+    "prek>=0.5.5 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'",
+    "pre-commit>=2.21.0 ; sys_platform != 'linux' and sys_platform != 'darwin' and sys_platform != 'win32'",
 ]
 # These dependencies are used in automations. It can be helpful
 # to have them installed in the dev venv, e.g. for editor integration.

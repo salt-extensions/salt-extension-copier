@@ -7,6 +7,7 @@ from .cmd import CommandNotFound
 from .cmd import local
 from .copier import discover_project_name
 from .copier import discover_venv_python
+from .pre_commit import pre_commit_cmd
 
 # Fallback when the `venv_python` answer is unavailable.
 # Should follow the version used for relenv packages, see
@@ -199,11 +200,11 @@ def ensure_project_venv(project_root=".", reinstall=True, install_extras=False, 
             local["python"]("-m", "pip", "install", "-e", f".[{','.join(extras)}]")
         if not exists or not (Path(project_root) / ".git" / "hooks" / "pre-commit").exists():
             prompt.status("Installing pre-commit hooks")
-            install_cmd = ["-m", "pre_commit", "install"]
+            install_args = ["install"]
             # --install-hooks prepares environments for all hooks, disregarding SKIP,
             # which can fail for skipped ones on unsupported platforms. Hook runs
             # install missing environments on demand, honoring SKIP.
             if not os.environ.get("SKIP"):
-                install_cmd.append("--install-hooks")
-            local["python"](*install_cmd)
+                install_args.append("--install-hooks")
+            pre_commit_cmd()(*install_args)
     return venv

@@ -64,6 +64,12 @@ repos:
         additional_dependencies:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           - nox==2026.8.17
+          # Speeds up the session install and, since prek-created hook envs
+          # don't include pip, provides the uv install path nox needs there.
+          # uv only ships wheels for these platforms; elsewhere, the hooks
+          # run via pre-commit, whose envs include pip.
+          # renovate: datasource=pypi depName=uv depType=devDependencies
+          - uv==0.12.23 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
       - id: nox
         alias: lint-tests
@@ -75,6 +81,12 @@ repos:
         additional_dependencies:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           - nox==2026.8.17
+          # Speeds up the session install and, since prek-created hook envs
+          # don't include pip, provides the uv install path nox needs there.
+          # uv only ships wheels for these platforms; elsewhere, the hooks
+          # run via pre-commit, whose envs include pip.
+          # renovate: datasource=pypi depName=uv depType=devDependencies
+          - uv==0.12.23 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
   - repo: https://github.com/kjanat/actionlint
     # renovate: datasource=git-tags depName=actionlint packageName=https://github.com/kjanat/actionlint depType=devDependencies

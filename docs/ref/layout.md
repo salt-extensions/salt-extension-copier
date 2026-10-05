@@ -16,7 +16,7 @@ Example {tool}`direnv` configuration. Copy to `.envrc` to automate [dev env setu
 :::{path} .pre-commit-config.yaml
 :::
 ## `.pre-commit-config.yaml`
-Configures the project's {tool}`pre-commit` hooks: autoformatting, linting and docs generation.
+Configures the project's pre-commit hooks (run via {tool}`prek` or {tool}`pre-commit`): autoformatting, linting and docs generation.
 
 :::{path} .pre-commit-hooks
 :::

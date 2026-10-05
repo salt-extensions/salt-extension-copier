@@ -74,7 +74,7 @@ jobs:
       - name: Install project
         run: |
           python -m pip install --upgrade pip
-          python -m pip install '.[changelog]' pre-commit
+          python -m pip install '.[changelog]' prek=={{ versions["prek"] }}
 
       - name: Get next version
         if: github.event_name != 'workflow_dispatch' || inputs.version == ''
@@ -86,9 +86,9 @@ jobs:
           NEXT_VERSION: {{ next_version }}
         run: towncrier build --yes --version "${NEXT_VERSION}"
 
-      - name: Run pre-commit once to remove trailing whitespace
+      - name: Run hooks once to remove trailing whitespace
         run: |
-          python -m pre_commit run --files=CHANGELOG.md || true
+          prek run --files=CHANGELOG.md || true
 
       - name: Create/update release PR
         uses: peter-evans/create-pull-request@{{ versions["peter-evans/create-pull-request"] }}

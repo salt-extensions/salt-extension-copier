@@ -1,6 +1,7 @@
 import re
 
 from . import prompt
+from .cmd import CommandNotFound
 from .cmd import ProcessExecutionError
 from .cmd import git
 from .cmd import local
@@ -22,6 +23,19 @@ NON_IDEMPOTENT_HOOKS = (
     "black",
     "blacken-docs",
 )
+
+
+def pre_commit_cmd():
+    """
+    Return the command to manage the pre-commit hooks with. Prefers prek,
+    a faster drop-in replacement, when it is available, otherwise falls
+    back to pre-commit. Must be called with the project venv active to
+    discover executables installed into it.
+    """
+    try:
+        return local["prek"]
+    except CommandNotFound:
+        return local["python"]["-m", "pre_commit"]
 
 
 def parse_pre_commit(data):
@@ -79,7 +93,7 @@ def run_pre_commit(venv, retries=2):
         git("add", "--intent-to-add", *untracked_files)
         with local.venv(venv):
             try:
-                local["python"]("-m", "pre_commit", "run", "--all-files")
+                pre_commit_cmd()("run", "--all-files")
             except ProcessExecutionError as err:
                 if retries_left > 0 and check_pre_commit_rerun(err.stdout):
                     return _run_pre_commit_loop(retries_left - 1)

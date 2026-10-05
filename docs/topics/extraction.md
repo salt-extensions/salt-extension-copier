@@ -210,8 +210,8 @@ You may need to re-rewrite some imports, as `salt-rewrite` assumes the project i
 
 ```shell
 pip install -e ".[dev,tests,docs]"
-pre-commit install --install-hooks
-pre-commit run -a  # ensure it is happy
+prek install --install-hooks  # you can substitute pre-commit for prek, both work
+prek run -a  # ensure it is happy
 git status
 git add .
 git commit -m 'Add extension layout'
