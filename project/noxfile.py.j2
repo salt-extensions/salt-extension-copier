@@ -32,14 +32,11 @@ import tempfile
 from importlib import metadata
 from pathlib import Path
 
+# pylint: disable=import-error
 import nox
 from nox.command import CommandFailed
-from nox.virtualenv import VirtualEnv
 
-try:
-    from nox.virtualenv import HAS_UV
-except ImportError:  # nox < 2024.03.02
-    HAS_UV = False
+# pylint: enable=import-error
 
 # Nox options
 #  Reuse existing virtualenvs
@@ -130,9 +127,10 @@ def _install_requirements(
     install_extras=None,
 ):
     install_extras = install_extras or []
-    no_progress = "--progress-bar=off"
-    if isinstance(session._runner.venv, VirtualEnv) and session._runner.venv.venv_backend == "uv":
+    if session.venv_backend == "uv":
         no_progress = "--no-progress"
+    else:
+        no_progress = "--progress-bar=off"
     if SKIP_REQUIREMENTS_INSTALL is False:
         # Always have the wheel package installed
         session.install(no_progress, "wheel", silent=PIP_INSTALL_SILENT)
@@ -355,42 +353,6 @@ def _lint(session, rcfile, flags, paths, tee_output=True):
             stdout.close()
 
 
-def _lint_pre_commit(session, rcfile, flags, paths):
-    if "VIRTUAL_ENV" not in os.environ:
-        session.error(
-            "This should be running from within a virtualenv and "
-            "'VIRTUAL_ENV' was not found as an environment variable."
-        )
-    if not any(hint in os.environ["VIRTUAL_ENV"] for hint in ("pre-commit", "prek")):
-        session.error(
-            "This should be running from within a prek/pre-commit hook virtualenv and "
-            f"'VIRTUAL_ENV'({os.environ['VIRTUAL_ENV']}) does not appear to be one."
-        )
-
-    # Let's patch nox to make it run inside the hook virtualenv
-    try:
-        # nox >= 2024.03.02
-        # pylint: disable=unexpected-keyword-arg
-        venv = VirtualEnv(
-            os.environ["VIRTUAL_ENV"],
-            interpreter=session._runner.func.python,
-            reuse_existing=True,
-            # Hook envs created by prek don't include pip, but always uv.
-            venv_backend="uv" if HAS_UV else "venv",
-        )
-    except TypeError:
-        # nox < 2024.03.02
-        # pylint: disable=unexpected-keyword-arg
-        venv = VirtualEnv(
-            os.environ["VIRTUAL_ENV"],
-            interpreter=session._runner.func.python,
-            reuse_existing=True,
-            venv=True,
-        )
-    session._runner.venv = venv
-    _lint(session, rcfile, flags, paths, tee_output=False)
-
-
 @nox.session(python="3", venv_params=VENV_PARAMS)
 def lint(session):
     """
@@ -426,34 +388,6 @@ def lint_tests(session):
     else:
         paths = ["tests/"]
     _lint(session, ".pylintrc", flags, paths)
-
-
-@nox.session(python=False, name="lint-code-pre-commit")
-def lint_code_pre_commit(session):
-    """
-    Run PyLint against the code. Set PYLINT_REPORT to a path to capture output.
-    """
-    flags = ["--disable=I"]
-    if session.posargs:
-        paths = session.posargs
-    else:
-        paths = ["setup.py", "noxfile.py", "src/"]
-    _lint_pre_commit(session, ".pylintrc", flags, paths)
-
-
-@nox.session(python=False, name="lint-tests-pre-commit")
-def lint_tests_pre_commit(session):
-    """
-    Run PyLint against the code and the test suite. Set PYLINT_REPORT to a path to capture output.
-    """
-    flags = [
-        "--disable={{ pylint_tests_disable | join(",") }}",
-    ]
-    if session.posargs:
-        paths = session.posargs
-    else:
-        paths = ["tests/"]
-    _lint_pre_commit(session, ".pylintrc", flags, paths)
 
 
 @nox.session(python="3", venv_params=VENV_PARAMS)
