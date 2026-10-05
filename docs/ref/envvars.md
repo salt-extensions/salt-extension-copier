@@ -11,6 +11,10 @@ When `1`, skips the [automatic initialization/migration](automatic-init-target) 
 
 ## Development environment
 
+:::{envvar} VENV_PYTHON
+Overrides the Python version (`MAJOR.MINOR`) used for the development virtual environment, which defaults to the {question}`venv_python` answer. Useful when the configured version is hard to come by locally. An existing venv with a different version is recreated.
+:::
+
 :::{envvar} VENV_SYSTEM_SITE_PACKAGES
 When `1`, the development virtual environment and the {tool}`nox` session venvs [inherit system-wide packages](system-site-packages-target), easing development of OS-specific extensions. Implies a `venv` + `pip` fallback since {tool}`uv` does not consider inherited packages.
 :::

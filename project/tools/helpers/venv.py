@@ -69,7 +69,10 @@ def get_venv_pyver():
     """
     Return the Python version the project venv should use,
     as configured in the answers file (`venv_python`).
+    Can be overridden locally by setting $VENV_PYTHON.
     """
+    if override := os.environ.get("VENV_PYTHON"):
+        return override
     try:
         return discover_venv_python() or RECOMMENDED_PYVER
     except RuntimeError:

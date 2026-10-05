@@ -137,6 +137,7 @@ Python version (MAJOR.MINOR) for the local development virtual environment.
 The default follows the latest supported Salt onedir release, which is the
 least likely to cause installation issues. Choose a different one if it is
 hard to come by on the target platform of your extension.
+Individual developers can override this locally via {envvar}`VENV_PYTHON`.
 
 :::{question} no_saltext_namespace
 :::
