@@ -1,1 +1,1 @@
-Added dependency caching to the CI workflows: {tool}`pre-commit` environments and {tool}`uv`'s wheel cache are now persisted between runs on GitHub-hosted runners. Release builds never use caches, enforced by an explicit `use-caches: false` input in the release workflows and a tag ref check in the cache steps.
+Added dependency caching to the CI workflows: {tool}`pre-commit` environments and {tool}`uv`'s wheel cache are now persisted between runs on GitHub-hosted runners. Release builds never use caches, enforced via `cache-mode: none` and a tag ref check in the cache steps.

@@ -190,7 +190,8 @@ currently packaged Salt release. To force a refresh, delete the
 corresponding `...-prep-...` entries in your repository's GitHub Actions
 caches. The other Linux distribution VMs are unaffected: they install the
 respective Salt version matrix leg during the test run (see
-{question}`linux_test_distros`).
+{question}`linux_test_distros`). Release builds are denied cache access
+entirely, so their VM-based test jobs always prepare the image from scratch.
 :::
 
 :::{question} linux_test_distros

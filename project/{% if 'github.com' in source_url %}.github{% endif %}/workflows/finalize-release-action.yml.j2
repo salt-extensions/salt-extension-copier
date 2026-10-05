@@ -15,6 +15,8 @@ on:
     workflows:
       - Release Salt Extension Python Package
 
+cache-mode: none
+
 jobs:
   get_release_meta:
     name: Get release metadata
@@ -104,6 +106,7 @@ jobs:
       # The docs artifact is hosted by the original CI run, two
       # `workflow_run` hops back.
       run-id: {{ expr("needs.get_release_meta.outputs.source-run-id") }}
+    cache-mode: none
     permissions:
       actions: read
       pages: write

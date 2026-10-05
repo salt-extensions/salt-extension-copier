@@ -70,13 +70,12 @@
 {%- endfor %}
 {%- endmacro %}
 
-{#- The condition guarding all cache steps: besides being disableable
-    via the `use-caches` input, release builds must never install from
-    cached environments. The tag ref check is redundant with the
-    explicit `use-caches: false` in the release workflows, but
-    explicit is better. -#}
+{#- The condition guarding all cache steps: release builds must never
+    install from cached environments. This is enforced service-side via
+    `cache-mode: none` on the CI calls in the release workflows, the
+    tag ref check is an extra caller-independent safeguard. -#}
 {%- macro cache_condition() -%}
-{{ expr("inputs.use-caches && !startsWith(github.ref, 'refs/tags/')") }}
+{{ expr("!startsWith(github.ref, 'refs/tags/')") }}
 {%- endmacro -%}
 
 {#- Caches the uv wheel cache on GitHub-hosted runners to speed up
