@@ -6,6 +6,10 @@ layout_saltext() {
     export VIRTUAL_ENV
 }
 
+# Uncomment to override the Python version for the development venv,
+# e.g. when the configured `venv_python` is hard to come by locally:
+# export VENV_PYTHON=3.13
+
 # Uncomment to inherit system-wide packages in the development venvs,
 # e.g. when dependencies are only available as system packages:
 # export VENV_SYSTEM_SITE_PACKAGES=1

@@ -1,0 +1,1 @@
+Added the {envvar}`VENV_PYTHON` environment variable for locally overriding the Python version of the development virtual environment, e.g. when the configured {question}`venv_python` is hard to come by on the development machine.

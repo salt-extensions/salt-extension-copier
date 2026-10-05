@@ -108,6 +108,23 @@ def test_venv_system_site_packages_works(project):
         assert cfg["include-system-site-packages"] == "true"
 
 
+def test_venv_python_env_var_overrides_answer(project):
+    """
+    Ensure $VENV_PYTHON takes precedence over the committed `venv_python`
+    answer when resolving the development venv Python version.
+    """
+    with local.cwd(project.project_dir):
+        with local.env(VENV_PYTHON="3.99"):
+            out = local[sys.executable](
+                "-c",
+                "import sys; "
+                "sys.path.insert(0, 'tools'); "
+                "from helpers.venv import get_venv_pyver; "
+                "print(get_venv_pyver())",
+            )
+    assert out.strip() == "3.99"
+
+
 def test_initialize_cli_works(project):
     """
     Ensure ``tools/initialize.py`` rejects unknown arguments and that
