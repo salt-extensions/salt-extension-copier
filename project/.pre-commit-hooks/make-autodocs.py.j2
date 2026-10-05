@@ -61,9 +61,10 @@ def write_index(index_rst, import_paths, kind):
         )
     if kind in ("utils", "resources"):
         # These can contain nested modules, so find the common parent
-        common_path = posixpath.commonpath(tuple(x.replace(".", "/") for x in import_paths)).replace(
-            "/", "."
-        )
+        common_path = posixpath.commonpath(
+            tuple(x.replace(".", "/") for x in import_paths)
+        ).replace("/", ".")
+
         if any(x == common_path for x in import_paths):
             common_path = common_path[: common_path.rfind(".")]
     else:

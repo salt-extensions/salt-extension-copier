@@ -64,6 +64,7 @@ def prepend_path(path):
         if idx is not None:
             sys.path.insert(idx, str(path))
 
+
 with prepend_path(REPO_ROOT / "tools"):
     from helpers.venv import get_venv_pyver  # pylint: disable=import-error
 
@@ -88,7 +89,7 @@ if tuple(map(int, metadata.version("nox").split("."))) >= (2024, 3):
 
 # Python versions to test against
 PYTHON_VERSIONS = ("3.{{ range(python_requires[1], max_python_minor + 1) | map('string') | join('", "3.') }}"{{ ',' if max_python_minor == python_requires[1] }})
-VENV_PYVER=get_venv_pyver()
+VENV_PYVER = get_venv_pyver()
 
 # Be verbose when running under a CI context
 CI_RUN = (
