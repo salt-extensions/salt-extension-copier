@@ -105,13 +105,13 @@ python -m pre_commit install --install-hooks
 This ensures {tool}`pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files, as configured in {path}`.pre-commit-config.yaml`. To skip these checks temporarily, use `git commit --no-verify`.
 
 :::{note}
-Some hooks rely on prebuilt binaries that are unavailable for certain platforms. For example, {tool}`actionlint` (including its `shellcheck-py` dependency) and {tool}`ty` (which relies on {tool}`uv`, only generated when {question}`typing` is enabled) cannot be installed on FreeBSD. In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
+Some hooks may fail to install on certain platforms. For example, this can affect {tool}`actionlint` (which is compiled locally — {tool}`pre-commit` provisions the required [Go](https://go.dev/) toolchain automatically, but only on platforms with [official Go binaries](https://go.dev/dl/)) and {tool}`ty` (which relies on prebuilt {tool}`uv` binaries and is only generated when {question}`typing` is enabled). In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
 
 ```bash
 export SKIP=actionlint,ty
 ```
 
-The skipped hooks still run in CI, which executes on platforms with prebuilt binaries.
+Skipped hooks are neither run nor installed during commits. Note that the `--install-hooks` flag in the command above prepares environments for all hooks regardless of `SKIP`, so drop it when relying on this — missing environments are then installed on first use. The [automation](automatic-init-target) accounts for this automatically. The skipped hooks still run in CI, which executes on supported platforms.
 :::
 
 ## First commit

@@ -199,5 +199,11 @@ def ensure_project_venv(project_root=".", reinstall=True, install_extras=False, 
             local["python"]("-m", "pip", "install", "-e", f".[{','.join(extras)}]")
         if not exists or not (Path(project_root) / ".git" / "hooks" / "pre-commit").exists():
             prompt.status("Installing pre-commit hooks")
-            local["python"]("-m", "pre_commit", "install", "--install-hooks")
+            install_cmd = ["-m", "pre_commit", "install"]
+            # --install-hooks prepares environments for all hooks, disregarding SKIP,
+            # which can fail for skipped ones on unsupported platforms. Hook runs
+            # install missing environments on demand, honoring SKIP.
+            if not os.environ.get("SKIP"):
+                install_cmd.append("--install-hooks")
+            local["python"](*install_cmd)
     return venv

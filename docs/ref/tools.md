@@ -81,8 +81,8 @@ Run as {tool}`pre-commit` hooks:
 
 :::{tool} actionlint
 :::
-[actionlint](https://github.com/rhysd/actionlint)
-:   GitHub Actions workflow linting, including [shellcheck](https://www.shellcheck.net/) for embedded shell scripts.
+[actionlint](https://github.com/kjanat/actionlint)
+:   GitHub Actions workflow linting, including [shellcheck](https://www.shellcheck.net/) for embedded shell scripts. Compiled locally during hook installation, requiring only a [Go](https://go.dev/) toolchain.
 
 :::{tool} ty
 :::

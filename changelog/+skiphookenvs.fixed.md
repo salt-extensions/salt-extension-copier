@@ -1,0 +1,1 @@
+When {envvar}`SKIP` is set, the initialization automation now installs the pre-commit hook without `--install-hooks`, which prepares environments for all hooks regardless of it. Skipped hooks thus no longer break automated setup on platforms where they cannot be built.
