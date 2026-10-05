@@ -156,11 +156,10 @@ repos:
 
 {%- if "github.com" in source_url %}
 
-  - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
+  - repo: https://github.com/kjanat/actionlint
     rev: {{ versions["actionlint"] }}
     hooks:
-      - id: actionlint
-        additional_dependencies:
-          - shellcheck-py=={{ versions["shellcheck"] }}
+      - id: actionlint-shellcheck
+        alias: actionlint
 {%- endif %}
   # <---- Code Analysis --------------------------------------------------------------------------

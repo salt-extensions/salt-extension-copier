@@ -9,6 +9,9 @@ jobs:
   get-changed-files:
     name: Get Changed Files
     uses: ./.github/workflows/get-changed-files.yml
+    permissions:
+      contents: read
+      pull-requests: read  # for dorny/paths-filter to read pull requests
 
   pre-commit:
     name: Pre-Commit
@@ -17,6 +20,8 @@ jobs:
       - get-changed-files
     with:
       changed-files: ${{ needs.get-changed-files.outputs.changed-files }}
+    permissions:
+      contents: read
 
   test:
     name: Test
@@ -33,6 +38,8 @@ jobs:
       - get-changed-files
       - pre-commit
     uses: ./.github/workflows/docs-action.yml
+    permissions:
+      contents: read
 
   deploy-docs:
     name: Deploy Docs
@@ -44,6 +51,9 @@ jobs:
     needs:
       - docs
       - test
+    permissions:
+      pages: write
+      id-token: write
 
   set-pipeline-exit-status:
     # This step is just so we can make github require this step, to pass checks

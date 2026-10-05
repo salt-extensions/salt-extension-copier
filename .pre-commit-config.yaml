@@ -76,11 +76,9 @@ repos:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           - nox==2026.8.17
 
-  - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
-    # renovate: datasource=git-tags depName=actionlint-py packageName=https://github.com/Mateusz-Grzelinski/actionlint-py depType=devDependencies versioning=pep440
-    rev: 694e2c0dfb4253d51f3c6c54b8f9fec0a16764dc  # v1.7.11.24
+  - repo: https://github.com/kjanat/actionlint
+    # renovate: datasource=git-tags depName=actionlint packageName=https://github.com/kjanat/actionlint depType=devDependencies
+    rev: 2da2ceb4af2c7ecc48f5b9311d85080c3971b5f0  # v1.17.0
     hooks:
-      - id: actionlint
-        additional_dependencies:
-          # renovate: datasource=pypi depName=shellcheck-py depType=devDependencies
-          - shellcheck-py==0.11.0.1
+      - id: actionlint-shellcheck
+        alias: actionlint

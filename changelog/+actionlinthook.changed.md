@@ -1,0 +1,1 @@
+Switched the {tool}`actionlint` pre-commit hook from `actionlint-py` to a [maintained fork](https://github.com/kjanat/actionlint) providing a hook with integrated shellcheck support. Both tools are now compiled locally, requiring only a Go toolchain instead of prebuilt platform binaries.
