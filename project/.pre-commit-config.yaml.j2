@@ -143,15 +143,23 @@ repos:
 
 {%- if typing %}
 
-  - repo: https://github.com/astral-sh/ty-pre-commit
-    rev: {{ versions["ty"] }}
-    hooks:
+      # Local reimplementation of the astral-sh/ty-pre-commit hook, which unconditionally
+      # pins uv in `additional_dependencies`. This variant only installs the pin where
+      # uv ships wheels and otherwise relies on a locally installed uv (as above).
       - id: ty
         alias: typing
         name: Typecheck Project
+        language: python
+        entry: uv check --quiet --preview-features=check-command --ty-version={{ versions["ty"] }}
         args:
           - --isolated
           - --extra=tests
+        types_or: [python, pyi]
+        pass_filenames: false
+        always_run: true
+        require_serial: true
+        additional_dependencies:
+          - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 {%- endif %}
 
 {%- if "github.com" in source_url %}

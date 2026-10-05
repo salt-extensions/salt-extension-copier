@@ -105,7 +105,7 @@ python -m pre_commit install --install-hooks
 This ensures {tool}`pre-commit` runs before each commit. It autoformats and lints your code and ensures the presence of necessary documentation files, as configured in {path}`.pre-commit-config.yaml`. To skip these checks temporarily, use `git commit --no-verify`.
 
 :::{note}
-Some hooks may fail to install on certain platforms. For example, this can affect {tool}`actionlint` (which is compiled locally — {tool}`pre-commit` provisions the required [Go](https://go.dev/) toolchain automatically, but only on platforms with [official Go binaries](https://go.dev/dl/)) and {tool}`ty` (which relies on prebuilt {tool}`uv` binaries and is only generated when {question}`typing` is enabled). In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
+Some hooks may fail to install or run on certain platforms. For example, this can affect {tool}`actionlint` (which is compiled locally — {tool}`pre-commit` provisions the required [Go](https://go.dev/) toolchain automatically, but only on platforms with [official Go binaries](https://go.dev/dl/)) and {tool}`ty` (which relies on prebuilt binaries of both {tool}`uv` and itself and is only generated when {question}`typing` is enabled; on platforms without `uv` wheels, the hook falls back to a locally installed `uv`, e.g. from your system package manager). In this case, skip the affected hooks persistently by setting [`SKIP`](https://pre-commit.com/#temporarily-disabling-hooks) in your environment (e.g. via `.envrc` or your shell profile):
 
 ```bash
 export SKIP=actionlint,ty
