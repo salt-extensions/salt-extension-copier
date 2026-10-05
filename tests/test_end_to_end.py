@@ -48,10 +48,15 @@ def _commit_with_pre_commit(git, venv, max_retry=3, message="initial commit"):
 
 
 @pytest.mark.parametrize(
-    "typing_",
-    (False, True),
+    "source_url,typing_,no_saltext_namespace",
+    (
+        # namespace parametrization also helps with races in the pre-commit lint hook
+        pytest.param(  # different defaults, especially require_autorelease_app
+            "non_org", False, True, id="non_org_no_typing_no_ns"
+        ),
+        pytest.param("org", True, False, id="org_typing_ns"),
+    ),
     indirect=True,
-    ids=("default", "typing"),
 )
 def test_first_commit_works(project, project_venv, git):
     """

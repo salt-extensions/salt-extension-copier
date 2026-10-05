@@ -1,0 +1,1 @@
+The workflows now declare least-privilege [Actions cache access](https://docs.github.com/en/actions/reference/workflows-and-actions/dependency-caching) via the `cache-mode` key: release builds and `workflow_run`-triggered workflows are denied cache access entirely, protecting against cache poisoning.

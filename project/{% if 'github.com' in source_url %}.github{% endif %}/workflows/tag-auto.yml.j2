@@ -26,6 +26,8 @@ on:
     paths:
       - CHANGELOG.md
 
+cache-mode: none
+
 jobs:
   ensure_trigger:
     # We need this workflow to fail if it was triggered accidentally.
@@ -166,10 +168,9 @@ jobs:
     if: needs.get_version_pr.outputs.app_used == '0'
     needs:
       - get_version_pr
-    uses: ./.github/workflows/ci.yml
-    with:
-      # Release builds must not use cached environments
-      use-caches: false
+    uses: ./.github/workflows/ci.yml  # actionlint:ignore cache-operation -- release builds must not read caches
+    # Release builds must not use cached environments
+    cache-mode: none
     permissions:
       contents: read
       id-token: write
