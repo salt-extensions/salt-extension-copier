@@ -1,0 +1,1 @@
+The `lint-code-pre-commit` and `lint-tests-pre-commit` nox sessions, which reuse the hook environment as their session venv, now install requirements via {tool}`uv` when available instead of pip, speeding up the linting hooks.

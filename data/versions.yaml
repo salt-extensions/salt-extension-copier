@@ -26,6 +26,9 @@ remove_import_headers: 'e79f595c0df31b8cb152c53993ce7c3c64f07cd4  # 1.1.0'
 # renovate: datasource=git-tags depName=pre-commit-hooks packageName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
 pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
 
+# renovate: datasource=pypi depName=prek depType=devDependencies
+prek: '0.5.5'
+
 # renovate: datasource=git-tags depName=pyupgrade packageName=https://github.com/asottile/pyupgrade depType=devDependencies
 pyupgrade: '75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2'
 

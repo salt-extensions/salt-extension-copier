@@ -31,7 +31,7 @@ jobs:
           path: |-
             ~/.cache/pip
             ~/.cache/uv
-            ~/.cache/pre-commit
+            ~/.cache/prek
           key: testrun-${{ runner.os }}-${{ hashFiles('noxfile.py', 'project/pyproject.toml.j2', 'project/noxfile.py.j2', 'project/.pre-commit-config.yaml.j2') }}
           restore-keys: |-
             testrun-${{ runner.os }}-
@@ -103,7 +103,7 @@ jobs:
           path: |-
             ~\AppData\Local\pip\Cache
             ~\AppData\Local\uv\cache
-            ~\.cache\pre-commit
+            ~\AppData\Local\prek
           key: testrun-${{ runner.os }}-${{ hashFiles('noxfile.py', 'project/pyproject.toml.j2', 'project/noxfile.py.j2', 'project/.pre-commit-config.yaml.j2') }}
           restore-keys: |-
             testrun-${{ runner.os }}-
@@ -179,7 +179,7 @@ jobs:
           path: |-
             ~/Library/Caches/pip
             ~/Library/Caches/uv
-            ~/.cache/pre-commit
+            ~/.cache/prek
           key: testrun-${{ runner.os }}-${{ hashFiles('noxfile.py', 'project/pyproject.toml.j2', 'project/noxfile.py.j2', 'project/.pre-commit-config.yaml.j2') }}
           restore-keys: |-
             testrun-${{ runner.os }}-

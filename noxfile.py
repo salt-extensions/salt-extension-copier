@@ -10,6 +10,11 @@ import tempfile
 import nox
 from nox.virtualenv import VirtualEnv
 
+try:
+    from nox.virtualenv import HAS_UV
+except ImportError:  # nox < 2024.03.02
+    HAS_UV = False
+
 # Nox options
 #  Reuse existing virtualenvs
 nox.options.reuse_existing_virtualenvs = True
@@ -75,7 +80,13 @@ def _install_requirements(
     *passed_requirements,
 ):
     if SKIP_REQUIREMENTS_INSTALL is False:
-        install_command = ["--progress-bar=off"]
+        if (
+            isinstance(session._runner.venv, VirtualEnv)
+            and session._runner.venv.venv_backend == "uv"
+        ):
+            install_command = ["--no-progress"]
+        else:
+            install_command = ["--progress-bar=off"]
         install_command += passed_requirements
         if EXTRA_REQUIREMENTS_INSTALL:
             session.log(
@@ -213,13 +224,13 @@ def _lint_pre_commit(session, rcfile, flags, paths):
             "This should be running from within a virtualenv and "
             "'VIRTUAL_ENV' was not found as an environment variable."
         )
-    if "pre-commit" not in os.environ["VIRTUAL_ENV"]:
+    if not any(hint in os.environ["VIRTUAL_ENV"] for hint in ("pre-commit", "prek")):
         session.error(
-            "This should be running from within a pre-commit virtualenv and "
-            f"'VIRTUAL_ENV'({os.environ['VIRTUAL_ENV']}) does not appear to be a pre-commit virtualenv."
+            "This should be running from within a prek/pre-commit hook virtualenv and "
+            f"'VIRTUAL_ENV'({os.environ['VIRTUAL_ENV']}) does not appear to be one."
         )
 
-    # Let's patch nox to make it run inside the pre-commit virtualenv
+    # Let's patch nox to make it run inside the hook virtualenv
     try:
         # nox >= 2024.03.02
         # pylint: disable=unexpected-keyword-arg
@@ -227,7 +238,8 @@ def _lint_pre_commit(session, rcfile, flags, paths):
             os.environ["VIRTUAL_ENV"],
             interpreter=session._runner.func.python,
             reuse_existing=True,
-            venv_backend="venv",
+            # Hook envs created by prek don't include pip, but always uv.
+            venv_backend="uv" if HAS_UV else "venv",
         )
     except TypeError:
         # nox < 2024.03.02

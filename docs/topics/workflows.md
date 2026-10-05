@@ -7,7 +7,7 @@ Your Salt extension repository includes several workflows out of the box if your
 
 The workflows currently:
 
-* Ensure `pre-commit` checks pass
+* Ensure the pre-commit hooks pass (run via {tool}`prek`)
 * Run the test suite and upload code coverage reports
 * Build the documentation
 * Build the changelog and submit a PR that triggers a release when merged

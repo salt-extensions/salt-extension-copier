@@ -91,6 +91,16 @@ class VirtualEnv:
     def run_module(self, module, *args, **kwargs):
         return self.run(str(self.venv_python), "-m", module, *args, **kwargs)
 
+    def run_pre_commit(self, *args, _disable_prek=False, **kwargs):
+        # The dev extra installs prek on all platforms the test suite runs on.
+        # We still want to be compatible with pre-commit, so allow to override prek.
+        if _disable_prek:
+            if "pre_commit" not in self.get_installed_packages():
+                self.install("pre_commit>=2.21.0")
+            return self.run_module("pre_commit", *args, **kwargs)
+        exe = "prek.exe" if platform.system() == "Windows" else "prek"
+        return self.run(str(self.venv_bin_dir / exe), *args, **kwargs)
+
     def run(self, *args, **kwargs):
         check = kwargs.pop("check", True)
         # kwargs.setdefault("cwd", tempfile.gettempdir())

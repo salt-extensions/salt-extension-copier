@@ -24,7 +24,7 @@ When set, suppresses status output of the bundled {path}`developer tools <tools>
 :::
 
 :::{envvar} SKIP
-Comma-separated list of {tool}`pre-commit` [hook IDs to skip](https://pre-commit.com/#temporarily-disabling-hooks). Useful [when some hooks fail to install](hook-install-target).
+Comma-separated list of [hook IDs to skip](https://pre-commit.com/#temporarily-disabling-hooks), honored by both {tool}`prek` and {tool}`pre-commit`. Useful [when some hooks fail to install](hook-install-target).
 :::
 
 ## `nox` sessions

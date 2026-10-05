@@ -24,8 +24,8 @@ pytestmark = [
 ]
 
 
-def _commit_with_pre_commit(git, venv, max_retry=3, message="initial commit"):
-    venv.run_module("pre_commit", "install")
+def _commit_with_pre_commit(git, venv, max_retry=3, message="initial commit", disable_prek=False):
+    venv.run_pre_commit("install", _disable_prek=disable_prek)
     retry_count = 1
     saved_err = None
 
@@ -48,24 +48,25 @@ def _commit_with_pre_commit(git, venv, max_retry=3, message="initial commit"):
 
 
 @pytest.mark.parametrize(
-    "source_url,typing_,no_saltext_namespace",
+    "source_url,typing_,no_saltext_namespace,disable_prek",
     (
         # namespace parametrization also helps with races in the pre-commit lint hook
         pytest.param(  # different defaults, especially require_autorelease_app
-            "non_org", False, True, id="non_org_no_typing_no_ns"
+            "non_org", False, True, False, id="non_org_no_typing_no_ns_prek"
         ),
-        pytest.param("org", True, False, id="org_typing_ns"),
+        pytest.param("org", True, False, False, id="org_typing_ns_prek"),
+        pytest.param("org", True, True, True, id="org_typing_no_ns_pre_commit"),
     ),
-    indirect=True,
+    indirect=("source_url", "typing_", "no_saltext_namespace"),
 )
-def test_first_commit_works(project, project_venv, git):
+def test_first_commit_works(project, project_venv, git, disable_prek):
     """
     Ensure the generated project can be committed after generation
     with pre-commit hooks active.
     It should take at most three tries.
     """
     with local.cwd(project.project_dir):
-        _commit_with_pre_commit(git, project_venv, max_retry=3)
+        _commit_with_pre_commit(git, project_venv, max_retry=3, disable_prek=disable_prek)
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)

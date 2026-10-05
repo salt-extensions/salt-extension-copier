@@ -1,7 +1,7 @@
 (tools-ref-target)=
 # Tools
 
-Tools employed by generated projects. Most are installed automatically – via the `dev` extra, `pre-commit` or `nox` session venvs – and don't require manual setup.
+Tools employed by generated projects. Most are installed automatically – via the `dev` extra, hook environments or `nox` session venvs – and don't require manual setup.
 
 ## Core
 
@@ -20,10 +20,15 @@ Tools employed by generated projects. Most are installed automatically – via t
 [nox](https://nox.thea.codes/en/stable/)
 :   Runs isolated sessions for [tests](run-tests-target), linting and [docs](build-docs-target), defined in {path}`noxfile.py`.
 
+:::{tool} prek
+:::
+[prek](https://prek.j178.dev)
+:   Manages the git hooks configured in {path}`.pre-commit-config.yaml`. A faster drop-in replacement for {tool}`pre-commit`, always used in CI and preferred by the dev automation.
+
 :::{tool} pre-commit
 :::
-[pre-commit](https://pre-commit.com)
-:   Manages the git hooks configured in {path}`.pre-commit-config.yaml`.
+[pre-commit](https://pre-commit.com) (fallback)
+:   Used by the dev automation instead of {tool}`prek` on platforms without prebuilt `prek` binaries.
 
 :::{tool} towncrier
 :::
@@ -42,7 +47,7 @@ Tools employed by generated projects. Most are installed automatically – via t
 
 ## Formatting and fixes
 
-Run as {tool}`pre-commit` hooks:
+Run as pre-commit hooks via {tool}`prek`:
 
 :::{tool} black
 :::

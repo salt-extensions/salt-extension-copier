@@ -124,8 +124,10 @@ repos:
         require_serial: true
         additional_dependencies:
           - nox=={{ versions["nox"] }}
-          # Speeds up this hook significantly. uv only ships wheels for these platforms;
-          # elsewhere (e.g. FreeBSD) nox falls back to the virtualenv backend.
+          # Speeds up this hook significantly and, since prek-created hook envs
+          # don't include pip, provides the uv install path nox needs there.
+          # uv only ships wheels for these platforms; elsewhere (e.g. FreeBSD),
+          # the hooks run via pre-commit, whose envs include pip.
           - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
       - id: nox
@@ -137,8 +139,10 @@ repos:
         require_serial: true
         additional_dependencies:
           - nox=={{ versions["nox"] }}
-          # Speeds up this hook significantly. uv only ships wheels for these platforms;
-          # elsewhere (e.g. FreeBSD) nox falls back to the virtualenv backend.
+          # Speeds up this hook significantly and, since prek-created hook envs
+          # don't include pip, provides the uv install path nox needs there.
+          # uv only ships wheels for these platforms; elsewhere (e.g. FreeBSD),
+          # the hooks run via pre-commit, whose envs include pip.
           - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
 {%- if typing %}

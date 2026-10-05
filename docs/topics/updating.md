@@ -29,9 +29,9 @@ Manual updates let you:
     git diff
     git add .
     ```
-5. Run `pre-commit` on the entire repository and ensure it passes:
+5. Run the hooks on the entire repository and ensure they pass:
     ```bash
-    pre-commit run -a
+    prek run -a  # or: pre-commit run -a
     ```
 6. Commit and submit the update via a PR:
    ```bash
