@@ -58,8 +58,8 @@ repos:
         name: Lint Tools
         pass_filenames: false
         language: python
-        entry: nox -e lint-tools-pre-commit --
-        files: ^(project/tools|(?!(project/|tests/|docs/conf)))[^{]*\.py$
+        entry: nox -e lint-tools --
+        files: ^(project/tools|noxfile|(?!(project/|tests/|docs/conf)))[^{]*\.py$
         require_serial: true
         additional_dependencies:
           # renovate: datasource=pypi depName=nox depType=devDependencies
@@ -75,16 +75,12 @@ repos:
         alias: lint-tests
         name: Lint Tests
         language: python
-        entry: nox -e lint-tests-pre-commit --
+        entry: nox -e lint-tests --
         files: ^tests/.*\.py$
         require_serial: true
         additional_dependencies:
           # renovate: datasource=pypi depName=nox depType=devDependencies
           - nox==2026.8.17
-          # Speeds up the session install and, since prek-created hook envs
-          # don't include pip, provides the uv install path nox needs there.
-          # uv only ships wheels for these platforms; elsewhere, the hooks
-          # run via pre-commit, whose envs include pip.
           # renovate: datasource=pypi depName=uv depType=devDependencies
           - uv==0.12.23 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 

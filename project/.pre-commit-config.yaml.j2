@@ -119,7 +119,7 @@ repos:
         alias: lint-src
         name: Lint Source Code
         language: python
-        entry: nox -e lint-code-pre-commit --
+        entry: nox -e lint-code --
         files: ^((setup|noxfile)|src/.*)\.py$
         require_serial: true
         additional_dependencies:
@@ -134,15 +134,11 @@ repos:
         alias: lint-tests
         name: Lint Tests
         language: python
-        entry: nox -e lint-tests-pre-commit --
+        entry: nox -e lint-tests --
         files: ^tests/.*\.py$
         require_serial: true
         additional_dependencies:
           - nox=={{ versions["nox"] }}
-          # Speeds up this hook significantly and, since prek-created hook envs
-          # don't include pip, provides the uv install path nox needs there.
-          # uv only ships wheels for these platforms; elsewhere (e.g. FreeBSD),
-          # the hooks run via pre-commit, whose envs include pip.
           - uv=={{ versions["uv"] }} ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
 {%- if typing %}

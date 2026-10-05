@@ -10,11 +10,6 @@ import tempfile
 import nox
 from nox.virtualenv import VirtualEnv
 
-try:
-    from nox.virtualenv import HAS_UV
-except ImportError:  # nox < 2024.03.02
-    HAS_UV = False
-
 # Nox options
 #  Reuse existing virtualenvs
 nox.options.reuse_existing_virtualenvs = True
@@ -63,7 +58,7 @@ DOCSAUTO_REQUIREMENTS = ("sphinx-autobuild",)
 TESTS_REQUIREMENTS = (
     "copier>=9.6",
     "copier-template-extensions",
-    # for generated project checks that run nox sessions
+    # for generated project checks that run nox sessions and linting this noxfile
     "nox",
     "plumbum",
     "pytest",
@@ -218,48 +213,13 @@ def _lint(session, rcfile, flags, paths, tee_output=True):
             stdout.close()
 
 
-def _lint_pre_commit(session, rcfile, flags, paths):
-    if "VIRTUAL_ENV" not in os.environ:
-        session.error(
-            "This should be running from within a virtualenv and "
-            "'VIRTUAL_ENV' was not found as an environment variable."
-        )
-    if not any(hint in os.environ["VIRTUAL_ENV"] for hint in ("pre-commit", "prek")):
-        session.error(
-            "This should be running from within a prek/pre-commit hook virtualenv and "
-            f"'VIRTUAL_ENV'({os.environ['VIRTUAL_ENV']}) does not appear to be one."
-        )
-
-    # Let's patch nox to make it run inside the hook virtualenv
-    try:
-        # nox >= 2024.03.02
-        # pylint: disable=unexpected-keyword-arg
-        venv = VirtualEnv(
-            os.environ["VIRTUAL_ENV"],
-            interpreter=session._runner.func.python,
-            reuse_existing=True,
-            # Hook envs created by prek don't include pip, but always uv.
-            venv_backend="uv" if HAS_UV else "venv",
-        )
-    except TypeError:
-        # nox < 2024.03.02
-        # pylint: disable=unexpected-keyword-arg
-        venv = VirtualEnv(
-            os.environ["VIRTUAL_ENV"],
-            interpreter=session._runner.func.python,
-            reuse_existing=True,
-            venv=True,  # type: ignore
-        )
-    session._runner.venv = venv
-    _lint(session, rcfile, flags, paths, tee_output=False)
-
-
 @nox.session(python="3")
 def lint(session):
     """
     Run PyLint against the code and the test suite. Set PYLINT_REPORT to a path to capture output.
     """
     session.notify("lint-tests")
+    session.notify("lint-tools")
 
 
 @nox.session(name="lint-tests")
@@ -277,25 +237,10 @@ def lint_tests(session):
     _lint(session, ".pylintrc", flags, paths)
 
 
-@nox.session(name="lint-tests-pre-commit")
-def lint_tests_pre_commit(session):
+@nox.session(name="lint-tools")
+def lint_tools(session):
     """
-    Run PyLint against the test suite. Set PYLINT_REPORT to a path to capture output.
-    """
-    flags = [
-        "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring",
-    ]
-    if session.posargs:
-        paths = session.posargs
-    else:
-        paths = ["tests/"]
-    _lint_pre_commit(session, ".pylintrc", flags, paths)
-
-
-@nox.session(name="lint-tools-pre-commit")
-def lint_tools_pre_commit(session):
-    """
-    Run PyLint against all non-templated. Set PYLINT_REPORT to a path to capture output.
+    Run PyLint against all non-templated files. Set PYLINT_REPORT to a path to capture output.
     """
     flags = [
         "--disable=I,redefined-outer-name,missing-function-docstring,no-member,missing-module-docstring",
@@ -304,7 +249,7 @@ def lint_tools_pre_commit(session):
         paths = session.posargs
     else:
         paths = ["docs/_ext", "jinja_extensions/saltext.py", "noxfile.py", "project/tools", "tasks"]
-    _lint_pre_commit(session, ".pylintrc", flags, paths)
+    _lint(session, ".pylintrc", flags, paths)
 
 
 @nox.session
