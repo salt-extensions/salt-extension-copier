@@ -28,10 +28,12 @@ jobs:
       - name: Cache Package Downloads
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
+          # The test suite invokes all of these at some point
           path: |-
             ~/.cache/pip
             ~/.cache/uv
             ~/.cache/prek
+            ~/.cache/pre-commit
           key: testrun-${{ runner.os }}-${{ hashFiles('noxfile.py', 'project/pyproject.toml.j2', 'project/noxfile.py.j2', 'project/.pre-commit-config.yaml.j2') }}
           restore-keys: |-
             testrun-${{ runner.os }}-
@@ -79,7 +81,7 @@ jobs:
 
   Windows:
     runs-on: windows-2025
-    timeout-minutes: 60
+    timeout-minutes: 70
 
     strategy:
       fail-fast: false
@@ -104,6 +106,7 @@ jobs:
             ~\AppData\Local\pip\Cache
             ~\AppData\Local\uv\cache
             ~\AppData\Local\prek
+            ~\.cache\pre-commit
           key: testrun-${{ runner.os }}-${{ hashFiles('noxfile.py', 'project/pyproject.toml.j2', 'project/noxfile.py.j2', 'project/.pre-commit-config.yaml.j2') }}
           restore-keys: |-
             testrun-${{ runner.os }}-
@@ -180,6 +183,7 @@ jobs:
             ~/Library/Caches/pip
             ~/Library/Caches/uv
             ~/.cache/prek
+            ~/.cache/pre-commit
           key: testrun-${{ runner.os }}-${{ hashFiles('noxfile.py', 'project/pyproject.toml.j2', 'project/noxfile.py.j2', 'project/.pre-commit-config.yaml.j2') }}
           restore-keys: |-
             testrun-${{ runner.os }}-
