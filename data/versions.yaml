@@ -2,43 +2,43 @@
 #  pre-commit
 ###########################################################
 
-# renovate: datasource=git-tags depName=actionlint packageName=https://github.com/kjanat/actionlint depType=devDependencies
+# renovate: datasource=git-tags depName=actionlint packageName=https://github.com/kjanat/actionlint depType=hook
 actionlint: '2da2ceb4af2c7ecc48f5b9311d85080c3971b5f0  # v1.17.0'
 
-# renovate: datasource=git-tags depName=bandit packageName=https://github.com/PyCQA/bandit depType=devDependencies
+# renovate: datasource=git-tags depName=bandit packageName=https://github.com/PyCQA/bandit depType=hook
 bandit: '92ae8b82fb422a639f0ed8d99e96cea769594e08  # 1.9.4'
 
-# renovate: datasource=git-tags depName=black packageName=https://github.com/psf/black depType=devDependencies
+# renovate: datasource=git-tags depName=black packageName=https://github.com/psf/black depType=hook
 black: '4f1883b1f15305a0e83a7c87991f46292bf09f85  # 26.10.0'
 
-# renovate: datasource=git-tags depName=blacken-docs packageName=https://github.com/adamchainz/blacken-docs depType=devDependencies
+# renovate: datasource=git-tags depName=blacken-docs packageName=https://github.com/adamchainz/blacken-docs depType=hook
 blacken_docs: 'fda77690955e9b63c6687d8806bafd56a526e45f  # 1.20.0'
 
-# renovate: datasource=git-tags depName=isort packageName=https://github.com/PyCQA/isort depType=devDependencies
+# renovate: datasource=git-tags depName=isort packageName=https://github.com/PyCQA/isort depType=hook
 isort: '9f905615631c545f5aea2516508109350d1d2f7d  # 9.0.2'
 
-# renovate: datasource=pypi depName=nox depType=devDependencies
+# renovate: datasource=pypi depName=nox depType=dev
 nox: '2026.8.17'
 
-# renovate: datasource=git-tags depName=pre-commit-remove-import-headers packageName=https://github.com/saltstack/pre-commit-remove-import-headers depType=devDependencies
+# renovate: datasource=git-tags depName=pre-commit-remove-import-headers packageName=https://github.com/saltstack/pre-commit-remove-import-headers depType=hook
 remove_import_headers: 'e79f595c0df31b8cb152c53993ce7c3c64f07cd4  # 1.1.0'
 
-# renovate: datasource=git-tags depName=pre-commit-hooks packageName=https://github.com/pre-commit/pre-commit-hooks depType=devDependencies
+# renovate: datasource=git-tags depName=pre-commit-hooks packageName=https://github.com/pre-commit/pre-commit-hooks depType=hook
 pre_commit_hooks: '3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # v6.0.0'
 
-# renovate: datasource=pypi depName=prek depType=devDependencies
+# renovate: datasource=pypi depName=prek depType=dev
 prek: '0.5.5'
 
-# renovate: datasource=git-tags depName=pyupgrade packageName=https://github.com/asottile/pyupgrade depType=devDependencies
+# renovate: datasource=git-tags depName=pyupgrade packageName=https://github.com/asottile/pyupgrade depType=hook
 pyupgrade: '75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2'
 
-# renovate: datasource=git-tags depName=salt-rewrite packageName=https://github.com/saltstack/salt-rewrite depType=devDependencies
+# renovate: datasource=git-tags depName=salt-rewrite packageName=https://github.com/saltstack/salt-rewrite depType=hook
 salt_rewrite: '2401c0faef69b6b846c719d611bcfe358234d5d1  # 2.5.2'
 
-# renovate: datasource=pypi depName=ty depType=devDependencies
+# renovate: datasource=pypi depName=ty depType=dev
 ty: '0.0.84'
 
-# renovate: datasource=pypi depName=uv depType=devDependencies
+# renovate: datasource=pypi depName=uv depType=dev
 uv: '0.12.23'
 
 
@@ -145,8 +145,8 @@ python_container_314: '3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e1867677
 # renovate: datasource=pypi depName=codecov-cli depType=actionMisc
 codecov_cli: 'v11.3.1'
 
-# renovate: datasource=pypi depName=coverage depType=devDependencies
+# renovate: datasource=pypi depName=coverage depType=dev
 coverage: '7.16.2'
 
-# renovate: datasource=pypi depName=towncrier depType=devDependencies
+# renovate: datasource=pypi depName=towncrier depType=dev
 towncrier: '26.9.0'

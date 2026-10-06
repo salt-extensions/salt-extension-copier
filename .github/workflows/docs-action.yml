@@ -21,9 +21,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
         env:
-          # renovate: datasource=pypi depName=nox depType=devDependencies
+          # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.8.17'
-          # renovate: datasource=pypi depName=uv depType=devDependencies
+          # renovate: datasource=pypi depName=uv depType=dev
           UV_VERSION: '0.12.23'
 
       - name: Install Doc Requirements

@@ -47,7 +47,7 @@ DOCS_REQUIREMENTS = (
     "myst_parser",
     "furo",
     "sphinx-inline-tabs",
-    # renovate: datasource=pypi depType=devDependencies
+    # renovate: datasource=pypi depType=dev
     "towncrier==26.9.0",
     "sphinxcontrib-towncrier",
     "sphinx_tippy",
