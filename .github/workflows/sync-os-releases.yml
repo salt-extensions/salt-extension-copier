@@ -21,8 +21,10 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: generate-token
         with:
-          client-id: ${{ secrets.AUTORELEASE_CLID }}
-          private-key: ${{ secrets.AUTORELEASE_PRIV }}
+          client-id: ${{ secrets.AUTOORG_CLID }}
+          private-key: ${{ secrets.AUTOORG_PRIV }}
+          permission-contents: write
+          permission-pull-requests: write
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -41,8 +43,10 @@ jobs:
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          commit-message: Sync available/default OS releases
           branch: sync-os-releases
+          delete-branch: true
+          commit-message: Sync available/default OS releases
+          sign-commits: true
           title: Sync available/default OS releases
           body: >-
             Automated update of the OS releases offered by the `*_releases`
@@ -50,3 +54,4 @@ jobs:
             ([endoflife.date](https://endoflife.date)) and release
             availability in the [vmactions](https://github.com/vmactions)
             actions.
+          add-paths: data/os_support.yaml

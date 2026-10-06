@@ -21,8 +21,11 @@ jobs:
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: generate-token
         with:
-          client-id: ${{ secrets.AUTORELEASE_CLID }}
-          private-key: ${{ secrets.AUTORELEASE_PRIV }}
+          client-id: ${{ secrets.AUTOORG_CLID }}
+          private-key: ${{ secrets.AUTOORG_PRIV }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -60,6 +63,7 @@ jobs:
           branch: automation/update-prek-ci-container
           delete-branch: true
           commit-message: Update prek CI container
+          sign-commits: true
           title: Update prek CI container
           body: >-
             Updates the pinned prek CI container to the image built from
