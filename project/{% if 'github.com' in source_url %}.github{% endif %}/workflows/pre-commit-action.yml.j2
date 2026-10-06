@@ -21,12 +21,6 @@ jobs:
       image: {{ versions["prek_container"] }}
 
     steps:
-      - name: Install System Deps
-        run: |
-          apt-get update
-          apt-get install -y git gcc libc-dev
-          git config --global --add safe.directory "$(pwd)"
-
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
 
       - name: Cache Hook Environments
@@ -37,12 +31,22 @@ jobs:
         uses: actions/cache@{{ versions["actions/cache"] }}
         with:
           path: ~/.cache/prek
-          key: prek-{{ expr("hashFiles('.pre-commit-config.yaml')") }}
+          # Include the container digest to avoid restoring hook envs
+          # built against a different Python installation.
+          key: prek-{{ versions["prek_container"].split(":")[-1][:12] }}-{{ expr("hashFiles('.pre-commit-config.yaml')") }}
 
-      - name: Install Prek
+      # prek redirects UV_CACHE_DIR into its own cache, but the nox lint sessions (and ty, if enabled) don't
+      - name: Cache uv Caches
+        if: {{ expr("!startsWith(github.ref, 'refs/tags/')") }}
+        uses: actions/cache@{{ versions["actions/cache"] }}
+        with:
+          path: ~/.cache/uv
+          key: prek-uv-{{ versions["prek_container"].split(":")[-1][:12] }}-{{ expr("hashFiles('pyproject.toml', '.pre-commit-config.yaml')") }}
+          restore-keys: |-
+            prek-uv-{{ versions["prek_container"].split(":")[-1][:12] }}-
+
+      - name: Install Prek Hooks
         run: |
-          python -m pip install --upgrade pip
-          pip install prek=={{ versions["prek"] }}
           prek install-hooks
 
       - name: Check ALL Files On Branch
@@ -55,6 +59,10 @@ jobs:
         if: github.event_name == 'pull_request' && fromJSON(inputs.changed-files)['repo'] == 'true' && fromJSON(inputs.changed-files)['pre-commit'] != 'true'
         run: |
           prek run --show-diff-on-failure --color=always --files {{ expr("fromJSON(inputs.changed-files)['repo_files']") }}
+
+      - name: Prune uv Cache
+        if: {{ expr("always() && !startsWith(github.ref, 'refs/tags/')") }}
+        run: uv cache prune --ci
 
       - name: Upload Exit Status
         if: always()

@@ -15,25 +15,34 @@ jobs:
     runs-on: ubuntu-26.04
     container:
       # prek-ci-container
-      image: docker.io/library/python:3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151
+      image: ghcr.io/salt-extensions/prek-ci:3.14.8@sha256:c6446caddf6080a101d714d77ad2ae7b9a16148a5bed357d7bb244688211a130
 
     steps:
-      - name: Install System Deps
-        run: |
-          apt-get update
-          apt-get install -y git gcc libc-dev
-          git config --global --add safe.directory "$(pwd)"
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Install Prek
+      - name: Cache Hook Environments
+        # Release builds must not use cached environments
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/prek
+          # Hashing this workflow file covers the container pin, which
+          # determines the Python installation the hook envs link against.
+          key: prek-${{ hashFiles('.github/workflows/pre-commit-action.yml', '.pre-commit-config.yaml') }}
+
+      # prek redirects UV_CACHE_DIR into its own cache, but the nox lint sessions don't
+      - name: Cache uv Caches
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/uv
+          key: prek-uv-${{ hashFiles('.github/workflows/pre-commit-action.yml', 'pyproject.toml', '.pre-commit-config.yaml') }}
+          restore-keys: |-
+            prek-uv-
+
+      - name: Install Prek Hooks
         run: |
-          python -m pip install --upgrade pip
-          pip install "prek==$PREK_VERSION"
           prek install-hooks
-        env:
-          # renovate: datasource=pypi depName=prek depType=dev
-          PREK_VERSION: '0.5.5'
 
       - name: Check ALL Files On Branch
         if: github.event_name != 'pull_request' || fromJSON(inputs.changed-files)['pre-commit'] == 'true'
@@ -45,6 +54,10 @@ jobs:
         if: github.event_name == 'pull_request' && fromJSON(inputs.changed-files)['repo'] == 'true' && fromJSON(inputs.changed-files)['pre-commit'] != 'true'
         run: |
           prek run --show-diff-on-failure --color=always --files ${{ fromJSON(inputs.changed-files)['repo_files'] }}
+
+      - name: Prune uv Cache
+        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        run: uv cache prune --ci
 
       - name: Set Exit Status
         if: always()
