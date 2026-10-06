@@ -1,32 +1,12 @@
 {
     prHourlyLimit: 10,
-    branchNameStrict: true,
     enabledManagers: ["custom.regex", "github-actions"],
     customManagers: [
         {
             customType: "regex",
-            managerFilePatterns: [
-                "/^data/versions.yaml$/",
-                "/^\\.pre-commit-config\\.yaml$/"
-            ],
-            matchStrings: [
-                "# renovate: datasource=(?<datasource>git.*-tags) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: depType=(?<depType>[^\\s]+?))?\\s+[A-Za-z0-9_/-]+?\\s*:\\s*[\"']?(?<currentDigest>[a-f0-9]+?)\\s+#\\s*(?<currentValue>v?[0-9.]+?)[\"']?\\s",
-                "# renovate: datasource=(?<datasource>docker) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: depType=(?<depType>[^\\s]+?))?\\s+[A-Za-z0-9_/-]+?\\s*:\\s*[\"']?([^:\\s]+:)?(?<currentValue>.+?)@(?<currentDigest>sha256:[a-f0-9]+?)[\"']?\\s",
-                "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: depType=(?<depType>[^\\s]+?))?\\s+[A-Za-z0-9_/-]+?\\s*:\\s*[\"']?(?<currentValue>v?[0-9.]+?)[\"']?\\s",
-            ],
-        },
-        {
-            customType: "regex",
-            managerFilePatterns: ["/^\\.pre-commit-config\\.yaml$/"],
-            matchStrings: [
-                "# renovate: datasource=(?<datasource>pypi) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: depType=(?<depType>[^\\s]+?))?\\s+-\\s*[\"']?[A-Za-z0-9_\\-\\.]+?==(?<currentValue>.+?)[\"']?\\s",
-            ],
-        },
-        {
-            customType: "regex",
             managerFilePatterns: ["/^noxfile\\.py$/"],
             matchStrings: [
-                "# renovate: datasource=(?<datasource>pypi)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[^\\n]*\"(?<depName>[A-Za-z0-9_\\-\\.]+?)==(?<currentValue>.+?)\",?\\s",
+                "# renovate: datasource=(?<datasource>pypi)(?: depType=(?<depType>[^\\s]+?))?(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+[^\\n]*\"(?<depName>[A-Za-z0-9_\\-\\.]+?)\\s*==\\s*(?<currentValue>.+?)\",?\\s",
             ],
         },
         {
@@ -44,12 +24,6 @@
     ],
     packageRules: [
         {
-            matchDepTypes: ["action", "actionMisc", "devDependencies"],
-            matchDatasources: ["/git.*-tags/", "docker"],
-            matchPackageNames: ["!https://github.com/codecov/codecov-cli"],
-            pinDigests: true,
-        },
-        {
             matchPackageNames: ["docker.io/library/python"],
             separateMinorPatch: true,  // We want to keep Python major.minor - this needs to be separate and before the next step
         },
@@ -64,27 +38,6 @@
             matchDepTypes: ["salt"],
             matchUpdateTypes: ["major"],
             enabled: false,
-        },
-        {
-            matchDepTypes: ["github-runner"],
-            groupName: "github runners",
-        },
-        {
-            matchDepTypes: ["devDependencies"],
-            matchUpdateTypes: ["patch", "minor"],
-            groupName: "dev dependencies (non-major)",
-            automerge: true,
-        },
-        {
-            matchDepTypes: ["action", "actionMisc"],
-            matchUpdateTypes: ["patch", "minor"],
-            groupName: "actions (non-major)",
-            automerge: true,
-        },
-        {
-            matchDepTypes: ["action", "actionMisc", "devDependencies"],
-            matchUpdateTypes: ["digest"],
-            groupName: "action/dev dependency digests",
         },
         {
             matchDepTypes: ["container"],
