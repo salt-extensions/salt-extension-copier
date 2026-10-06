@@ -3,7 +3,7 @@
 ###########################################################
 
 # renovate: datasource=git-tags depName=actionlint packageName=https://github.com/kjanat/actionlint depType=hook
-actionlint: '2da2ceb4af2c7ecc48f5b9311d85080c3971b5f0  # v1.17.0'
+actionlint: '08bb2c4f0d039744455b87aef1c647fb8b66d37b  # v1.17.0'
 
 # renovate: datasource=git-tags depName=bandit packageName=https://github.com/PyCQA/bandit depType=hook
 bandit: '92ae8b82fb422a639f0ed8d99e96cea769594e08  # 1.9.4'
