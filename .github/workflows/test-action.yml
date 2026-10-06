@@ -6,7 +6,7 @@ on:
 
 jobs:
   Linux:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 45
 
     strategy:
@@ -154,7 +154,7 @@ jobs:
           if-no-files-found: error
 
   macOS:
-    runs-on: macos-14
+    runs-on: macos-26
     timeout-minutes: 45
 
     strategy:
