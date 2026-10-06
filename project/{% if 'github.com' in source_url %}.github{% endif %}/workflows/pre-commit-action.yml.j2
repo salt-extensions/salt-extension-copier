@@ -18,7 +18,7 @@ jobs:
     name: Pre-Commit
     runs-on: ubuntu-{{ versions["ubuntu"] }}
     container:
-      image: 'docker.io/library/python:{{ versions["python_container_" ~ (python_requires[:2] | join(""))] }}'
+      image: {{ versions["prek_container"] }}
 
     steps:
       - name: Install System Deps

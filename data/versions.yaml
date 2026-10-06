@@ -126,17 +126,8 @@ windows: '2025'
 #  GitHub Actions containers
 ###########################################################
 
-# renovate: datasource=docker depName=python-pre-commit-action-311 packageName=docker.io/library/python depType=container
-python_container_311: '3.11.17-slim-trixie@sha256:6f31d6e9ba2b0a787a3f81c37b004155b87b9efa1b771182bd550c1615745be5'
-
-# renovate: datasource=docker depName=python-pre-commit-action-312 packageName=docker.io/library/python depType=container
-python_container_312: '3.12.15-slim-trixie@sha256:02108f5d322dd89f1c9e552442c25acb0543dfdbc455693a5599624f20d9155d'
-
-# renovate: datasource=docker depName=python-pre-commit-action-313 packageName=docker.io/library/python depType=container
-python_container_313: '3.13.16-slim-trixie@sha256:3dd7cc108ec1493442514f5c2a871af6af0ec31d768ff6e378a93340c3b3db5f'
-
-# renovate: datasource=docker depName=python-pre-commit-action-314 packageName=docker.io/library/python depType=container
-python_container_314: '3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151'
+# prek-ci-container
+prek_container: 'docker.io/library/python:3.14.8-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151'
 
 ###########################################################
 #  Misc

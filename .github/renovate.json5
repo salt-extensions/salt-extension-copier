@@ -1,6 +1,6 @@
 {
     prHourlyLimit: 10,
-    enabledManagers: ["custom.regex", "github-actions"],
+    enabledManagers: ["custom.regex", "dockerfile", "github-actions"],
     customManagers: [
         {
             customType: "regex",
@@ -21,17 +21,21 @@
             depTypeTemplate: "salt",
             packageNameTemplate: "salt",
         },
+        {   // Dockerfile dev tool refs
+            customType: "regex",
+            managerFilePatterns: [
+                "/^containers/.+\.Dockerfile$/",
+            ],
+            matchStrings: [
+                // Generic versioned dependency
+                // # renovate: datasource=foobar depName=... (lookupName/packageName=...) (versioning=...) (extractVersion=...) (depType=...)
+                // ARG FOO_VERSION=1.2.3
+                "# renovate: datasource=(?<datasource>[a-z-.]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?(?: depType=(?<depType>[^\\s]+?))?\\s+ARG [A-Za-z0-9_/-]+?=(?<currentValue>[0-9.]+?)\\s",
+            ],
+            depTypeTemplate: "dev",
+        },
     ],
     packageRules: [
-        {
-            matchPackageNames: ["docker.io/library/python"],
-            separateMinorPatch: true,  // We want to keep Python major.minor - this needs to be separate and before the next step
-        },
-        {
-            matchPackageNames: ["docker.io/library/python"],
-            matchUpdateTypes: ["major", "minor"],
-            enabled: false,
-        },
         {
             // The salt dependency type is only for keeping the known point release up to date (used for generating the test workflow).
             // Major versions need to be added manually to the list in data/salt_latest_point.yaml.
@@ -39,11 +43,33 @@
             matchUpdateTypes: ["major"],
             enabled: false,
         },
+        {   // Group all Salt point release updates.
+            matchDepTypes: ["salt"],
+            groupName: "Salt",
+        },
+        // We're building a custom prek container for a faster pre-commit workflow.
+        // We want it to pin digests and to not upgrade minor versions.
         {
-            matchDepTypes: ["container"],
-            matchUpdateTypes: ["patch", "digest"],
-            groupName: "python containers",
-            automerge: true,
+            matchPackageNames: ["python"],
+            matchManagers: ["dockerfile"],
+            pinDigests: true,
+        },
+        {   // This needs to be separate and before disabling minor updates.
+            matchPackageNames: ["python"],
+            matchManagers: ["dockerfile"],
+            separateMinorPatch: true,
+        },
+        {   // Only update patch releases and pins/digests
+            matchPackageNames: ["python"],
+            matchManagers: ["dockerfile"],
+            matchUpdateTypes: ["major", "minor"],
+            enabled: false,
+        },
+        {   // Group everything that needs to be in the container and don't automerge updates.
+            // We don't want to rebuild it often, likely only right before a new template release.
+            groupName: "CI Container",
+            matchPackageNames: ["python", "prek", "uv"],
+            automerge: false,
         },
     ],
 }
