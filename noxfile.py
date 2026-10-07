@@ -64,6 +64,7 @@ TESTS_REQUIREMENTS = (
     "pytest",
     "pytest-copie>=0.2.2",
     "pytest-instafail",
+    "pytest-timeout",
     "pytest-xdist",
     "pyyaml",
     "virtualenv",

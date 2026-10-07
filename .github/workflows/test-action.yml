@@ -7,7 +7,9 @@ on:
 jobs:
   Linux:
     runs-on: ubuntu-26.04
-    timeout-minutes: 45
+    # Needs headroom above the per-test pytest timeout so hung tests
+    # fail with a traceback instead of the job being cancelled.
+    timeout-minutes: 60
 
     strategy:
       fail-fast: false
@@ -185,8 +187,10 @@ jobs:
           uvx "pre-commit" gc
 
   macOS:
+    # macos-15 hangs indefinitely when running Salt functional tests
+    # in the rendered project's test suite (observed 2026-10).
     runs-on: macos-14
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     strategy:
       fail-fast: false
