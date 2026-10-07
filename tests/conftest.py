@@ -136,6 +136,14 @@ def skip_init_migrate(request):
         yield bool(request.param)
 
 
+@pytest.fixture(params=(True,))
+def skip_lint_hooks(request):
+    # Copier uses plumbum as well, which is already initialized.
+    # Overriding via os.environ thus has no effect.
+    with local.env(SKIP="lint-src,lint-tests" if request.param else ""):
+        yield request.param
+
+
 @pytest.fixture
 def project(answers, request, copie, skip_init_migrate):  # pylint: disable=unused-argument
     vcs_ref = getattr(request, "param", "HEAD")
@@ -218,3 +226,5 @@ def pytest_make_parametrize_id(config, val, argname):  # pylint: disable=unused-
         return f"{'no_' if val else ''}ns"
     if argname == "skip_init_migrate":
         return f"{'no_' if val else ''}init"
+    if argname == "skip_lint_hooks":
+        return f"{'no_' if val else ''}lint_hooks"
