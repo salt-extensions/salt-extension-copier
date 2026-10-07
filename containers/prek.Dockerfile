@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION=3.14.8
-FROM python:${PYTHON_VERSION}-slim-trixie@sha256:c3e521df8b2b498a7a682e7e18676771cb80c6b75b8699af886b2d554ce40151
+FROM python:${PYTHON_VERSION}-slim-trixie@sha256:f85c5697265c178cc6887276c55fe16cf3d14ca35c3df6a5eab3b360534a55d2
 
 LABEL org.opencontainers.image.source=https://github.com/salt-extensions/salt-extension-copier
 LABEL org.opencontainers.image.description="CI container for running prek hooks in Salt extension repos"
