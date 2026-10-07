@@ -101,6 +101,15 @@
             {{ key }}-
 {%- endmacro %}
 
+{#- Defender synchronously scans every written file, which slows down
+    jobs writing many small ones (venv creation, package installs, cache restoration)
+    considerably. The runner VM is ephemeral, so this is safe. -#}
+{%- macro disable_defender() %}
+      - name: Disable Windows Defender Real-time Monitoring
+        run: |
+          Set-MpPreference -DisableRealtimeMonitoring $true
+{%- endmacro %}
+
 {%- macro checkout() %}
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
         with:
@@ -248,6 +257,10 @@
 {{ test_strategy(full=full, releases=releases, cap=cap) }}
 
     steps:
+{%- if windows %}
+{{- disable_defender() }}
+{{ "" }}
+{%- endif %}
 {{- checkout() }}
 {{ setup_python_nox(windows=windows) }}
 {{ uv_cache(osrelease=releases is not none) }}

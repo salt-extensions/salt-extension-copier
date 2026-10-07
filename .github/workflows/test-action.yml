@@ -99,6 +99,12 @@ jobs:
       max-parallel: 5
 
     steps:
+      - name: Disable Windows Defender Real-time Monitoring
+        # Defender scanning every written file impacts at least cache restoration, possibly venv creation.
+        # Disable it, the runners are ephemeral.
+        run: |
+          Set-MpPreference -DisableRealtimeMonitoring $true
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # We need the full history for update tests
