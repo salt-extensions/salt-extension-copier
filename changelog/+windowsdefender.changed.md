@@ -1,0 +1,1 @@
+Sped up the Windows test job by disabling Windows Defender real-time monitoring on the ephemeral runner, which scans every written file synchronously and significantly slows down test environment provisioning.
