@@ -30,20 +30,11 @@ jobs:
         if: {{ expr("!startsWith(github.ref, 'refs/tags/')") }}
         uses: actions/cache@{{ versions["actions/cache"] }}
         with:
+          # prek redirects UV_CACHE_DIR into its own cache, even in the nox lint sessions
           path: ~/.cache/prek
           # Include the container digest to avoid restoring hook envs
           # built against a different Python installation.
           key: prek-{{ versions["prek_container"].split(":")[-1][:12] }}-{{ expr("hashFiles('.pre-commit-config.yaml')") }}
-
-      # prek redirects UV_CACHE_DIR into its own cache, but the nox lint sessions (and ty, if enabled) don't
-      - name: Cache uv Caches
-        if: {{ expr("!startsWith(github.ref, 'refs/tags/')") }}
-        uses: actions/cache@{{ versions["actions/cache"] }}
-        with:
-          path: ~/.cache/uv
-          key: prek-uv-{{ versions["prek_container"].split(":")[-1][:12] }}-{{ expr("hashFiles('pyproject.toml', '.pre-commit-config.yaml')") }}
-          restore-keys: |-
-            prek-uv-{{ versions["prek_container"].split(":")[-1][:12] }}-
 
       - name: Install Prek Hooks
         run: |
@@ -63,7 +54,6 @@ jobs:
       - name: Prune Caches
         if: {{ expr("!cancelled() && !startsWith(github.ref, 'refs/tags/')") }}
         run: |
-          uv cache prune --ci
           uv cache prune --ci --cache-dir "$(prek cache dir)/cache/uv"
           prek cache gc
 
