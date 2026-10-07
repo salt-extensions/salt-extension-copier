@@ -1,0 +1,73 @@
+---
+name: Tag Template Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - CHANGELOG.md
+
+permissions:
+  contents: read
+
+jobs:
+  tag-release:
+    name: Tag merged release PR
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'automation/release' &&
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      contains(github.event.pull_request.labels.*.name, 'release')
+    runs-on: ubuntu-26.04
+
+    steps:
+      - name: Generate autorelease token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: generate-token
+        with:
+          client-id: ${{ secrets.AUTOORG_CLID }}
+          private-key: ${{ secrets.AUTOORG_PRIV }}
+          permission-contents: write
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          token: ${{ steps.generate-token.outputs.token }}
+
+      - name: Extract version of merged release PR
+        id: get-version
+        run: echo "version=$(python3 project/tools/version.py)" >> "$GITHUB_OUTPUT"
+
+      - name: Ensure no news fragments are left
+        run: test -z "$(find changelog -type f -not -name '.*' -print -quit)"
+
+      - name: Check extracted version matches PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+          VERSION: ${{ steps.get-version.outputs.version }}
+        run: test "$TITLE" = "Release $VERSION"
+
+      - name: Ensure tag does not exist yet
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
+        run: |
+          if git ls-remote --exit-code origin "refs/tags/$VERSION"; then
+            echo "Tag $VERSION already exists" >&2
+            exit 1
+          fi
+
+      - name: Create and push tag for release
+        env:
+          VERSION: ${{ steps.get-version.outputs.version }}
+          # Attribute the tag to the app's bot account, whose token pushes it.
+          APP_SLUG: ${{ steps.generate-token.outputs.app-slug }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          bot_name="${APP_SLUG}[bot]"
+          bot_id="$(gh api "users/${bot_name}" --jq .id)"
+          git config user.name "$bot_name"
+          git config user.email "${bot_id}+${bot_name}@users.noreply.github.com"
+          git tag --annotate --message "Release $VERSION" "$VERSION" HEAD
+          git push origin "refs/tags/$VERSION"
