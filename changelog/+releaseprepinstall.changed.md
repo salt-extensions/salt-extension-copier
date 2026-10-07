@@ -1,0 +1,1 @@
+The automated release PR preparation now only installs a pinned towncrier instead of the whole project. To support this, the towncrier `name` setting is specified explicitly, avoiding a package import.
