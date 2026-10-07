@@ -1,5 +1,4 @@
 {%- from pathjoin("includes", "workflows.j2") import expr -%}
-{%- set pyver = salt_python_support[salt_version_major]["max"][1] -%}
 {%- set next_version = expr("(github.event_name == 'workflow_dispatch' && inputs.version != '') && inputs.version || steps.next-version.outputs.version") -%}
 ---
 name: Prepare Release PR
@@ -66,10 +65,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@{{ versions["actions/checkout"] }}
 
-      - name: Set up Python 3.{{ pyver }}
+      - name: Set up Python {{ venv_python }}
         uses: actions/setup-python@{{ versions["actions/setup-python"] }}
         with:
-          python-version: '3.{{ pyver }}'
+          python-version: '{{ venv_python }}'
 
       - name: Install project
         run: |
