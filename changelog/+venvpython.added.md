@@ -1,1 +1,1 @@
-Added the {question}`venv_python` question for choosing the Python version of the development virtual environment instead of hardcoding a recommendation. This eases development on platform-specific extensions and stops template updates from recreating the virtual environment when the default recommendation changes.
+Added the {question}`venv_python` question for choosing the Python version of the development virtual environment instead of hardcoding a recommendation. The docs, package and release preparation workflows follow it as well.

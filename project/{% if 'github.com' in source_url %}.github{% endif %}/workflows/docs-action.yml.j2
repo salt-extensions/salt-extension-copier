@@ -1,5 +1,4 @@
 {%- from pathjoin("includes", "workflows.j2") import expr -%}
-{%- set pyver = salt_python_support[salt_version_major]["max"][1] -%}
 ---
 name: Build Documentation
 
@@ -19,10 +18,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up Python 3.{{ pyver }} For Nox
+      - name: Set up Python {{ venv_python }} For Nox
         uses: actions/setup-python@{{ versions["actions/setup-python"] }}
         with:
-          python-version: "3.{{ pyver }}"
+          python-version: "{{ venv_python }}"
 
       - name: Install Nox
         run: |
