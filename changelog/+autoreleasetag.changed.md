@@ -1,1 +1,1 @@
-Reworked the automated release tagging: the `mathieudutour/github-tag-action` dependency was replaced with plain git commands, which now tag the actual merge commit instead of the ephemeral PR merge ref.
+Reworked the automated release tagging: the `mathieudutour/github-tag-action` dependency was replaced with plain git commands, which now tag the actual merge commit instead of the ephemeral PR merge ref. The tag is attributed to the bot account that pushes it.

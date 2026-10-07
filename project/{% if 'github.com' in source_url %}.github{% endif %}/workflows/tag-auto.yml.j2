@@ -141,9 +141,15 @@ jobs:
           # On closed PR events, github.sha points to an ephemeral merge ref
           # commit, so tag the actual merge commit on the base branch instead.
           MERGE_COMMIT: {{ expr("github.event.pull_request.merge_commit_sha") }}
+          # Attribute the tag to the account whose token pushes it: the
+          # autorelease app's bot user or github-actions[bot] (default token).
+          APP_SLUG: {{ expr("steps.generate-token.outputs.app-slug") }}
+          GH_TOKEN: {{ expr("github.token") }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898148+github-actions[bot]@users.noreply.github.com"
+          bot_name="${APP_SLUG:-github-actions}[bot]"
+          bot_id="$(gh api "users/${bot_name}" --jq .id)"
+          git config user.name "$bot_name"
+          git config user.email "${bot_id}+${bot_name}@users.noreply.github.com"
           git fetch --depth=1 origin "$MERGE_COMMIT"
           git tag --annotate --message "Release v$VERSION" "v$VERSION" "$MERGE_COMMIT"
           git push origin "refs/tags/v$VERSION"
