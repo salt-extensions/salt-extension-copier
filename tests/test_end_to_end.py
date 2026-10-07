@@ -24,8 +24,15 @@ pytestmark = [
 ]
 
 
-def _commit_with_pre_commit(git, venv, max_retry=3, message="initial commit", disable_prek=False):
+def _commit_with_pre_commit(
+    git, venv, max_retry=3, message="initial commit", disable_prek=False, run_lint=False
+):
     venv.run_pre_commit("install", _disable_prek=disable_prek)
+    if not run_lint:
+        # Each lint hook creates a nox session venv with the project's `lint`
+        # and `tests` extras, by far the most expensive part of a hook run.
+        # `test_lint_hooks_work` covers them once.
+        git = git.with_env(SKIP="lint-src,lint-tests")
     retry_count = 1
     saved_err = None
 
@@ -67,6 +74,15 @@ def test_first_commit_works(project, project_venv, git, disable_prek):
     """
     with local.cwd(project.project_dir):
         _commit_with_pre_commit(git, project_venv, max_retry=3, disable_prek=disable_prek)
+
+
+def test_lint_hooks_work(project, project_venv, git):
+    """
+    Ensure the lint hooks can create their nox session venvs and pass.
+    The other hook tests skip them since they dominate the suite's runtime.
+    """
+    with local.cwd(project.project_dir):
+        _commit_with_pre_commit(git, project_venv, max_retry=3, run_lint=True)
 
 
 @pytest.mark.parametrize("no_saltext_namespace", (False, True), indirect=True)

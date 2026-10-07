@@ -176,11 +176,13 @@ def project_venv(project):
 # The `worksteal` scheduler rebalances whatever this ordering cannot foresee.
 TEST_WEIGHTS = {
     "test_project_migration_works": 100,
-    "test_init_respects_venv_python": 90,
-    "test_testsuite_works": 85,
-    "test_docs_build_works": 80,
-    "test_first_commit_works": 70,
-    "test_project_init_works": 60,
+    "test_init_respects_venv_python": 95,
+    "test_lint_hooks_work": 90,
+    # Became cheaper since the lint hooks (and thus their nox venvs) are skipped
+    "test_first_commit_works": 85,
+    "test_testsuite_works": 80,
+    "test_project_init_works": 70,
+    "test_docs_build_works": 60,
     "test_update_from_002_works": 50,
 }
 
