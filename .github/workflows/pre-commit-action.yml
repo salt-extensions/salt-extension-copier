@@ -55,9 +55,12 @@ jobs:
         run: |
           prek run --show-diff-on-failure --color=always --files ${{ fromJSON(inputs.changed-files)['repo_files'] }}
 
-      - name: Prune uv Cache
+      - name: Prune Caches
         if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
-        run: uv cache prune --ci
+        run: |
+          uv cache prune --ci
+          uv cache prune --ci --cache-dir "$(prek cache dir)/cache/uv"
+          prek cache gc
 
       - name: Set Exit Status
         if: always()
