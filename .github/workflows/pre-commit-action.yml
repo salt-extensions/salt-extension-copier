@@ -25,20 +25,11 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
+          # prek redirects UV_CACHE_DIR into its own cache, even in the nox lint sessions
           path: ~/.cache/prek
           # Hashing this workflow file covers the container pin, which
           # determines the Python installation the hook envs link against.
           key: prek-${{ hashFiles('.github/workflows/pre-commit-action.yml', '.pre-commit-config.yaml') }}
-
-      # prek redirects UV_CACHE_DIR into its own cache, but the nox lint sessions don't
-      - name: Cache uv Caches
-        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/uv
-          key: prek-uv-${{ hashFiles('.github/workflows/pre-commit-action.yml', 'pyproject.toml', '.pre-commit-config.yaml') }}
-          restore-keys: |-
-            prek-uv-
 
       - name: Install Prek Hooks
         run: |
@@ -58,7 +49,6 @@ jobs:
       - name: Prune Caches
         if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         run: |
-          uv cache prune --ci
           uv cache prune --ci --cache-dir "$(prek cache dir)/cache/uv"
           prek cache gc
 
