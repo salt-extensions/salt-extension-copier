@@ -107,16 +107,18 @@
           fetch-depth: 2  # coverage: Issue detecting commit SHA
 {%- endmacro %}
 
-{%- macro setup_python_nox(powershell=false) %}
+{%- macro setup_python_nox(windows=false) %}
       - name: Set up Python {{ expr("matrix.python-version") }}
         uses: actions/setup-python@{{ versions["actions/setup-python"] }}
         with:
           python-version: {{ expr("matrix.python-version") }}
 
       - name: Install Nox
+{%-   if windows %}
+        shell: bash
+{%-   endif %}
         run: |
-          python -m pip install --upgrade pip
-          pip install "nox=={{ "$env:" if powershell else "$" }}NOX_VERSION" "uv=={{ "$env:" if powershell else "$" }}UV_VERSION"
+          pip install "nox==${NOX_VERSION}" "uv==${UV_VERSION}"
         env:
           NOX_VERSION: '{{ versions["nox"] }}'
           UV_VERSION: '{{ versions["uv"] }}'
@@ -139,9 +141,6 @@
           SKIP_REQUIREMENTS_INSTALL: '1'
 {%- endif %}
         run: |
-{%- if windows %}
-          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
-{%- endif %}
           nox --force-color -e test {{ posargs }}
 {%- if loop.first and prune_uv_cache %}
 {{ "" }}
@@ -250,7 +249,7 @@
 
     steps:
 {{- checkout() }}
-{{ setup_python_nox(powershell=windows) }}
+{{ setup_python_nox(windows=windows) }}
 {{ uv_cache(osrelease=releases is not none) }}
 {{ run_tests(windows=windows, prune_uv_cache=true) }}
 {{ codecov_flags() }}

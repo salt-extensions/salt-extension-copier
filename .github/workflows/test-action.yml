@@ -26,6 +26,7 @@ jobs:
           python-version: '3.14'
 
       - name: Cache Package Downloads
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           # The test suite invokes all of these at some point
@@ -38,10 +39,9 @@ jobs:
           restore-keys: |-
             testrun-${{ runner.os }}-
 
-      - name: Install Nox
+      - name: Install uv/nox
         run: |
-          python -m pip install --upgrade pip
-          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
+          pip install "uv==${UV_VERSION}" "nox==${NOX_VERSION}"
         env:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.8.17'
@@ -78,6 +78,17 @@ jobs:
           name: exitstatus-${{ github.job }}
           path: exitstatus
           if-no-files-found: error
+
+      - name: Prune Caches
+        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        env:
+          # renovate: datasource=pypi depName=prek depType=dev
+          PREK_VERSION: '0.5.5'
+        run: |
+          uv cache prune --ci
+          uv cache prune --ci --cache-dir "$(uvx "prek==${PREK_VERSION}" cache dir)/cache/uv"
+          uvx "prek==${PREK_VERSION}" cache gc
+          uvx "pre-commit" gc
 
   Windows:
     runs-on: windows-2025
@@ -100,6 +111,7 @@ jobs:
           python-version: '3.14'
 
       - name: Cache Package Downloads
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |-
@@ -111,10 +123,10 @@ jobs:
           restore-keys: |-
             testrun-${{ runner.os }}-
 
-      - name: Install Nox
+      - name: Install uv/nox
+        shell: bash
         run: |
-          python -m pip install --upgrade pip
-          pip install "nox==$env:NOX_VERSION" "uv==$env:UV_VERSION"
+          pip install "uv==${UV_VERSION}" "nox==${NOX_VERSION}"
         env:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.8.17'
@@ -124,7 +136,6 @@ jobs:
       - name: Install Test Requirements
         shell: bash
         run: |
-          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
           nox --force-color -e tests --install-only
 
       - name: Test
@@ -132,7 +143,6 @@ jobs:
         env:
           SKIP_REQUIREMENTS_INSTALL: '1'
         run: |
-          export PATH="/C/Program Files (x86)/Windows Kits/10/bin/10.0.18362.0/x64;$PATH"
           nox --force-color -e tests -- -vv --instafail tests/
 
       - name: Upload Logs
@@ -155,6 +165,18 @@ jobs:
           name: exitstatus-${{ github.job }}
           path: exitstatus
           if-no-files-found: error
+
+      - name: Prune Caches
+        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        shell: bash
+        env:
+          # renovate: datasource=pypi depName=prek depType=dev
+          PREK_VERSION: '0.5.5'
+        run: |
+          uv cache prune --ci
+          uv cache prune --ci --cache-dir "$(uvx "prek==${PREK_VERSION}" cache dir)/cache/uv"
+          uvx "prek==${PREK_VERSION}" cache gc
+          uvx "pre-commit" gc
 
   macOS:
     runs-on: macos-14
@@ -177,6 +199,7 @@ jobs:
           python-version: '3.14'
 
       - name: Cache Package Downloads
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: |-
@@ -188,10 +211,9 @@ jobs:
           restore-keys: |-
             testrun-${{ runner.os }}-
 
-      - name: Install Nox
+      - name: Install uv/nox
         run: |
-          python -m pip install --upgrade pip
-          pip install "nox==$NOX_VERSION" "uv==$UV_VERSION"
+          pip install "uv==${UV_VERSION}" "nox==${NOX_VERSION}"
         env:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.8.17'
@@ -228,3 +250,14 @@ jobs:
           name: exitstatus-${{ github.job }}
           path: exitstatus
           if-no-files-found: error
+
+      - name: Prune Caches
+        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        env:
+          # renovate: datasource=pypi depName=prek depType=dev
+          PREK_VERSION: '0.5.5'
+        run: |
+          uv cache prune --ci
+          uv cache prune --ci --cache-dir "$(uvx "prek==${PREK_VERSION}" cache dir)/cache/uv"
+          uvx "prek==${PREK_VERSION}" cache gc
+          uvx "pre-commit" gc
