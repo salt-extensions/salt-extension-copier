@@ -22,6 +22,7 @@ pytestmark = [
 ]
 
 
+@pytest.mark.usefixtures("skip_lint_hooks")
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 def test_project_init_works(copie, answers, capfd, git):
     res = copie.copy(extra_answers=answers)
@@ -145,6 +146,7 @@ def test_initialize_cli_works(project):
 
 
 @pytest.mark.usefixtures("project_committed")
+@pytest.mark.usefixtures("skip_lint_hooks")
 @pytest.mark.parametrize("skip_init_migrate", (False,), indirect=True)
 @pytest.mark.parametrize("project", ("0.10.0",), indirect=True)
 # Need to remove `resource` loader, not supported in 0.10.0

@@ -136,6 +136,14 @@ def skip_init_migrate(request):
         yield bool(request.param)
 
 
+@pytest.fixture(params=(True,))
+def skip_lint_hooks(request):
+    # Copier uses plumbum as well, which is already initialized.
+    # Overriding via os.environ thus has no effect.
+    with local.env(SKIP="lint-src,lint-tests" if request.param else ""):
+        yield request.param
+
+
 @pytest.fixture
 def project(answers, request, copie, skip_init_migrate):  # pylint: disable=unused-argument
     vcs_ref = getattr(request, "param", "HEAD")
@@ -176,11 +184,13 @@ def project_venv(project):
 # The `worksteal` scheduler rebalances whatever this ordering cannot foresee.
 TEST_WEIGHTS = {
     "test_project_migration_works": 100,
-    "test_init_respects_venv_python": 90,
-    "test_testsuite_works": 85,
-    "test_docs_build_works": 80,
-    "test_first_commit_works": 70,
-    "test_project_init_works": 60,
+    "test_init_respects_venv_python": 95,
+    "test_lint_hooks_work": 90,
+    # Became cheaper since the lint hooks (and thus their nox venvs) are skipped
+    "test_first_commit_works": 85,
+    "test_testsuite_works": 80,
+    "test_project_init_works": 70,
+    "test_docs_build_works": 60,
     "test_update_from_002_works": 50,
 }
 
@@ -216,3 +226,5 @@ def pytest_make_parametrize_id(config, val, argname):  # pylint: disable=unused-
         return f"{'no_' if val else ''}ns"
     if argname == "skip_init_migrate":
         return f"{'no_' if val else ''}init"
+    if argname == "skip_lint_hooks":
+        return f"{'no_' if val else ''}lint_hooks"
