@@ -142,6 +142,9 @@ line_length = 100
 
 [tool.towncrier]
 package = "{{ namespaced_package_pkg }}"
+# An explicit name keeps towncrier from importing the package,
+# allowing it to run without the project installed (release automation).
+name = "{{ package_namespace_pkg }}{{ project_name }}"
 filename = "CHANGELOG.md"
 template = "changelog/.template.jinja"
 directory = "changelog/"
