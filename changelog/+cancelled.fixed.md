@@ -1,0 +1,1 @@
+Fixed workflow cancellation being resisted by `if: always()` jobs and steps, which GitHub runs even in cancelled workflow runs. Status bookkeeping, log uploads and cache pruning now use `!cancelled()`, allowing cancellation to take effect immediately.

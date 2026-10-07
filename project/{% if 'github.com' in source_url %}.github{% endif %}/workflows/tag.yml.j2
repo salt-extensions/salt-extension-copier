@@ -15,6 +15,11 @@ on:
 
 cache-mode: none
 
+concurrency:
+  # Guard against duplicate runs for the same tag (e.g. after deleting
+  # and re-pushing it). Never cancel a release in progress.
+  group: {{ expr("github.workflow") }}-{{ expr("github.ref") }}
+
 jobs:
   get_version_tag:
     name: Extract version from tag

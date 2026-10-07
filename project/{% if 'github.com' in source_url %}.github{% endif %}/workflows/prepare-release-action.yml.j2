@@ -114,5 +114,5 @@ jobs:
             You can still follow the manual release procedure outlined in: https://salt-extensions.github.io/salt-extension-copier/topics/publishing.html
 
       - name: Upload Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: ./.github/actions/upload-exitstatus

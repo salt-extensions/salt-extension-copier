@@ -61,12 +61,12 @@ jobs:
           prek run --show-diff-on-failure --color=always --files {{ expr("fromJSON(inputs.changed-files)['repo_files']") }}
 
       - name: Prune Caches
-        if: {{ expr("always() && !startsWith(github.ref, 'refs/tags/')") }}
+        if: {{ expr("!cancelled() && !startsWith(github.ref, 'refs/tags/')") }}
         run: |
           uv cache prune --ci
           uv cache prune --ci --cache-dir "$(prek cache dir)/cache/uv"
           prek cache gc
 
       - name: Upload Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: ./.github/actions/upload-exitstatus

@@ -1,3 +1,4 @@
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 {%- set pyver = salt_python_support[salt_version_major]["max"][1] -%}
 ---
 name: Build Documentation
@@ -47,5 +48,5 @@ jobs:
           path: docs/_build/html
 
       - name: Upload Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: ./.github/actions/upload-exitstatus

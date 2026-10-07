@@ -16,7 +16,7 @@ runs:
   steps:
 
       - name: Set Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         env:
           OUTFILE: exitstatus/{{ expr("inputs.name == '' && github.job || inputs.name") }}
         shell: bash
@@ -25,7 +25,7 @@ runs:
           echo "{{ expr("job.status") }}" > "$OUTFILE"
 
       - name: Upload Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
         with:
           name: {{ expr("inputs.artifact_prefix") }}{{ expr("inputs.name == '' && github.job || inputs.name") }}

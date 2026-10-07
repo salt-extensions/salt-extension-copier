@@ -59,20 +59,20 @@ jobs:
           nox --force-color -e tests -- -vv --instafail tests/
 
       - name: Upload Logs
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: runtests-${{ runner.os }}.log
           path: artifacts/runtests-*.log
 
       - name: Set Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           mkdir exitstatus
           echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
       - name: Upload Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: exitstatus-${{ github.job }}
@@ -80,7 +80,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prune Caches
-        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         env:
           # renovate: datasource=pypi depName=prek depType=dev
           PREK_VERSION: '0.5.5'
@@ -146,20 +146,20 @@ jobs:
           nox --force-color -e tests -- -vv --instafail tests/
 
       - name: Upload Logs
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: runtests-${{ runner.os }}.log
           path: artifacts/runtests-*.log
 
       - name: Set Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           mkdir exitstatus
           echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
       - name: Upload Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: exitstatus-${{ github.job }}
@@ -167,7 +167,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prune Caches
-        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         shell: bash
         env:
           # renovate: datasource=pypi depName=prek depType=dev
@@ -231,20 +231,20 @@ jobs:
           nox --force-color -e tests -- -vv --instafail tests/
 
       - name: Upload Logs
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: runtests-${{ runner.os }}.log
           path: artifacts/runtests-*.log
 
       - name: Set Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           mkdir exitstatus
           echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
       - name: Upload Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: exitstatus-${{ github.job }}
@@ -252,7 +252,7 @@ jobs:
           if-no-files-found: error
 
       - name: Prune Caches
-        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         env:
           # renovate: datasource=pypi depName=prek depType=dev
           PREK_VERSION: '0.5.5'

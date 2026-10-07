@@ -7,6 +7,11 @@ on:
     - cron: '30 4 * * 1'
   workflow_dispatch:
 
+concurrency:
+  # Never run two syncs in parallel (e.g. a manual dispatch
+  # overlapping with the scheduled run)
+  group: ${{ github.workflow }}
+
 permissions:
   contents: write
   pull-requests: write
