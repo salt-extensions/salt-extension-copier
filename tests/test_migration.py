@@ -1,3 +1,6 @@
+import os
+import platform
+
 import pytest
 import yaml
 
@@ -62,6 +65,15 @@ pytestmark = [
     indirect=True,
 )
 @pytest.mark.parametrize("max_salt_version", ("3007",), indirect=True)
+# This test takes >30 minutes on Windows runners, well above the global timeout.
+@pytest.mark.timeout(2700)
+# Its runtime bounds the Windows CI job's wall clock, while the migration logic
+# it exercises is platform-independent and the Windows-sensitive parts (venv,
+# paths, hook runs) are covered by other tests that still run there.
+@pytest.mark.skipif(
+    platform.system() == "Windows" and os.environ.get("RUN_SLOW_TESTS", "0") != "1",
+    reason="Takes >30 minutes on Windows. Set RUN_SLOW_TESTS=1 to run anyway.",
+)
 # The following deprecations are fixed in the current template,
 # but are still triggered when rendering the old version.
 @pytest.mark.filterwarnings(
