@@ -4,6 +4,10 @@ name: Build Prek CI Container
 on:
   workflow_dispatch:
 
+concurrency:
+  # Never build/push the container image from two runs in parallel
+  group: ${{ github.workflow }}
+
 permissions:
   contents: write
   packages: write

@@ -69,7 +69,7 @@ jobs:
           artifact_name: html-docs-pages
 
       - name: Delete GitHub Pages artifact
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: geekyeggo/delete-artifact@{{ versions["geekyeggo/delete-artifact"] }}
         with:
           name: html-docs-pages
@@ -78,5 +78,5 @@ jobs:
       - uses: actions/checkout@{{ versions["actions/checkout"] }}
 
       - name: Upload Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: ./.github/actions/upload-exitstatus

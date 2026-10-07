@@ -28,6 +28,11 @@ on:
 
 cache-mode: none
 
+concurrency:
+  # Guard against duplicate runs for the same release PR.
+  # Never cancel a release in progress.
+  group: {{ expr("github.workflow") }}-{{ expr("github.ref") }}
+
 jobs:
   ensure_trigger:
     # We need this workflow to fail if it was triggered accidentally.

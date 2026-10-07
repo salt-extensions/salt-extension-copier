@@ -1,0 +1,1 @@
+Added `concurrency` groups to the workflow entry points: an obsolete {path}`pr.yml <.github/workflows/pr.yml>` run is now aborted when the PR receives new commits, while runs for consecutive pushes to `main` and duplicate release runs for the same ref are queued instead of running in parallel.

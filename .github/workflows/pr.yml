@@ -9,6 +9,13 @@ on:
       - '*'   # Ignore pushes to tags
   pull_request:
 
+concurrency:
+  # Abort obsolete runs when a PR is updated. Runs for pushes to main
+  # are queued instead of cancelled to avoid interrupting deployments;
+  # a queued run superseded by a newer push is still cancelled.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   call_central_workflow:
     name: CI

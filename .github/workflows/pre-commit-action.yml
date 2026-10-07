@@ -56,20 +56,20 @@ jobs:
           prek run --show-diff-on-failure --color=always --files ${{ fromJSON(inputs.changed-files)['repo_files'] }}
 
       - name: Prune Caches
-        if: ${{ always() && !startsWith(github.ref, 'refs/tags/') }}
+        if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         run: |
           uv cache prune --ci
           uv cache prune --ci --cache-dir "$(prek cache dir)/cache/uv"
           prek cache gc
 
       - name: Set Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           mkdir exitstatus
           echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
       - name: Upload Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: exitstatus-${{ github.job }}

@@ -9,6 +9,12 @@ on:
     tags-ignore:
       - '*'   # Ignore pushes to tags
 
+concurrency:
+  # Avoid parallel runs for consecutive pushes to main. In-progress runs
+  # are not cancelled since they may deploy docs or prepare a release PR,
+  # but a queued run superseded by a newer push is.
+  group: {{ expr("github.workflow") }}-{{ expr("github.ref") }}
+
 jobs:
   # After merging the release PR, we don't want to trigger
   # this workflow in addition to the Tagged Releases one.
@@ -112,5 +118,6 @@ jobs:
       - deploy-docs
 {%- endif %}
       - prepare-release
-    if: always() && needs.check_release_in_progress.outputs.count == '0'
+    # Not always() since that would resist cancellation of the whole run
+    if: {{ expr("!cancelled() && needs.check_release_in_progress.outputs.count == '0'") }}
     uses: ./.github/workflows/set-resolution-action.yml

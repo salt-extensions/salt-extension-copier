@@ -56,20 +56,20 @@ jobs:
           artifact_name: html-docs-pages
 
       - name: Delete GitHub Pages artifact
-        if: always()
+        if: ${{ !cancelled() }}
         uses: geekyeggo/delete-artifact@176a747ab7e287e3ff4787bf8a148716375ca118  # v6.0.0
         with:
           name: html-docs-pages
           failOnError: false
 
       - name: Set Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           mkdir exitstatus
           echo "${{ job.status }}" > exitstatus/${{ github.job }}
 
       - name: Upload Exit Status
-        if: always()
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: exitstatus-${{ github.job }}

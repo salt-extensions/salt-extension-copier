@@ -192,7 +192,7 @@
     GitHub-hosted runners, e.g. `Linux,py310,salt_3006_10`. -#}
 {%- macro codecov_flags() %}
       - name: Create CodeCov Flags
-        if: always()
+        if: {{ expr("!cancelled()") }}
         id: codecov-flags
         run: |
           echo "flags=$(python -c "import sys; print('{},{},salt_{}'.format('{{ expr("runner.os") }}'.replace('-latest', ''), 'py{}{}'.format(*sys.version_info), '_'.join(str(v) for v in '{{ expr("matrix.salt-version") }}'.replace('==', '_').split('.'))))")" >> "$GITHUB_OUTPUT"
@@ -218,14 +218,14 @@
 
 {%- macro upload_logs_and_status(ident) %}
       - name: Upload Logs
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: actions/upload-artifact@{{ versions["actions/upload-artifact"] }}
         with:
           name: runtests-{{ ident }}.log
           path: artifacts/runtests-*.log
 
       - name: Upload Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: ./.github/actions/upload-exitstatus
         with:
           name: {{ ident }}

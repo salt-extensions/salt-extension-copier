@@ -1,3 +1,4 @@
+{%- from pathjoin("includes", "workflows.j2") import expr -%}
 ---
 name: Set the CI Pipeline Exit Status
 
@@ -10,11 +11,14 @@ jobs:
     # on a pull request instead of requiring all
     name: Set the CI Pipeline Exit Status
     runs-on: ubuntu-{{ versions["ubuntu"] }}
-    if: always()
+    # Runs also when dependencies failed or were skipped, but not when
+    # the whole run was cancelled, allowing cancellation to take effect
+    # immediately (always() would resist it)
+    if: {{ expr("!cancelled()") }}
 
     steps:
       - name: Download Exit Status Files
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: actions/download-artifact@{{ versions["actions/download-artifact"] }}
         with:
           path: exitstatus
@@ -22,7 +26,7 @@ jobs:
           merge-multiple: true
 
       - name: Delete Exit Status Artifacts
-        if: always()
+        if: {{ expr("!cancelled()") }}
         uses: geekyeggo/delete-artifact@{{ versions["geekyeggo/delete-artifact"] }}
         with:
           name: exitstatus-*
@@ -30,12 +34,12 @@ jobs:
           failOnError: false
 
       - name: Set Pipeline Exit Status
-        if: always()
+        if: {{ expr("!cancelled()") }}
         run: |
           tree exitstatus
           grep -RE 'failure|cancelled' exitstatus/ && exit 1 || exit 0
 
       - name: Done
-        if: always()
+        if: {{ expr("!cancelled()") }}
         run: |
           echo "All workflows finished"
