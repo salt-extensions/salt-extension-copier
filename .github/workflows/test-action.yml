@@ -189,7 +189,7 @@ jobs:
   macOS:
     # macos-15 hangs indefinitely when running Salt functional tests
     # in the rendered project's test suite (observed 2026-10).
-    runs-on: macos-14
+    runs-on: macos-26
     timeout-minutes: 60
 
     strategy:
