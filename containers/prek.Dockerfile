@@ -1,5 +1,5 @@
 ARG PYTHON_VERSION=3.14.8
-FROM python:${PYTHON_VERSION}-slim-trixie@sha256:f85c5697265c178cc6887276c55fe16cf3d14ca35c3df6a5eab3b360534a55d2
+FROM python:${PYTHON_VERSION}-slim-trixie@sha256:a2b82f3c48559aa0a8446d9af49826b6e2b2016f4cd2afabfe6013ec53729170
 
 LABEL org.opencontainers.image.source=https://github.com/salt-extensions/salt-extension-copier
 LABEL org.opencontainers.image.description="CI container for running prek hooks in Salt extension repos"
@@ -8,7 +8,7 @@ LABEL org.opencontainers.image.description="CI container for running prek hooks 
 ARG PREK_VERSION=0.5.5
 
 # renovate: datasource=pypi depName=uv depType=dev
-ARG UV_VERSION=0.12.23
+ARG UV_VERSION=0.13.0
 
 # Ensure prek only uses the uv pinned below, never a downloaded one
 ENV PREK_UV_SOURCE=none
