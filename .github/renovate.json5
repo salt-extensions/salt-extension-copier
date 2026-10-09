@@ -67,9 +67,15 @@
         },
         {   // Group everything that needs to be in the container and don't automerge updates.
             // We don't want to rebuild it often, likely only right before a new template release.
-            groupName: "CI Container",
             matchPackageNames: ["python", "prek", "uv"],
+            groupName: "CI Container",
             automerge: false,
+        },
+        {   // setup-uv `with: <uv_version>` should be managed by our manager
+            // and not cause a separate PR (different package name, would be automerged)
+            matchPackageNames: ["astral-sh/uv"],
+            matchManagers: ["github-actions"],
+            enabled: false,
         },
     ],
 }
