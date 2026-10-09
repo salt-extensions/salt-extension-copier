@@ -39,7 +39,7 @@ salt_rewrite: '2401c0faef69b6b846c719d611bcfe358234d5d1  # 2.5.2'
 ty: '0.0.85'
 
 # renovate: datasource=pypi depName=uv depType=dev
-uv: '0.12.23'
+uv: '0.13.0'
 
 
 ###########################################################

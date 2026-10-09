@@ -23,7 +23,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.8.17'
           # renovate: datasource=pypi depName=uv depType=dev
-          UV_VERSION: '0.12.23'
+          UV_VERSION: '0.13.0'
 
       - name: Install Doc Requirements
         run: |
