@@ -36,7 +36,7 @@ pyupgrade: '75992aaa40730136014f34227e0135f63fc951b4  # v3.21.2'
 salt_rewrite: '2401c0faef69b6b846c719d611bcfe358234d5d1  # 2.5.2'
 
 # renovate: datasource=pypi depName=ty depType=dev
-ty: '0.0.85'
+ty: '0.0.86'
 
 # renovate: datasource=pypi depName=uv depType=dev
 uv: '0.12.23'
