@@ -20,6 +20,7 @@ RUN apt-get update \
         git \
         gcc \
         libc-dev \
+        jq \
     && rm -rf /var/lib/apt/lists/* \
     && python -m pip install --no-cache-dir --root-user-action=ignore \
         "prek==${PREK_VERSION}" \
