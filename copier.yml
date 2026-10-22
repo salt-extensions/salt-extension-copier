@@ -611,10 +611,7 @@ _migrations:
     migrate
 
 _tasks:
-  # Don't run this when updating (updating copies the template twice).
-  # This breaks when recopying.
-  # We should be able to simplify this check in the future to:
-  # if _copier_conf.operation == "copy".
+  # Don't run this when updating, that's handled above.
   - command: >-
       "{{ _copier_python }}" "{{ "{src}{sep}tasks{sep}initialize.py".format(src=_copier_conf.src_path, sep=_copier_conf.sep) }}" init
     when: '{{ _copier_operation == "copy" }}'

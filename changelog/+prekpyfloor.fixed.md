@@ -1,0 +1,1 @@
+Pinned a minimum Python version for pre-commit hook environments. Without it, {tool}`prek` let {tool}`uv` default to its newest *managed* interpreter, which can be too old for some hooks' dependencies, breaking environment creation.

@@ -1,5 +1,13 @@
 ---
 minimum_pre_commit_version: 3.2.0
+default_language_version:
+  # Without this floor, prek lets uv default to its newest *managed* Python,
+  # which can be an ancient interpreter downloaded on behalf of another
+  # project (e.g. this repo's test suite fetches Python 3.10 for old template
+  # versions) since uv does not consider the hook dependencies'
+  # Requires-Python metadata.
+  python: ">= 3.11"
+
 repos:
   # renovate: depName=pre-commit-hooks
   - repo: https://github.com/pre-commit/pre-commit-hooks
