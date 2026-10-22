@@ -187,8 +187,6 @@ jobs:
           uvx "pre-commit" gc
 
   macOS:
-    # macos-15 hangs indefinitely when running Salt functional tests
-    # in the rendered project's test suite (observed 2026-10).
     runs-on: macos-26
     timeout-minutes: 60
 
@@ -237,8 +235,24 @@ jobs:
       - name: Test
         env:
           SKIP_REQUIREMENTS_INSTALL: '1'
+        # macOS 15+ runner images block mDNS queries from non-root processes
+        # (Local Network Privacy), stalling each unresolvable hostname lookup
+        # ~35s. Salt's grains collection performs several unbounded lookups,
+        # which exceeds the daemon start timeout in the rendered projects'
+        # test suites. Root processes are exempt, so run the tests via sudo.
+        # Root then operates on the runner-owned checkout, which git would
+        # refuse without marking it safe.
         run: |
-          nox --force-color -e tests -- -vv --instafail tests/
+          sudo git config --system --add safe.directory '*'
+          sudo -E env "PATH=$PATH" nox --force-color -e tests -- -vv --instafail tests/
+
+      - name: Restore File Ownership
+        # The sudo'd test run leaves root-owned files behind (package
+        # caches, uv tool dirs, artifacts, temp dirs), breaking later
+        # steps - and workflow extensions - running unprivileged.
+        if: ${{ !cancelled() }}
+        run: |
+          sudo find -H "$HOME" "${TMPDIR:-/tmp}" /tmp -mindepth 1 -user root -exec chown -h "$(id -u):$(id -g)" {} +
 
       - name: Upload Logs
         if: ${{ !cancelled() }}

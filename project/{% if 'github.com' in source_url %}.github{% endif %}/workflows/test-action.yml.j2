@@ -32,7 +32,7 @@ jobs:
 {{ runner_test_job("Windows", "windows-" ~ versions["windows"], timeout=40, windows=true) }}
 {%- endif %}
 {%- if "macOS" in os_support %}
-{{ runner_test_job("macOS", "macos-" ~ versions["macos"], timeout=40) }}
+{{ runner_test_job("macOS", "macos-" ~ versions["macos"], timeout=40, macos=true) }}
 {%- endif %}
 {%- if "FreeBSD" in os_support %}
 {{ vm_test_job("FreeBSD", os_meta["FreeBSD"]["vm"], freebsd_releases) }}
