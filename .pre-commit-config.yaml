@@ -63,7 +63,7 @@ repos:
         require_serial: true
         additional_dependencies:
           # renovate:
-          - nox==2026.8.17
+          - nox==2026.10.20
           # Speeds up the session install and, since prek-created hook envs
           # don't include pip, provides the uv install path nox needs there.
           # uv only ships wheels for these platforms; elsewhere, the hooks
@@ -80,7 +80,7 @@ repos:
         require_serial: true
         additional_dependencies:
           # renovate:
-          - nox==2026.8.17
+          - nox==2026.10.20
           # renovate:
           - uv==0.13.5 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
