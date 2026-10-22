@@ -1,3 +1,4 @@
+import platform
 import shutil
 import textwrap
 
@@ -62,7 +63,20 @@ def _commit_with_pre_commit(
             "non_org", False, True, False, id="non_org_no_typing_no_ns_prek"
         ),
         pytest.param("org", True, False, False, id="org_typing_ns_prek"),
-        pytest.param("org", True, True, True, id="org_typing_no_ns_pre_commit"),
+        pytest.param(
+            "org",
+            True,
+            True,
+            True,
+            id="org_typing_no_ns_pre_commit",
+            marks=pytest.mark.skipif(
+                platform.system() == "Windows",
+                reason=(
+                    "The default_language_version range renders an invalid environment "
+                    "directory name with pre-commit on Windows. Windows setups use prek."
+                ),
+            ),
+        ),
     ),
     indirect=("source_url", "typing_", "no_saltext_namespace"),
 )

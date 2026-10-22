@@ -1,5 +1,11 @@
 ---
 minimum_pre_commit_version: 2.4.0
+default_language_version:
+  # Flooring the Python version works for pre-commit on non-Windows machines and prek everywhere.
+  # Since we install prek on Windows by default, ignore the issue pre-commit has there (it embeds
+  # the raw interpreter spec in the venv path and `>` is invalid in Windows paths)
+  python: ">= {{ python_requires[:2] | join(".") }}"
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: {{ versions["pre_commit_hooks"] }}
