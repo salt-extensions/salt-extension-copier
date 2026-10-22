@@ -135,8 +135,17 @@
 
 {#- The test suite invocation on GitHub-hosted runners. The Python
     version is determined by the VENV_PYTHON env var (plain `test`),
-    the Salt version via SALT_REQUIREMENT. -#}
-{%- macro run_tests(windows=false, prune_uv_cache=false) %}
+    the Salt version via SALT_REQUIREMENT.
+
+    On macOS 15+ runner images, Local Network Privacy blocks mDNS
+    queries from non-root processes, stalling each unresolvable
+    hostname lookup ~35s. Salt's grains collection performs several
+    unbounded lookups per process, which exceeds the daemon start
+    timeout. Root processes are exempt, so `macos` runs the test
+    suite via sudo (git needs the runner-owned checkout marked safe
+    then) and restores file ownership afterwards to keep later steps
+    working. -#}
+{%- macro run_tests(windows=false, macos=false, prune_uv_cache=false) %}
 {%- for name, posargs in (("Install Test Requirements", "--install-only"), ("Test", "-- -vv --instafail tests/")) %}
 {%- if not loop.first %}
 {{ "" }}
@@ -149,8 +158,16 @@
         env:
           SKIP_REQUIREMENTS_INSTALL: '1'
 {%- endif %}
+{%- if macos and not loop.first %}
+        # Salt daemons stall during startup when run unprivileged on
+        # macOS 15+ runner images (mDNS blocked for non-root processes)
+        run: |
+          sudo git config --system --add safe.directory '*'
+          sudo -E env "PATH=$PATH" nox --force-color -e test {{ posargs }}
+{%- else %}
         run: |
           nox --force-color -e test {{ posargs }}
+{%- endif %}
 {%- if loop.first and prune_uv_cache %}
 {{ "" }}
       - name: Prune uv Cache
@@ -159,6 +176,16 @@
         run: uv cache prune --ci
 {%- endif %}
 {%- endfor %}
+{%- if macos %}
+{{ "" }}
+      - name: Restore File Ownership
+        # The sudo'd test run leaves root-owned files behind (package
+        # caches, uv tool dirs, artifacts, temp dirs), breaking later
+        # steps - and workflow extensions - running unprivileged.
+        if: {{ expr("!cancelled()") }}
+        run: |
+          sudo find -H "$HOME" "${TMPDIR:-/tmp}" /tmp -mindepth 1 -user root -exec chown -h "$(id -u):$(id -g)" {} +
+{%- endif %}
 {%- endmacro %}
 
 {#- The test suite invocation inside a vmactions VM via its custom
@@ -244,7 +271,7 @@
     Windows, macOS) with a Salt/Python version matrix. If `releases`
     is given, the matrix additionally spans the OS releases to test on
     and `runs_on` should reference `matrix.osrelease`. -#}
-{%- macro runner_test_job(job_id, runs_on, timeout, full=false, releases=none, cap=3, windows=false) %}
+{%- macro runner_test_job(job_id, runs_on, timeout, full=false, releases=none, cap=3, windows=false, macos=false) %}
 {%- set rel = "-" ~ expr("matrix.osrelease") if releases is not none else "" %}
 {%- set ident = expr("github.job") ~ rel ~ "-Py" ~ expr("matrix.python-version") ~ "-Salt" ~ expr("matrix.salt-version") %}
   {{ job_id }}:
@@ -264,7 +291,7 @@
 {{- checkout() }}
 {{ setup_python_nox(windows=windows) }}
 {{ uv_cache(osrelease=releases is not none) }}
-{{ run_tests(windows=windows, prune_uv_cache=true) }}
+{{ run_tests(windows=windows, macos=macos, prune_uv_cache=true) }}
 {{ codecov_flags() }}
 {{ codecov_uploads(expr("steps.codecov-flags.outputs.flags"), ident) }}
 {{ upload_logs_and_status(ident) }}

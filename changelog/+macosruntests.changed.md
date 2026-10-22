@@ -1,0 +1,1 @@
+Migrated the macOS test job to `macos-26` (`macos-14` retires 2026-11-02). Since macOS 15+ runner images block mDNS queries from non-root processes, stalling Salt's hostname lookups and thus daemon startup, it now runs the test suite via `sudo`, restoring file ownership afterwards.
