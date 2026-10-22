@@ -122,10 +122,10 @@ OpenBSD:
   classifier: "Operating System :: POSIX :: BSD :: OpenBSD"
   vm:
     releases:
-      - "7.9"
+      - "8.0"
     available:
+      - "8.0"
       - "7.9"
-      - "7.8"
     prepare: |
       pkg_add -I python%3 salt py3-pip
       env PIP_BREAK_SYSTEM_PACKAGES=1 python3 -m pip install "nox=={nox_version}"
