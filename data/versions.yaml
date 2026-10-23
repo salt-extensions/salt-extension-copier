@@ -104,10 +104,7 @@ vmactions/almalinux-vm: '926c2897e439c5f5042bf83fb93c0f64aeb2737d  # v1.0.1'
 vmactions/rockylinux-vm: '6d7fc4bb22b1e201a913e36480c2905b2bb4e171  # v1.0.3'
 
 # renovate: datasource=git-tags depName=pypa/gh-action-pypi-publish packageName=https://github.com/pypa/gh-action-pypi-publish depType=action
-# Still can't use Renovate to update this since it pins the release tag object SHA, but
-# the action pulls a container named after its reference. The containers are
-# only tagged with the release commit SHA, not the one of the tag object pointing to it.
-pypa/gh-action-pypi-publish: 'ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0'
+pypa/gh-action-pypi-publish: 'ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e  # v1.13.0'
 
 ###########################################################
 #  GitHub Runners
