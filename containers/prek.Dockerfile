@@ -1,5 +1,8 @@
-ARG PYTHON_VERSION=3.14.9
-FROM python:${PYTHON_VERSION}-slim-trixie@sha256:sha256:b347e2dcbc7f0b6f9fb7182e9da6a187fb10ae715e0692518c1aed0eec94a700
+# The ARG must contain the complete image tag - if it only held the bare
+# version, Renovate could not write version updates back to this line and
+# would silently skip them (digest-only updates would still work).
+ARG PYTHON_TAG=3.14.8-slim-trixie
+FROM python:${PYTHON_TAG}@sha256:fbecd461fc72d21b2143c6eaba25143738079154a6d0ea3da3aec724f50eed4a
 
 LABEL org.opencontainers.image.source=https://github.com/salt-extensions/salt-extension-copier
 LABEL org.opencontainers.image.description="CI container for running prek hooks in Salt extension repos"

@@ -25,9 +25,9 @@ MARKER = "# prek-ci-container"
 
 def read_python_version():
     dockerfile = REPO_ROOT / "containers" / "prek.Dockerfile"
-    match = re.search(r"^ARG PYTHON_VERSION=(\S+)$", dockerfile.read_text(), flags=re.MULTILINE)
+    match = re.search(r"^ARG PYTHON_TAG=([0-9.]+)\S*$", dockerfile.read_text(), flags=re.MULTILINE)
     if not match:
-        raise RuntimeError(f"Failed to parse PYTHON_VERSION from {dockerfile}")
+        raise RuntimeError(f"Failed to parse PYTHON_TAG from {dockerfile}")
     return match.group(1)
 
 
