@@ -124,7 +124,7 @@ windows: '2025'
 ###########################################################
 
 # prek-ci-container
-prek_container: 'ghcr.io/salt-extensions/prek-ci:3.14.9@sha256:42844350d7bbebbb98cb70efda3eb2cae2112f4d217bb04c7afff3c15f7abee7'
+prek_container: 'ghcr.io/salt-extensions/prek-ci:3.14.9@sha256:6f6adb010c480c8ceb072e309c3afde91928a4e248802313b45eb8b93c9166dd'
 
 ###########################################################
 #  Misc
