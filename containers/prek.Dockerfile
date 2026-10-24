@@ -2,7 +2,7 @@
 # version, Renovate could not write version updates back to this line and
 # would silently skip them (digest-only updates would still work).
 ARG PYTHON_TAG=3.14.9-slim-trixie
-FROM python:${PYTHON_TAG}@sha256:b347e2dcbc7f0b6f9fb7182e9da6a187fb10ae715e0692518c1aed0eec94a700
+FROM python:${PYTHON_TAG}@sha256:35caba83af2fe6da9a5d922f9b0156f21d1246a48278c58a08bd253303ba42e8
 
 LABEL org.opencontainers.image.source=https://github.com/salt-extensions/salt-extension-copier
 LABEL org.opencontainers.image.description="CI container for running prek hooks in Salt extension repos"
