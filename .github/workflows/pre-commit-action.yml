@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-26.04
     container:
       # prek-ci-container
-      image: ghcr.io/salt-extensions/prek-ci:3.14.9@sha256:42844350d7bbebbb98cb70efda3eb2cae2112f4d217bb04c7afff3c15f7abee7
+      image: ghcr.io/salt-extensions/prek-ci:3.14.9@sha256:6f6adb010c480c8ceb072e309c3afde91928a4e248802313b45eb8b93c9166dd
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
