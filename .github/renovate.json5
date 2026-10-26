@@ -67,7 +67,7 @@
         },
         {   // Group everything that needs to be in the container and don't automerge updates.
             // We don't want to rebuild it often, likely only right before a new template release.
-            matchPackageNames: ["python", "prek", "uv"],
+            matchPackageNames: ["python", "prek", "uv", "gh", "cli/cli"],
             groupName: "CI Container",
             automerge: false,
         },
