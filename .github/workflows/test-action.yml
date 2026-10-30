@@ -48,7 +48,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.10.20'
           # renovate: datasource=pypi depName=uv depType=dev
-          UV_VERSION: '0.13.5'
+          UV_VERSION: '0.13.6'
 
       - name: Install Test Requirements
         run: |
@@ -85,7 +85,7 @@ jobs:
         if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         env:
           # renovate: datasource=pypi depName=prek depType=dev
-          PREK_VERSION: '0.5.7'
+          PREK_VERSION: '0.5.9'
         run: |
           uv cache prune --ci
           uv cache prune --ci --cache-dir "$(uvx "prek==${PREK_VERSION}" cache dir)/cache/uv"
@@ -139,7 +139,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.10.20'
           # renovate: datasource=pypi depName=uv depType=dev
-          UV_VERSION: '0.13.5'
+          UV_VERSION: '0.13.6'
 
       - name: Install Test Requirements
         shell: bash
@@ -179,7 +179,7 @@ jobs:
         shell: bash
         env:
           # renovate: datasource=pypi depName=prek depType=dev
-          PREK_VERSION: '0.5.7'
+          PREK_VERSION: '0.5.9'
         run: |
           uv cache prune --ci
           uv cache prune --ci --cache-dir "$(uvx "prek==${PREK_VERSION}" cache dir)/cache/uv"
@@ -226,7 +226,7 @@ jobs:
           # renovate: datasource=pypi depName=nox depType=dev
           NOX_VERSION: '2026.10.20'
           # renovate: datasource=pypi depName=uv depType=dev
-          UV_VERSION: '0.13.5'
+          UV_VERSION: '0.13.6'
 
       - name: Install Test Requirements
         run: |
@@ -279,7 +279,7 @@ jobs:
         if: ${{ !cancelled() && !startsWith(github.ref, 'refs/tags/') }}
         env:
           # renovate: datasource=pypi depName=prek depType=dev
-          PREK_VERSION: '0.5.7'
+          PREK_VERSION: '0.5.9'
         run: |
           uv cache prune --ci
           uv cache prune --ci --cache-dir "$(uvx "prek==${PREK_VERSION}" cache dir)/cache/uv"

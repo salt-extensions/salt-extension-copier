@@ -8,17 +8,17 @@ LABEL org.opencontainers.image.source=https://github.com/salt-extensions/salt-ex
 LABEL org.opencontainers.image.description="CI container for running prek hooks in Salt extension repos"
 
 # renovate: datasource=pypi depName=prek depType=dev
-ARG PREK_VERSION=0.5.7
+ARG PREK_VERSION=0.5.9
 
 # renovate: datasource=pypi depName=uv depType=dev
-ARG UV_VERSION=0.13.5
+ARG UV_VERSION=0.13.6
 
 # The actionlint hook's shellcheck wrapper uses gh for release provenance
 # verification. Debian's gh (2.46) predates `gh attestation` (2.49+), which
 # would make the wrapper fail hard (unknown command != its auth-required
 # soft-skip), so install a recent release instead.
 # renovate: datasource=github-releases depName=gh packageName=cli/cli extractVersion=^v(?<version>.*)$ depType=dev
-ARG GH_VERSION=2.103.2
+ARG GH_VERSION=2.103.3
 
 # Ensure prek only uses the uv pinned below, never a downloaded one
 ENV PREK_UV_SOURCE=none

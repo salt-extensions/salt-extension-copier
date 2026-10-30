@@ -77,7 +77,7 @@ repos:
           # uv only ships wheels for these platforms; elsewhere, the hooks
           # run via pre-commit, whose envs include pip.
           # renovate:
-          - uv==0.13.5 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
+          - uv==0.13.6 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
       - id: nox
         alias: lint-tests
@@ -90,7 +90,7 @@ repos:
           # renovate:
           - nox==2026.10.20
           # renovate:
-          - uv==0.13.5 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
+          - uv==0.13.6 ; sys_platform == 'linux' or sys_platform == 'darwin' or sys_platform == 'win32'
 
   # renovate: depName=actionlint
   - repo: https://github.com/kjanat/actionlint
