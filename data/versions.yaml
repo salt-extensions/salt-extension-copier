@@ -131,7 +131,7 @@ prek_container: 'ghcr.io/salt-extensions/prek-ci:3.14.9@sha256:278fbae16dd0b40ef
 ###########################################################
 
 # renovate: datasource=pypi depName=codecov-cli depType=actionMisc
-codecov_cli: 'v11.3.1'
+codecov_cli: 'v11.3.2'
 
 # renovate: datasource=pypi depName=coverage depType=dev
 coverage: '7.17.0'
