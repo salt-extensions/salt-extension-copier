@@ -53,7 +53,7 @@ actions/cache: '55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0'
 actions/checkout: '3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1'
 
 # renovate: datasource=git-tags depName=create-github-app-token packageName=https://github.com/actions/create-github-app-token depType=action
-actions/create-github-app-token: '64ab729a6294000f5aa4a4bc0b73d1f32bc45510  # v3.3.0'
+actions/create-github-app-token: 'f418cff399f7aef4c2f0ad47e25ca7a6abbdd6fc  # v3.4.0'
 
 # renovate: datasource=git-tags depName=deploy-pages packageName=https://github.com/actions/deploy-pages depType=action
 actions/deploy-pages: '368f82528645a54fb793d4d04e342629a3f51346  # v5.0.1'
@@ -83,10 +83,10 @@ geekyeggo/delete-artifact: '176a747ab7e287e3ff4787bf8a148716375ca118  # v6.0.0'
 juliangruber/find-pull-request-action: '0d2ca757412e2742b5cd5ce4ff56757c65652605  # v1.12.0'
 
 # renovate: datasource=git-tags depName=peter-evans/create-pull-request packageName=https://github.com/peter-evans/create-pull-request depType=action
-peter-evans/create-pull-request: '5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1'
+peter-evans/create-pull-request: '3ffccacd46053766916f087ce41d627c0b8cf2d1  # v8.1.3'
 
 # renovate: datasource=git-tags depName=vmactions/freebsd-vm packageName=https://github.com/vmactions/freebsd-vm depType=action
-vmactions/freebsd-vm: 'c46abacb49f09938ca4e1702d15d836285d694cc  # v1.5.9'
+vmactions/freebsd-vm: '811efaaac0668df8bfb8308c3ec997b5ab50037b  # v1.6.0'
 
 # renovate: datasource=git-tags depName=vmactions/openbsd-vm packageName=https://github.com/vmactions/openbsd-vm depType=action
 vmactions/openbsd-vm: 'f1ca8bc8ecc5b6ef7218e5b914836e067e1546d3  # v1.4.9'
@@ -131,7 +131,7 @@ prek_container: 'ghcr.io/salt-extensions/prek-ci:3.14.9@sha256:278fbae16dd0b40ef
 ###########################################################
 
 # renovate: datasource=pypi depName=codecov-cli depType=actionMisc
-codecov_cli: 'v11.3.1'
+codecov_cli: 'v11.3.2'
 
 # renovate: datasource=pypi depName=coverage depType=dev
 coverage: '7.17.0'
